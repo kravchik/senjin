@@ -18,10 +18,6 @@ abstract public class ShaderParent {
     public Vec4f gl_Normal;
     public Vec4f gl_Color;
 
-    public static void main(String[] args) {
-        System.out.println(new ProgramGenerator("/home/yuri/1/myproject/senjin/src/myengine/optiseq/states/shaders/gshader/VertexShader.groovy", null, "").resultSrc);
-    }
-
     public Vec4f texture(Sampler2D p, Vec2f uv) {
         BufferedImage image = p.texture.image;
         //TODO clamp, mag, filter, etc
@@ -30,9 +26,7 @@ abstract public class ShaderParent {
         float r = (color & 0x00ff0000) >> 16;
         float g = (color & 0x0000ff00) >> 8;
         float b = color & 0x000000ff;
-        Vec4f result = new Vec4f(a / 255f, r / 255f, g / 255f, b / 255f);
-        System.out.println(result);
-        return result;
+        return new Vec4f(a / 255f, r / 255f, g / 255f, b / 255f);
     }
 
     public Vec2f Vec2f(double x, double y) {

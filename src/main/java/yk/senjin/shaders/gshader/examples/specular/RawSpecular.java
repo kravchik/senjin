@@ -50,11 +50,10 @@ public class RawSpecular {
         while (!Display.isCloseRequested()) {
             //prepare matrices, just raw math, no need of glMatrixMode, glMatrixPush, etc
             Matrix4 camModelViewMatrix = new Matrix4().setIdentity().translate(new Vec3f(0, 0, -15));
-            Matrix4 camNormalMatrix = camModelViewMatrix.invert().transpose();
 
             //set uniforms and textures
             vertexShader.modelViewProjectionMatrix = camModelViewMatrix.multiply(perspective(45.0f, (float) 400 / 400, 1, 1000.0f));
-            vertexShader.normalMatrix = camNormalMatrix.get33();
+            vertexShader.normalMatrix = camModelViewMatrix.invert().transpose().get33();
             fragmentShader.shininess = 100;
             vertexShader.lightDir = new Vec3f(1, 1, 1).normalized();
 

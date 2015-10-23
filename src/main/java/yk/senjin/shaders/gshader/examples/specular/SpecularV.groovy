@@ -20,7 +20,7 @@ class SpecularV extends VertexShaderParent<SpecularVi, SpecularFi> {
         o.normal = i.normal
         o.csNormal = normalMatrix * i.normal
         o.gl_Position = modelViewProjectionMatrix * Vec4f(i.pos, 1)
-        o.csEyeDir = -o.gl_Position.xyz
+        o.csEyeDir = o.gl_Position.xyz
         o.uv = i.uv
         o.csLightDir = normalMatrix * lightDir
     }
