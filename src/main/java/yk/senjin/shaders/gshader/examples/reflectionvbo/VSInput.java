@@ -1,7 +1,7 @@
-package yk.senjin.shaders.gshader.examples;
+package yk.senjin.shaders.gshader.examples.reflectionvbo;
 
-import yk.senjin.shaders.gshader.GBufferer;
 import yk.jcommon.fastgeom.Vec3f;
+import yk.senjin.shaders.gshader.GBufferer;
 
 /**
  * Created with IntelliJ IDEA.

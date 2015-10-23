@@ -2,7 +2,6 @@ package yk.senjin;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
 import yk.jcommon.utils.XYit;
 
 import java.awt.*;
@@ -11,9 +10,9 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R;
-import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
 
 /**
@@ -29,12 +28,14 @@ public class SomeTexture extends AbstractState {
     public int textureObjectId;//assigned by system, when uploaded
     public BufferedImage image;
 
-    public int wrapR = GL_MIRRORED_REPEAT;
+    public int wrapR = -1;
     public int wrapS = GL_MIRRORED_REPEAT;
     public int wrapT = GL_MIRRORED_REPEAT;
     public int magFilter = GL_NEAREST;
     public int minFilter = GL_NEAREST;
 
+    public SomeTexture() {
+    }
 
     public SomeTexture(BufferedImage image) {
         this.image = image;
@@ -94,7 +95,7 @@ public class SomeTexture extends AbstractState {
 
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 //        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapR);
+        if (wrapR != -1) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);

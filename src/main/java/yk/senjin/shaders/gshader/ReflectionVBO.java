@@ -33,7 +33,7 @@ public class ReflectionVBO {
     public void bindToShader(GShader shader) {
         Method m = null;
         for (Method method : shader.vs.getClass().getDeclaredMethods()) {
-            if (method.getName().equals("main") && !Modifier.isStatic(method.getModifiers())) {
+            if (method.getName().equals("main") && !Modifier.isStatic(method.getModifiers()) && (method.getModifiers() & 0x00001000) == 0) {
                 m = method;
                 inputType = method.getParameterTypes()[0];
                 break;
@@ -41,7 +41,7 @@ public class ReflectionVBO {
         }
         if (m == null) throw BadException.die("can't find 'main' method in shader " + shader);
         VertexStructureState vss = new VertexStructureState(shader.shader, inputType, bufferId);
-        shader.vbo2structure.put(inputType, vss);
+        shader.vbo2structure.put(this, vss);
         elementSize = vss.stride;
     }
 

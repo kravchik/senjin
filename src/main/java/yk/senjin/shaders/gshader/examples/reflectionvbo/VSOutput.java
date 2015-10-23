@@ -1,4 +1,4 @@
-package yk.senjin.shaders.gshader.examples;
+package yk.senjin.shaders.gshader.examples.reflectionvbo;
 
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.shaders.gshader.BaseVSOutput;

@@ -4,14 +4,12 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.SGISGenerateMipmap;
 
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
-import static org.lwjgl.opengl.EXTFramebufferObject.GL_FRAMEBUFFER_EXT;
-import static org.lwjgl.opengl.EXTFramebufferObject.glBindFramebufferEXT;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
-import static org.lwjgl.util.glu.GLU.gluPerspective;
 
 /**
  * Created by Yuri Kravchik on  10.06.15.
+ * based on example from http://wiki.lwjgl.org/wiki/Render_to_Texture_with_Frame_Buffer_Objects_(FBO)
  */
 
 public class SimpleAntiAliasing {
@@ -94,27 +92,14 @@ public class SimpleAntiAliasing {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        //glLoadIdentity ();												// Reset The Modelview Matrix
-        //glTranslatef (0.0f, 0.0f, -2f);								// Translate 6 Units Into The Screen and then rotate
-        //glRotatef(angle,0.0f,1.0f,0.0f);
-        //glRotatef(angle,1.0f,0.0f,0.0f);
-        //glRotatef(10f,0.0f,0.0f,1.0f);
         glColor3f(1,1,1);												// set the color to white
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
         glBegin(GL_QUADS);
-
-        //glVertex3f(-1.0f, -1.0f,  -4f);	// Bottom Left Of The Texture and Quad
-        //glVertex3f( 1.0f, -1.0f,  -4f);	// Bottom Right Of The Texture and Quad
-        //glVertex3f( 1.0f,  1.0f,  4f);	// Top Right Of The Texture and Quad
-        //glVertex3f(-1.0f,  1.0f,  4f);	// Top Left Of The Texture and Quad
-
-        glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  0f);	// Bottom Left Of The Texture and Quad
-        glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  0f);	// Bottom Right Of The Texture and Quad
-        glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  0f);	// Top Right Of The Texture and Quad
-        glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  0f);	// Top Left Of The Texture and Quad
-        //
-
-        //AAExample.drawBox();														// draw the box
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  0f);
+        glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  0f);
+        glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  0f);
         glEnd();
 
         glDisable(GL_TEXTURE_2D);

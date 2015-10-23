@@ -1,4 +1,4 @@
-package yk.senjin.shaders.gshader.examples;
+package yk.senjin.shaders.gshader.examples.reflectionvbo;
 
 import org.lwjgl.LWJGLException;
 import yk.jcommon.fastgeom.Vec3f;
@@ -20,9 +20,11 @@ import static yk.jcommon.utils.IO.readImage;
  */
 public class TestReflectionVBO extends Simple3DWatch {
 
+    private ShaderV vs;
+
     public TestReflectionVBO(int w, int h, boolean createThread) throws LWJGLException {
         super(w, h, createThread);
-        SIMPLE_AA = false;
+        SIMPLE_AA = true;
     }
 
     public static void main(String[] args) throws LWJGLException {
@@ -38,7 +40,8 @@ public class TestReflectionVBO extends Simple3DWatch {
     @Override
     public void firstFrame() {
         fs = new ShaderF();
-        shader1 = new GShader(new ShaderV(), fs);
+        vs = new ShaderV();
+        shader1 = new GShader(vs, fs);
         texture = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO();
         vbo1.bindToShader(shader1);
@@ -49,11 +52,12 @@ public class TestReflectionVBO extends Simple3DWatch {
 
     @Override
     public void tick(float dt) {
+        vs.mvp = camModelViewProjectionMatrix;
         vbo1.upload();
         texture.enable(0);
 
         fs.txt.set(texture);
-        shader1.currentVBO = vbo1.inputType;
+        shader1.currentVBO = vbo1;
         shader1.enable();
 
         indices.draw();

@@ -1,11 +1,12 @@
 package yk.senjin.shaders.gshader;
 
+import yk.senjin.AbstractState;
 import yk.senjin.VertexStructureState;
 import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.UniformVariable;
 import yk.senjin.shaders.VertexAttrib;
-import yk.senjin.AbstractState;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import static yk.jcommon.collections.YHashMap.hm;
@@ -22,12 +23,12 @@ public class GShader extends AbstractState {
     private ProgramGenerator pvs;
     private ProgramGenerator pfs;
 
-    public Class currentVBO;
+    public Object currentVBO;
     public Map<Object, VertexStructureState> vbo2structure = hm();
 
     public Object vs;
 
-    public GShader(Object vs, Object fs) {
+    public GShader(ShaderParent vs, ShaderParent fs) {
         this.vs = vs;
         init(vs, fs);
     }
@@ -66,10 +67,16 @@ public class GShader extends AbstractState {
                 throw new Error("name clash for " + a.name + " at " + old + " and " + seenAt.get(a.name));
             }
         }
-        for (UniformVariable a : pfs.uniforms) {
+        for (Iterator<UniformVariable> iterator = pfs.uniforms.iterator(); iterator.hasNext(); ) {
+            UniformVariable a = iterator.next();
             System.out.println("checking " + a.name);
             String old = seenAt.put(a.name, "FS uniforms");
-            if (old != null) throw new Error("name clash for " + a.name + " at " + old + " and " + seenAt.get(a.name));
+//            if (old != null) throw new Error("name clash for " + a.name + " at " + old + " and " + seenAt.get(a.name));
+            if (old != null) {
+                //TODO check same type
+                //TODO prevent somehow from filling from FS
+                iterator.remove();
+            }
         }
 
 

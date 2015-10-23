@@ -4,10 +4,15 @@
 code gen for uniforms
 code gen for buffers
 
-добавлять префикс к полям VSOutput чтобы избежать клешинга
-  или пофиксить исходя из нового стандарта glsl
+structures
 
-
+uniforms are common for both vertex and fragment, handle it some how
+  check same type
+  prevent somehow from filling from FS
+  fs extends vs ?
+  separate structure for uniforms ?
 
 //DONE
+prefix for VS output (FS input) to avoid name clashing
+
 
