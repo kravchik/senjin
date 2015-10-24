@@ -31,8 +31,8 @@ public class SomeTexture extends AbstractState {
     public int wrapR = -1;
     public int wrapS = GL_MIRRORED_REPEAT;
     public int wrapT = GL_MIRRORED_REPEAT;
-    public int magFilter = GL_NEAREST;
-    public int minFilter = GL_NEAREST;
+    public int magFilter = GL_LINEAR;
+    public int minFilter = GL_LINEAR;
 
     public SomeTexture() {
     }

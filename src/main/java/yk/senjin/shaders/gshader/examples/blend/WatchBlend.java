@@ -1,6 +1,5 @@
-package yk.senjin.shaders.gshader.examples.specular;
+package yk.senjin.shaders.gshader.examples.blend;
 
-import org.lwjgl.LWJGLException;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.DrawIndicesShort;
@@ -16,55 +15,51 @@ import static yk.jcommon.utils.IO.readImage;
 /**
  * Created with IntelliJ IDEA.
  * User: yuri
- * Date: 22/10/15
- * Time: 21:06
+ * Date: 23/10/15
+ * Time: 21:21
  */
-public class WatchSpecular extends Simple3DWatch {
+public class WatchBlend extends Simple3DWatch {
 
-    public WatchSpecular(int w, int h, boolean createThread) throws LWJGLException {
-        super(w, h, createThread);
-        SIMPLE_AA = true;
-    }
-
-    public static void main(String[] args) throws LWJGLException {
-        new WatchSpecular(800, 600, true);
-    }
-
-    public SpecularV vs;
+    public BlendV vs;
+    public BlendF fs;
     public GShader shader1;
     public ReflectionVBO vbo1;
     public SomeTexture texture;
     public DrawIndicesShort indices;
-    public SpecularF fs;
+
+    public static void main(String[] args) {
+        new WatchBlend();
+    }
 
     @Override
     public void firstFrame() {
-        fs = new SpecularF();
-        vs = new SpecularV();
+        fs = new BlendF();
+        vs = new BlendV();
         shader1 = new GShader(vs, fs);
         texture = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO();
         vbo1.bindToShader(shader1);
 
         vbo1.setData(al(
-                new SpecularVi(new Vec3f(0, 0, 0),  new Vec3f(-1, -1, 1).normalized(), new Vec2f(0, 0)),
-                new SpecularVi(new Vec3f(10, 0, 0), new Vec3f( 1, -1, 1).normalized(), new Vec2f(1, 0)),
-                new SpecularVi(new Vec3f(10, 10, 0),new Vec3f( 1,  1, 1).normalized(), new Vec2f(1, 1)),
-                new SpecularVi(new Vec3f(0, 10, 0), new Vec3f(-1,  1, 1).normalized(), new Vec2f(0, 1))));
+                new BlendVi(new Vec3f(0, 0, 0),  new Vec2f(0, 1)),
+                new BlendVi(new Vec3f(1, 0, 0), new Vec2f(1, 1)),
+                new BlendVi(new Vec3f(1, 1, 0),new Vec2f(1, 0)),
+                new BlendVi(new Vec3f(0, 1, 0), new Vec2f(0, 0))));
         indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 1, 2, 0, 2, 3));
     }
-
     @Override
-    public void tick(float dt) {
-        vs.modelViewProjectionMatrix = camModelViewProjectionMatrix;
-        vs.normalMatrix = camNormalMatrix.get33();
-        fs.shininess = 100;
 
-        vs.lightDir = new Vec3f(1, 1, 1).normalized();
+    public void tick(float dt) {
+//        vs.modelViewProjectionMatrix = camModelViewProjectionMatrix;
+//        vs.normalMatrix = camNormalMatrix.get33();
+//        fs.shininess = 100;
+
+//        vs.lightDir = new Vec3f(1, 1, 1).normalized();
         vbo1.upload();
         texture.enable(0);
-
+        for (int i = 0; i < fs.koeff.length; i++) fs.koeff[i] = 1f/fs.koeff.length;
         fs.txt.set(texture);
+        fs.kSize = 32;
         shader1.currentVBO = vbo1;
 
         shader1.enable();
@@ -76,4 +71,8 @@ public class WatchSpecular extends Simple3DWatch {
 
         super.tick(dt);
     }
+
+
+
+
 }

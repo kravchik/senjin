@@ -10,6 +10,7 @@ import org.codehaus.groovy.ast.stmt.*
 import org.codehaus.groovy.control.CompilePhase
 import yk.jcommon.collections.YList
 import yk.jcommon.utils.IO
+import yk.jcommon.utils.Reflector
 import yk.senjin.shaders.UniformVariable
 import yk.senjin.shaders.VertexAttrib
 
@@ -69,7 +70,7 @@ class ProgramGenerator {
 
 //        new VertexShader().m()
 
-        List<ASTNode> nodes = new AstBuilder().buildFromString(CompilePhase.FINALIZATION, IO.readFile(src))
+        List<ASTNode> nodes = new AstBuilder().buildFromString(CompilePhase.INSTRUCTION_SELECTION, IO.readFile(src))
 
         def mainClass = (ClassNode) nodes[1]
 
@@ -124,9 +125,16 @@ class ProgramGenerator {
             if (Modifier.isFinal(fn.modifiers)) {
                 result += "const " + type + " " + fn.name + " = " + translateExpression(((FieldNode) fn).initialExpression) + ";\n"
             } else if ((fn.modifiers & Modifier.STATIC) == 0) {
-                result += "uniform " + type + " " + fn.name + ";\n"
+                if (type.endsWith("[]")) {
+                    def sizeExpression = translateExpression(((ArrayExpression) fn.initialExpression).sizeExpression.get(0))
+                    result += "uniform " + type.substring(0, type.length() - 2) + " " + fn.name + "[" + sizeExpression + "];\n"
+                } else {
+                    result += "uniform " + type + " " + fn.name + ";\n"
+                }
 
                 def field = data.class.getDeclaredField(fn.name)
+                Object dataInstance = data.class.newInstance()
+
                 field.setAccessible(true)
                 Object got = field.get(data)
                 if (type.equals("vec4")) uniforms.add(new UniformRefVec4f(fn.name, data, fn.name))
@@ -138,7 +146,12 @@ class ProgramGenerator {
                 }
                 else if (type.equals("vec2")) uniforms.add(new UniformRefVec2f(fn.name, data, fn.name))
                 else if (type.equals("vec3")) uniforms.add(new UniformRefVec3f(fn.name, data, fn.name))
+                else if (type.equals("int")) uniforms.add(new UniformRefInt(fn.name, data, fn.name))
                 else if (type.equals("float")) uniforms.add(new UniformRefFloat(fn.name, data, fn.name))
+                    //TODO array size
+                else if (type.equals("float[]")) {
+                    uniforms.add(new UniformRefFloatArray(fn.name, data, fn.name, ((float[])Reflector.get(dataInstance, fn.name)).length))
+                }
                 else if (type.equals("mat3")) uniforms.add(new UniformRefMatrix3(fn.name, data, fn.name))
                 else if (type.equals("mat4")) uniforms.add(new UniformRefMatrix4(fn.name, data, fn.name))
                 else throw new RuntimeException("unknown uniform type " + type)
@@ -167,6 +180,7 @@ class ProgramGenerator {
     }
 
     private String translateExpression(Object o) {
+        println("" + o)
         if (o instanceof ExpressionStatement) return translateExpression((ExpressionStatement)o)
         if (o instanceof DeclarationExpression) return translateExpression((DeclarationExpression)o)
         if (o instanceof VariableExpression) return translateExpression((VariableExpression)o)
@@ -181,6 +195,9 @@ class ProgramGenerator {
         if (o instanceof ClassExpression) return translateExpression((ClassExpression)o)
         if (o instanceof IfStatement) return translateExpression((IfStatement)o)
         if (o instanceof BooleanExpression) return translateExpression((BooleanExpression)o)
+        if (o instanceof CastExpression) return translateExpression((CastExpression)o)
+        if (o instanceof ForStatement) return translateExpression((ForStatement)o)
+        if (o instanceof PostfixExpression) return translateExpression((PostfixExpression)o)
         if (o instanceof BlockStatement) return translateExpression((BlockStatement)o)
         return ":"+o
     }
@@ -222,6 +239,22 @@ class ProgramGenerator {
         return translateExpression(e.expression)
     }
 
+    private String translateExpression(CastExpression e) {
+        return e.type.name + "(" + translateExpression(e.expression) + ")"
+    }
+
+    private String translateExpression(ForStatement e) {
+        def expressions = ((ClosureListExpression) (e.collectionExpression)).expressions
+        String result = "for (" + translateExpression(expressions.get(0)) + "; " + translateExpression(expressions.get(1)) + "; " + translateExpression(expressions.get(2)) + ") {\n"
+        result += "    " + translateExpression(e.loopBlock)
+        result += ";\n    }"
+        return result
+    }
+
+    private String translateExpression(PostfixExpression e) {
+        return translateExpression(e.expression) + e.operation.getText()
+    }
+
     private String translateExpression(IfStatement e) {
         def result = "if (" + translateExpression(e.booleanExpression) + ") " + translateExpression(e.ifBlock)
         if (!(e.ifBlock instanceof BlockStatement)) result += ";"
@@ -244,7 +277,9 @@ class ProgramGenerator {
 
 
     private String translateExpression(BinaryExpression e) {
-        return translateExpression(e.leftExpression) + " " + e.operation.getText() + " " + translateExpression(e.rightExpression)
+        def opName = e.operation.getText()
+        if (opName == "[") return translateExpression(e.leftExpression) + "[" + translateExpression(e.rightExpression) + "]"
+        return translateExpression(e.leftExpression) + " " + opName + " " + translateExpression(e.rightExpression)
     }
 
     private String translateExpression(UnaryMinusExpression e) {
@@ -280,7 +315,10 @@ class ProgramGenerator {
     }
 
     static Map<String, String> convertions = hm(
+            "[F", "float[]",
             "float", "float",
+            "Integer", "int",
+            "int", "int",
             "Matrix4", "mat4",
             "Matrix3", "mat3",
             "Vec2f", "vec2",

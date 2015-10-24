@@ -29,8 +29,12 @@ abstract public class ShaderParent {
         return new Vec4f(a / 255f, r / 255f, g / 255f, b / 255f);
     }
 
-    public Vec2f Vec2f(double x, double y) {
+    public Vec2f vec2(double x, double y) {
         return new Vec2f((float)x, (float)y);
+    }
+
+    public Vec2f vec2(double x) {
+        return new Vec2f((float)x, (float)x);
     }
 
     public Vec3f normalize(Vec3f p) {
@@ -58,8 +62,12 @@ abstract public class ShaderParent {
         return new Vec4f((float)w, (float)x, (float)y, (float)z);
     }
 
-    public Vec4f Vec4f(Vec3f v, float w) {
-        return new Vec4f(w, v.x, v.y, v.z);
+    public Vec4f Vec4f(double x) {
+        return new Vec4f((float)x, (float)x, (float)x, (float)x);
+    }
+
+    public Vec4f Vec4f(Vec3f v, double w) {
+        return new Vec4f((float) w, v.x, v.y, v.z);
     }
 
     public float max(double a, double b) {

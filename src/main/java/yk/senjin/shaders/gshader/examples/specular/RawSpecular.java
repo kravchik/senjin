@@ -9,7 +9,7 @@ import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.GShader;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.perspective;
 import static yk.jcommon.fastgeom.Vec2f.v2;
@@ -48,14 +48,16 @@ public class RawSpecular {
         vbo1.upload();
 
         while (!Display.isCloseRequested()) {
+            glClearColor(1, 1, 1, 1);
+            glClear(GL_COLOR_BUFFER_BIT);
             //prepare matrices, just raw math, no need of glMatrixMode, glMatrixPush, etc
-            Matrix4 camModelViewMatrix = new Matrix4().setIdentity().translate(new Vec3f(0, 0, -15));
+            Matrix4 camModelViewMatrix = new Matrix4().setIdentity().translate(new Vec3f(0, 0, -12));
 
             //set uniforms and textures
             vertexShader.modelViewProjectionMatrix = camModelViewMatrix.multiply(perspective(45.0f, (float) 400 / 400, 1, 1000.0f));
             vertexShader.normalMatrix = camModelViewMatrix.invert().transpose().get33();
             fragmentShader.shininess = 100;
-            vertexShader.lightDir = new Vec3f(1, 1, 1).normalized();
+            vertexShader.lightDir = new Vec3f(2, 1, 3).normalized();
 
             texture.enable(0);
             fragmentShader.txt.set(texture);
