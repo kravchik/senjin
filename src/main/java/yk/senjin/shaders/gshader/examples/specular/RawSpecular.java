@@ -1,5 +1,6 @@
 package yk.senjin.shaders.gshader.examples.specular;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import yk.jcommon.fastgeom.Matrix4;
@@ -9,7 +10,10 @@ import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.GShader;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
+import java.nio.ShortBuffer;
+
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.glDrawRangeElements;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.perspective;
 import static yk.jcommon.fastgeom.Vec2f.v2;
@@ -47,6 +51,10 @@ public class RawSpecular {
         DrawIndicesShort indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 2, 1, 0, 3, 2));
         vbo1.upload();
 
+        ShortBuffer indexBuffer = BufferUtils.createShortBuffer(6);
+        indexBuffer.put(new short[]{0, 2, 1, 0, 3, 2});
+        indexBuffer.rewind();
+
         while (!Display.isCloseRequested()) {
             glClearColor(1, 1, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -65,7 +73,7 @@ public class RawSpecular {
 
             shaderProgram.enable();//enable shader
 
-            indices.draw();//draw data with enabled shader
+            glDrawRangeElements(GL_TRIANGLES, 0, indexBuffer.limit(), indexBuffer);
 
             shaderProgram.disable();
             texture.disable();

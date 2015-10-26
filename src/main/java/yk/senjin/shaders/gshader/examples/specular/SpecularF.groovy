@@ -22,9 +22,9 @@ public class SpecularF extends FragmentShaderParent<SpecularFi> {
         Vec3f matSpec = Vec3f(0.6, 0.5, 0.3);
         Vec3f lightColor = Vec3f(1, 1, 1);
 
-        Vec3f diffuse  = color * max(0.0, dot(i.normal, lightDir)) * lightColor;
+        Vec3f diffuse  = color * max(0f, dot(i.normal, lightDir)) * lightColor;
         Vec3f r = normalize(reflect(normalize(i.csLightDir), normalize(i.csNormal)));
-        Vec3f specular = lightColor * matSpec * pow(max(0.0, dot(r, -normalize(i.csEyeDir))), shininess);
+        Vec3f specular = lightColor * matSpec * pow(max(0f, dot(r, -normalize(i.csEyeDir))), shininess);
         o.gl_FragColor =  Vec4f(ambient + diffuse + specular, 1);
     }
 }

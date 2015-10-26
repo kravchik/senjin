@@ -70,8 +70,44 @@ abstract public class ShaderParent {
         return new Vec4f((float) w, v.x, v.y, v.z);
     }
 
-    public float max(double a, double b) {
-        return (float) Math.max(a, b);
+    public double max(double a, double b) {
+        return Math.max(a, b);
+    }
+
+    public float max(float a, float b) {
+        return Math.max(a, b); 
+    }
+
+    public Vec2f max(Vec2f a, Vec2f b) {
+        return new Vec2f(max(a.x, b.x), max(a.y, b.y)); 
+    }
+
+    public Vec3f max(Vec3f a, Vec3f b) {
+        return new Vec3f(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z)); 
+    }
+
+    public Vec4f max(Vec4f a, Vec4f b) {
+        return new Vec4f(max(a.w, b.w), max(a.x, b.x), max(a.y, b.y), max(a.z, b.z)); 
+    }
+
+    public double min(double a, double b) {
+        return Math.min(a, b); 
+    }
+
+    public float min(float a, float b) {
+        return Math.min(a, b); 
+    }
+
+    public Vec2f min(Vec2f a, Vec2f b) {
+        return new Vec2f(min(a.x, b.x), min(a.y, b.y)); 
+    }
+
+    public Vec3f min(Vec3f a, Vec3f b) {
+        return new Vec3f(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z)); 
+    }
+
+    public Vec4f min(Vec4f a, Vec4f b) {
+        return new Vec4f(min(a.w, b.w), min(a.x, b.x), min(a.y, b.y), min(a.z, b.z)); 
     }
 
     public float pow(float value, float power) {
