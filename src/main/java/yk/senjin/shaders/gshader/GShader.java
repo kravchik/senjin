@@ -1,7 +1,5 @@
 package yk.senjin.shaders.gshader;
 
-import myengine.optiseq.states.arraystructure.AbstractArrayStructure;
-import myengine.optiseq.states.arraystructure.VBOVertexAttrib;
 import org.lwjgl.opengl.GL11;
 import yk.jcommon.collections.YList;
 import yk.jcommon.collections.YMap;
@@ -11,6 +9,8 @@ import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
 import yk.senjin.AbstractState;
+import yk.senjin.arraystructure.AbstractArrayStructure;
+import yk.senjin.arraystructure.VBOVertexAttrib;
 import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.UniformVariable;
 import yk.senjin.shaders.VertexAttrib;

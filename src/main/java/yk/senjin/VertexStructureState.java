@@ -1,12 +1,12 @@
 package yk.senjin;
 
-import myengine.optiseq.states.arraystructure.*;
 import org.lwjgl.opengl.GL11;
 import yk.jcommon.collections.YList;
 import yk.jcommon.collections.YSet;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
+import yk.senjin.arraystructure.*;
 import yk.senjin.bufferstructure.StructureBundleTight;
 import yk.senjin.bufferstructure.StructureUnit;
 import yk.senjin.shaders.ShaderHandler;

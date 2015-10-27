@@ -1,4 +1,4 @@
-package myengine.optiseq.states.arraystructure;
+package yk.senjin.arraystructure;
 
 /**
  * Created by: Yuri Kravchik Date: 2/11/2007 Time: 10:28:41
