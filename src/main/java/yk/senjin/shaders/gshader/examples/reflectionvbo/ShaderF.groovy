@@ -18,7 +18,7 @@ class ShaderF extends ShaderParent {
     def main(VSOutput i, StandardFrame o) {
 //        o.gl_FragColor = vec4(1, 0, 0, 1)
 //        o.gl_FragColor = color;
-        o.gl_FragColor = texture(txt, i.pos.xy);
+        o.gl_FragColor = texture2D(txt, i.pos.xy);
 
     }
 }

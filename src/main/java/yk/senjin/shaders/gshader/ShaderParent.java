@@ -18,7 +18,7 @@ abstract public class ShaderParent {
     public Vec4f gl_Normal;
     public Vec4f gl_Color;
 
-    public Vec4f texture(Sampler2D p, Vec2f uv) {
+    public Vec4f texture2D(Sampler2D p, Vec2f uv) {
         BufferedImage image = p.texture.image;
         //TODO clamp, mag, filter, etc
         int color = image.getRGB((int) uv.x, (int) uv.y);

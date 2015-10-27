@@ -18,7 +18,7 @@ public class SpecularF extends FragmentShaderParent<SpecularFi> {
     public Vec3f lightDir
 
     def void main(SpecularFi i, StandardFrame o) {
-        Vec3f color = texture(txt, i.uv).xyz;
+        Vec3f color = texture2D(txt, i.uv).xyz;
         Vec3f matSpec = Vec3f(0.6, 0.5, 0.3);
         Vec3f lightColor = Vec3f(1, 1, 1);
 
