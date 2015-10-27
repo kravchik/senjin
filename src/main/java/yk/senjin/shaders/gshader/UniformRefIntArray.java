@@ -3,7 +3,7 @@ package yk.senjin.shaders.gshader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 
-import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,18 +11,18 @@ import java.nio.FloatBuffer;
  * Date: 21/10/15
  * Time: 12:45
  */
-public class UniformRefFloatArray extends UniformRef {
-    public FloatBuffer buffer;
+public class UniformRefIntArray extends UniformRef {
+    public IntBuffer buffer;
 
-    public UniformRefFloatArray(String name, Object src, String fieldName, int count) {
+    public UniformRefIntArray(String name, Object src, String fieldName, int count) {
         super(name, src, fieldName);
-        buffer = BufferUtils.createFloatBuffer(count);
+        buffer = BufferUtils.createIntBuffer(count);
     }
 
     @Override
-    public float[] getValue() {
+    public int[] getValue() {
         try {
-            return (float[]) _field.get(src);
+            return (int[]) _field.get(src);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

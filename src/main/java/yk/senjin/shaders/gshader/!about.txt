@@ -4,8 +4,9 @@
 code gen for uniforms
 code gen for buffers
 
+logging
 structures
-
+geometry shaders
 uniforms are common for both vertex and fragment, handle it some how
   check same type
   prevent somehow from filling from FS

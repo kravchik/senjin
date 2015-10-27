@@ -53,21 +53,20 @@ public class RawSpecular {
         while (!Display.isCloseRequested()) {
             glClearColor(1, 1, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
+
             //prepare matrices, just raw math, no need of glMatrixMode, glMatrixPush, etc
             Matrix4 camModelViewMatrix = new Matrix4().setIdentity().translate(new Vec3f(0, 0, -12));
-
-            //set uniforms and textures
             vertexShader.modelViewProjectionMatrix = camModelViewMatrix.multiply(perspective(45.0f, (float) 400 / 400, 1, 1000.0f));
             vertexShader.normalMatrix = camModelViewMatrix.invert().transpose().get33();
+
+            //set uniforms and textures
             fragmentShader.shininess = 100;
             vertexShader.lightDir = new Vec3f(2, 1, 3).normalized();
-
+            shaderProgram.setInput(vbo1);
             texture.enable(0);
             fragmentShader.txt.set(texture);
-            shaderProgram.setInput(vbo1);
 
-            shaderProgram.enable();//enable shader
-
+            shaderProgram.enable();
             glDrawRangeElements(GL_TRIANGLES, 0, indexBuffer.limit(), indexBuffer);
 
             shaderProgram.disable();

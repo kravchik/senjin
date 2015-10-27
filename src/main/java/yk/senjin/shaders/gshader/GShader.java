@@ -40,16 +40,13 @@ public class GShader extends AbstractState {
     private ProgramGenerator pfs;
 
     private ReflectionVBO currentVBO;
-
-    public Object vs;
+    private YList<AbstractArrayStructure> currentStructure;
 
     public GShader(ShaderParent vs, ShaderParent fs) {
-        this.vs = vs;
         init(vs, fs);
     }
 
     public GShader(String srcDir, Object vs, Object fs) {
-        this.vs = vs;
         init(srcDir, vs, fs);
     }
 
@@ -94,11 +91,7 @@ public class GShader extends AbstractState {
             }
         }
 
-
-
-
         shader = new ShaderHandler();
-        //
 
         String res = "";
         //for (String s : pfs.getVaryingFS()) res += s;
@@ -157,7 +150,6 @@ public class GShader extends AbstractState {
         return result;
     }
 
-    private YList<AbstractArrayStructure> currentStructure;
     //TODO interface
     public void setInput(ReflectionVBO vbo) {
         currentVBO = vbo;
