@@ -145,7 +145,7 @@
         <dependency>
             <groupId>yk</groupId>
             <artifactId>jcommon</artifactId>
-            <version>0.116</version>
+            <version>0.117</version>
         </dependency>
 
         <dependency>

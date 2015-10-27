@@ -31,7 +31,7 @@ public class Simple3DWatch {
     //TODO onKeyDown
     //TODO onKeyUp
 
-    private boolean firstFrame = true;
+    public boolean firstFrame = true;
 
     public boolean SIMPLE_AA = true;
     SimpleAntiAliasing simpleAA;
@@ -85,21 +85,11 @@ public class Simple3DWatch {
     }
 
     protected void commonTick(float dt) throws LWJGLException {
-        if (firstFrame) {
-            firstFrame = false;
-            DisplayMode[] modes = Display.getAvailableDisplayModes();
-            Display.setDisplayMode(new DisplayMode(w, h));
-//                    Display.setDisplayMode(modes[modes.length - 1]);
-            Display.create();
-            Display.makeCurrent();
-            //aa
-            if (SIMPLE_AA) simpleAA.initFBO(w*2, h*2);
+        if (firstFrame) onFirstFrame();
+        onRender(dt);
+    }
 
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-            firstFrame();
-        }
+    protected void onRender(float dt) {
         //aa
         if (SIMPLE_AA) simpleAA.switchToFBO();
         mouseCur = new Vec2f(Mouse.getX(), Mouse.getY());
@@ -177,6 +167,22 @@ public class Simple3DWatch {
                  .transpose();
         camModelViewProjectionMatrix = camModelViewMatrix
                  .multiply(perspective(45.0f, (float) w / h, magnifier, 1000.0f * magnifier));
+    }
+
+    protected void onFirstFrame() throws LWJGLException {
+        firstFrame = false;
+        DisplayMode[] modes = Display.getAvailableDisplayModes();
+        Display.setDisplayMode(new DisplayMode(w, h));
+//                    Display.setDisplayMode(modes[modes.length - 1]);
+        Display.create();
+        Display.makeCurrent();
+        //aa
+        if (SIMPLE_AA) simpleAA.initAA(w * 2, h * 2);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        firstFrame();
     }
 
     private void rotateCam(float pitch, float yaw) {

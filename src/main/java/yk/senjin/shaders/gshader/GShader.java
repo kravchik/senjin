@@ -159,15 +159,19 @@ public class GShader extends AbstractState {
     @Override
     public void enable() {
         shader.enable();
-        glBindBuffer(GL_ARRAY_BUFFER, currentVBO.bufferId);
-        for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOn();
+        if (currentVBO != null) {//because we can use built in vertex attributes
+            glBindBuffer(GL_ARRAY_BUFFER, currentVBO.bufferId);
+            for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOn();
+        }
     }
 
     @Override
     public void disable() {
-        for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOff();
+        if (currentVBO != null) {
+            for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOff();
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
         shader.disable();
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
 }

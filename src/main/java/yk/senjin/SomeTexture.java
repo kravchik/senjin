@@ -34,7 +34,22 @@ public class SomeTexture extends AbstractState {
     public int magFilter = GL_LINEAR;
     public int minFilter = GL_LINEAR;
 
+    public int width;
+    public int height;
+
     public SomeTexture() {
+    }
+
+    public void init(int w, int h) {
+        width = w;
+        height = h;
+        IntBuffer texNames;
+        texNames = BufferUtils.createIntBuffer(1);
+        GL11.glGenTextures(texNames);
+        textureObjectId = texNames.get(0);
+        GL11.glBindTexture(GL_TEXTURE_2D, textureObjectId);
+        GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (java.nio.ByteBuffer)null);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
     public SomeTexture(BufferedImage image) {

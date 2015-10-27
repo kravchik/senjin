@@ -1,6 +1,5 @@
 package yk.senjin.shaders.gshader
 
-import yk.jcommon.fastgeom.Matrix4
 import yk.jcommon.fastgeom.Vec4f
 
 /**
@@ -11,11 +10,18 @@ import yk.jcommon.fastgeom.Vec4f
  */
 class StandardVSInput {
 
-    public Matrix4 gl_ModelViewMatrix;
-    public Matrix4 gl_ModelViewProjectionMatrix;
-    public Matrix4 gl_NormalMatrix;
     public Vec4f gl_Vertex;
     public Vec4f gl_Normal;
     public Vec4f gl_Color;
+
+    public Vec4f gl_MultiTexCoord0;
+    public Vec4f gl_MultiTexCoord1;
+    public Vec4f gl_MultiTexCoord2;
+    public Vec4f gl_MultiTexCoord3;
+    public Vec4f gl_MultiTexCoord4;
+    public Vec4f gl_MultiTexCoord5;
+    public Vec4f gl_MultiTexCoord6;
+    public Vec4f gl_MultiTexCoord7;
+    public float gl_FogCoord;
 
 }

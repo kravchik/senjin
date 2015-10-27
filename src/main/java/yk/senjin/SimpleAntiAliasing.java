@@ -22,7 +22,7 @@ public class SimpleAntiAliasing {
 
     public int textureW, textureH;
 
-    public void initFBO(int w, int h) {
+    public void initAA(int w, int h) {
         // init our fbo
         textureW = w * x;
         textureH = h * x;

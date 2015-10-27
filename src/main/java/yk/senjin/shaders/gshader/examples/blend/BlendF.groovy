@@ -12,6 +12,7 @@ import yk.senjin.shaders.gshader.StandardFrame
  * Date: 23/10/15
  * Time: 20:46
  */
+//initially based on http://habrahabr.ru/post/239085/
 class BlendF extends FragmentShaderParent<BlendFi> {
 
     final int MAX_KOEFF_SIZE = 32; //максимальный размер ядра (массива коэффициентов)
@@ -26,7 +27,7 @@ class BlendF extends FragmentShaderParent<BlendFi> {
     @Override
     void main(BlendFi blendFi, StandardFrame o) {
         Vec4f sum = Vec4f(0.0); //результирующий цвет
-        Vec2f startDir = -direction*(float)(kSize-1)*0.5;//  mysterious groovy parser bug
+        Vec2f startDir = -direction*(float)(kSize-1)*0.5;
         for (int i=0; i<kSize; i++) //проходимся по всем коэффициентам
             sum += texture2D(txt, blendFi.vTexCoord + startDir + direction*(float)i) * koeff[i]; //суммируем выборки
         o.gl_FragColor = sum;

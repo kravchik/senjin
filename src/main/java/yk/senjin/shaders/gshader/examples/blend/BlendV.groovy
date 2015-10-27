@@ -1,5 +1,7 @@
 package yk.senjin.shaders.gshader.examples.blend
 
+import yk.jcommon.fastgeom.Matrix4
+import yk.senjin.shaders.gshader.StandardVSInput
 import yk.senjin.shaders.gshader.VertexShaderParent
 
 /**
@@ -8,10 +10,11 @@ import yk.senjin.shaders.gshader.VertexShaderParent
  * Date: 23/10/15
  * Time: 20:47
  */
-class BlendV extends VertexShaderParent<BlendVi, BlendFi> {
+class BlendV extends VertexShaderParent<StandardVSInput, BlendFi> {
+    public Matrix4 modelViewProjectionMatrix;
     @Override
-    void main(BlendVi i, BlendFi o) {
-        o.gl_Position = Vec4f(i.pos, 1.0);
-        o.vTexCoord = i.uv;
+    void main(StandardVSInput i, BlendFi o) {
+        o.gl_Position = modelViewProjectionMatrix * i.gl_Vertex;
+        o.vTexCoord = i.gl_MultiTexCoord0.xy;
     }
 }

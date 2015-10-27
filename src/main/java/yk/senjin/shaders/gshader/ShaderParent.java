@@ -66,6 +66,10 @@ abstract public class ShaderParent {
         return new Vec4f((float)x, (float)x, (float)x, (float)x);
     }
 
+    public Vec3f Vec3f(double x) {
+        return new Vec3f((float)x, (float)x, (float)x);
+    }
+
     public Vec4f Vec4f(Vec3f v, double w) {
         return new Vec4f((float) w, v.x, v.y, v.z);
     }
