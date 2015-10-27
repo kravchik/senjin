@@ -43,10 +43,7 @@ public class TestReflectionVBO extends Simple3DWatch {
         vs = new ShaderV();
         shader1 = new GShader(vs, fs);
         texture = new SomeTexture(readImage("jfdi.png"));
-        vbo1 = new ReflectionVBO();
-        vbo1.bindToShader(shader1);
-
-        vbo1.setData(al(new VSInput(new Vec3f(0, 0, 0)), new VSInput(new Vec3f(0, 10, 0)), new VSInput(new Vec3f(10, 10, 0))));
+        vbo1 = new ReflectionVBO(new VSInput(new Vec3f(0, 0, 0)), new VSInput(new Vec3f(0, 10, 0)), new VSInput(new Vec3f(10, 10, 0)));
         indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 1, 2));
     }
 
@@ -57,7 +54,7 @@ public class TestReflectionVBO extends Simple3DWatch {
         texture.enable(0);
 
         fs.txt.set(texture);
-        shader1.currentVBO = vbo1;
+        shader1.setInput(vbo1);
         shader1.enable();
 
         indices.draw();

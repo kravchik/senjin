@@ -43,14 +43,11 @@ public class WatchSpecular extends Simple3DWatch {
         vs = new SpecularV();
         shader1 = new GShader(vs, fs);
         texture = new SomeTexture(readImage("jfdi.png"));
-        vbo1 = new ReflectionVBO();
-        vbo1.bindToShader(shader1);
-
-        vbo1.setData(al(
+        vbo1 = new ReflectionVBO(
                 new SpecularVi(new Vec3f(0, 0, 0),  new Vec3f(-1, -1, 1).normalized(), new Vec2f(0, 0)),
                 new SpecularVi(new Vec3f(10, 0, 0), new Vec3f( 1, -1, 1).normalized(), new Vec2f(1, 0)),
                 new SpecularVi(new Vec3f(10, 10, 0),new Vec3f( 1,  1, 1).normalized(), new Vec2f(1, 1)),
-                new SpecularVi(new Vec3f(0, 10, 0), new Vec3f(-1,  1, 1).normalized(), new Vec2f(0, 1))));
+                new SpecularVi(new Vec3f(0, 10, 0), new Vec3f(-1,  1, 1).normalized(), new Vec2f(0, 1)));
         indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 1, 2, 0, 2, 3));
     }
 
@@ -65,7 +62,7 @@ public class WatchSpecular extends Simple3DWatch {
         texture.enable(0);
 
         fs.txt.set(texture);
-        shader1.currentVBO = vbo1;
+        shader1.setInput(vbo1);
 
         shader1.enable();
 

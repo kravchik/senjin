@@ -2,20 +2,21 @@ package yk.senjin.shaders.gshader;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBBufferObject;
+import yk.jcommon.collections.YMap;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.Reflector;
-import yk.senjin.VertexStructureState;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL15.*;
+import static yk.jcommon.collections.YArrayList.al;
+import static yk.jcommon.collections.YHashMap.hm;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,25 +29,21 @@ public class ReflectionVBO {
     public ByteBuffer buffer;
     public int bufferId = glGenBuffers();
     public Class inputType;
-    private int elementSize;
 
-    public void bindToShader(GShader shader) {
-        Method m = null;
-        for (Method method : shader.vs.getClass().getDeclaredMethods()) {
-            if (method.getName().equals("main") && !Modifier.isStatic(method.getModifiers()) && (method.getModifiers() & 0x00001000) == 0) {
-                m = method;
-                inputType = method.getParameterTypes()[0];
-                break;
-            }
-        }
-        if (m == null) throw BadException.die("can't find 'main' method in shader " + shader);
-        VertexStructureState vss = new VertexStructureState(shader.shader, inputType, bufferId);
-        shader.vbo2structure.put(this, vss);
-        elementSize = vss.stride;
+    public ReflectionVBO() {
+    }
+
+    public ReflectionVBO(Object... data) {
+        setData(al(data));
+    }
+
+    public ReflectionVBO(List data) {
+        setData(data);
     }
 
     public void setData(List vertices) {
-        if (data == null || data.size() != vertices.size()) buffer = BufferUtils.createByteBuffer(elementSize * vertices.size());
+        inputType = vertices.get(0).getClass();
+        if (data == null || data.size() != vertices.size()) buffer = BufferUtils.createByteBuffer(getSizeOfType(inputType) * vertices.size());
         data = vertices;
 
         Field[] fields = inputType.getFields();
@@ -77,6 +74,23 @@ public class ReflectionVBO {
         }
         buffer.rewind();
         upload();
+    }
+
+    private static final YMap<Class, Integer> type2size = hm();
+    public static int getSizeOfType(Class clazz) {
+        Integer result = type2size.get(clazz);
+        if (result == null) {
+            result = 0;
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                if (field.getType() == Vec2f.class) result += 4 * 2;
+                else if (field.getType() == Vec3f.class) result += 4 * 3;
+                else if (field.getType() == Vec4f.class) result += 4 * 4;
+                else BadException.die("unknown type " + field.getType());
+            }
+            type2size.put(clazz, result);
+        }
+        return result;
     }
 
     public void upload() {

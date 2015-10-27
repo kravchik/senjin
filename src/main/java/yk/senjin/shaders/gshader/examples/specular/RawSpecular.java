@@ -5,7 +5,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec3f;
-import yk.senjin.DrawIndicesShort;
 import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.GShader;
 import yk.senjin.shaders.gshader.ReflectionVBO;
@@ -14,7 +13,6 @@ import java.nio.ShortBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.glDrawRangeElements;
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.perspective;
 import static yk.jcommon.fastgeom.Vec2f.v2;
 import static yk.jcommon.fastgeom.Vec3f.v3;
@@ -41,14 +39,11 @@ public class RawSpecular {
         //texture
         SomeTexture texture = new SomeTexture(readImage("jfdi.png"));
         //data
-        ReflectionVBO vbo1 = new ReflectionVBO();
-        vbo1.bindToShader(shaderProgram);
-        vbo1.setData(al(
+        ReflectionVBO vbo1 = new ReflectionVBO(
                 new SpecularVi(v3(-5, -5, 0), v3(-1,-1, 1).normalized(), v2(0, 1)),
                 new SpecularVi(v3( 5, -5, 0), v3( 1,-1, 1).normalized(), v2(1, 1)),
                 new SpecularVi(v3( 5,  5, 0), v3( 1, 1, 1).normalized(), v2(1, 0)),
-                new SpecularVi(v3(-5,  5, 0), v3(-1, 1, 1).normalized(), v2(0, 0))));
-        DrawIndicesShort indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 2, 1, 0, 3, 2));
+                new SpecularVi(v3(-5,  5, 0), v3(-1, 1, 1).normalized(), v2(0, 0)));
         vbo1.upload();
 
         ShortBuffer indexBuffer = BufferUtils.createShortBuffer(6);
@@ -69,7 +64,7 @@ public class RawSpecular {
 
             texture.enable(0);
             fragmentShader.txt.set(texture);
-            shaderProgram.currentVBO = vbo1;
+            shaderProgram.setInput(vbo1);
 
             shaderProgram.enable();//enable shader
 

@@ -4,7 +4,7 @@
 
     <groupId>yk</groupId>
     <artifactId>senjin</artifactId>
-    <version>0.11</version>
+    <version>0.12</version>
 
     <packaging>jar</packaging>
     <name>senjin</name>

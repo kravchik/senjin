@@ -37,14 +37,11 @@ public class WatchBlend extends Simple3DWatch {
         vs = new BlendV();
         shader1 = new GShader(vs, fs);
         texture = new SomeTexture(readImage("jfdi.png"));
-        vbo1 = new ReflectionVBO();
-        vbo1.bindToShader(shader1);
-
-        vbo1.setData(al(
+        vbo1 = new ReflectionVBO(
                 new BlendVi(new Vec3f(0, 0, 0),  new Vec2f(0, 1)),
                 new BlendVi(new Vec3f(1, 0, 0), new Vec2f(1, 1)),
                 new BlendVi(new Vec3f(1, 1, 0),new Vec2f(1, 0)),
-                new BlendVi(new Vec3f(0, 1, 0), new Vec2f(0, 0))));
+                new BlendVi(new Vec3f(0, 1, 0), new Vec2f(0, 0)));
         indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 1, 2, 0, 2, 3));
     }
     @Override
@@ -60,7 +57,7 @@ public class WatchBlend extends Simple3DWatch {
         for (int i = 0; i < fs.koeff.length; i++) fs.koeff[i] = 1f/fs.koeff.length;
         fs.txt.set(texture);
         fs.kSize = 32;
-        shader1.currentVBO = vbo1;
+        shader1.setInput(vbo1);
 
         shader1.enable();
 

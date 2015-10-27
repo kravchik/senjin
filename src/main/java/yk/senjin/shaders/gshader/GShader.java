@@ -1,15 +1,30 @@
 package yk.senjin.shaders.gshader;
 
+import myengine.optiseq.states.arraystructure.AbstractArrayStructure;
+import myengine.optiseq.states.arraystructure.VBOVertexAttrib;
+import org.lwjgl.opengl.GL11;
+import yk.jcommon.collections.YList;
+import yk.jcommon.collections.YSet;
+import yk.jcommon.fastgeom.Vec2f;
+import yk.jcommon.fastgeom.Vec3f;
+import yk.jcommon.fastgeom.Vec4f;
+import yk.jcommon.utils.BadException;
 import yk.senjin.AbstractState;
-import yk.senjin.VertexStructureState;
 import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.UniformVariable;
 import yk.senjin.shaders.VertexAttrib;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.collections.YHashMap.hm;
+import static yk.jcommon.collections.YHashSet.hs;
+import static yk.senjin.VertexStructureState.assertType;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,8 +38,7 @@ public class GShader extends AbstractState {
     private ProgramGenerator pvs;
     private ProgramGenerator pfs;
 
-    public Object currentVBO;
-    public Map<Object, VertexStructureState> vbo2structure = hm();
+    private ReflectionVBO currentVBO;
 
     public Object vs;
 
@@ -103,23 +117,60 @@ public class GShader extends AbstractState {
 
     public static ProgramGenerator createProgram(String srcDir, Object vs, String programType) {
         String path1 = vs.getClass().getName();
-        //path1 = "common/src/" + path1.replace(".", "/") + ".groovy";
-//        path1 = "secret/src/" + path1.replace(".", "/") + ".groovy";
         path1 = srcDir + path1.replace(".", "/") + ".groovy";
         System.out.println(path1);
         return new ProgramGenerator(path1, vs, programType);
     }
 
+
+    private YList<AbstractArrayStructure> getShaderSpecificStructure(Class clazz) {
+        YList<AbstractArrayStructure> result = al();
+        Field[] fields = clazz.getDeclaredFields();
+        int stride = ReflectionVBO.getSizeOfType(clazz);
+        int offset = 0;
+        YSet<String> hasFields = hs();
+        for (Field field : fields) {
+            if (Modifier.isTransient(field.getModifiers())) continue;
+            hasFields.add(field.getName());
+            VertexAttrib shaderAttrib = shader.getVertexAttrib(field.getName());
+            if (shaderAttrib == null) throw new RuntimeException("shader has no attribute " + field.getName());
+
+            result.add(new VBOVertexAttrib(shaderAttrib.getIndex(), shaderAttrib.getSize(), shaderAttrib.getType(), shaderAttrib.isNormalized(), stride, offset));
+
+            if (field.getType() == Vec2f.class) {
+                assertType(shaderAttrib, 2, GL11.GL_FLOAT, field.getName());
+                offset += 2 * 4;
+            } else if (field.getType() == Vec3f.class) {
+                assertType(shaderAttrib, 3, GL11.GL_FLOAT, field.getName());
+                offset += 3 * 4;
+            } else if (field.getType() == Vec4f.class) {
+                assertType(shaderAttrib, 4, GL11.GL_FLOAT, field.getName());
+                offset += 4 * 4;
+            } else throw BadException.die("unknown VS input field type: " + field.getType());
+        }
+        for (String attrib : shader.vertexAttribs.keySet()) if (!hasFields.contains(attrib)) throw new Error("buffer haven't field " + attrib);
+        return result;
+    }
+
+    private YList<AbstractArrayStructure> currentStructure;
+    //TODO interface
+    public void setInput(ReflectionVBO vbo) {
+        currentVBO = vbo;
+        currentStructure = getShaderSpecificStructure(vbo.inputType);
+    }
+
     @Override
     public void enable() {
         shader.enable();
-        if (vbo2structure.containsKey(currentVBO)) vbo2structure.get(currentVBO).enable();
+        glBindBuffer(GL_ARRAY_BUFFER, currentVBO.bufferId);
+        for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOn();
     }
 
     @Override
     public void disable() {
-        if (vbo2structure.containsKey(currentVBO)) vbo2structure.get(currentVBO).disable();
+        for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOff();
         shader.disable();
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
 }

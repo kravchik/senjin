@@ -1,16 +1,16 @@
 package yk.senjin;
 
+import myengine.optiseq.states.arraystructure.*;
+import org.lwjgl.opengl.GL11;
 import yk.jcommon.collections.YList;
+import yk.jcommon.collections.YSet;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.senjin.bufferstructure.StructureBundleTight;
 import yk.senjin.bufferstructure.StructureUnit;
-import myengine.optiseq.states.arraystructure.*;
 import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.VertexAttrib;
-import org.lwjgl.opengl.GL11;
-import yk.jcommon.collections.YSet;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -67,7 +67,7 @@ public class VertexStructureState extends AbstractState {
         for (String attrib : handler.vertexAttribs.keySet()) if (!hasFields.contains(attrib)) throw new Error("buffer haven't field " + attrib);
     }
 
-    private void assertType(VertexAttrib shaderAttrib, int size, int type, String name) {
+    public static void assertType(VertexAttrib shaderAttrib, int size, int type, String name) {
         if (shaderAttrib.getSize() != size) throw new Error("wrong type for " + name);
         if (shaderAttrib.getType() != type) throw new Error("wrong type for " + name);
     }
