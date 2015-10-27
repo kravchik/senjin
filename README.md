@@ -1,6 +1,5 @@
 # senjin
-SimpleENGINe
-Current version 0.12
+SimpleENGINe, current version 0.12
 
 Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-testing, refactorings and full IDE support.
 
