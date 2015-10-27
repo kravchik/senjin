@@ -4,6 +4,7 @@ import myengine.optiseq.states.arraystructure.AbstractArrayStructure;
 import myengine.optiseq.states.arraystructure.VBOVertexAttrib;
 import org.lwjgl.opengl.GL11;
 import yk.jcommon.collections.YList;
+import yk.jcommon.collections.YMap;
 import yk.jcommon.collections.YSet;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
@@ -122,33 +123,37 @@ public class GShader extends AbstractState {
         return new ProgramGenerator(path1, vs, programType);
     }
 
-
+    private YMap<Class, YList<AbstractArrayStructure>> type2structure = hm();
     private YList<AbstractArrayStructure> getShaderSpecificStructure(Class clazz) {
-        YList<AbstractArrayStructure> result = al();
-        Field[] fields = clazz.getDeclaredFields();
-        int stride = ReflectionVBO.getSizeOfType(clazz);
-        int offset = 0;
-        YSet<String> hasFields = hs();
-        for (Field field : fields) {
-            if (Modifier.isTransient(field.getModifiers())) continue;
-            hasFields.add(field.getName());
-            VertexAttrib shaderAttrib = shader.getVertexAttrib(field.getName());
-            if (shaderAttrib == null) throw new RuntimeException("shader has no attribute " + field.getName());
+        YList<AbstractArrayStructure> result = type2structure.get(clazz);
+        if (result == null) {
+            result = al();
+            Field[] fields = clazz.getDeclaredFields();
+            int stride = ReflectionVBO.getSizeOfType(clazz);
+            int offset = 0;
+            YSet<String> hasFields = hs();
+            for (Field field : fields) {
+                if (Modifier.isTransient(field.getModifiers())) continue;
+                hasFields.add(field.getName());
+                VertexAttrib shaderAttrib = shader.getVertexAttrib(field.getName());
+                if (shaderAttrib == null) throw new RuntimeException("shader has no attribute " + field.getName());
 
-            result.add(new VBOVertexAttrib(shaderAttrib.getIndex(), shaderAttrib.getSize(), shaderAttrib.getType(), shaderAttrib.isNormalized(), stride, offset));
+                result.add(new VBOVertexAttrib(shaderAttrib.getIndex(), shaderAttrib.getSize(), shaderAttrib.getType(), shaderAttrib.isNormalized(), stride, offset));
 
-            if (field.getType() == Vec2f.class) {
-                assertType(shaderAttrib, 2, GL11.GL_FLOAT, field.getName());
-                offset += 2 * 4;
-            } else if (field.getType() == Vec3f.class) {
-                assertType(shaderAttrib, 3, GL11.GL_FLOAT, field.getName());
-                offset += 3 * 4;
-            } else if (field.getType() == Vec4f.class) {
-                assertType(shaderAttrib, 4, GL11.GL_FLOAT, field.getName());
-                offset += 4 * 4;
-            } else throw BadException.die("unknown VS input field type: " + field.getType());
+                if (field.getType() == Vec2f.class) {
+                    assertType(shaderAttrib, 2, GL11.GL_FLOAT, field.getName());
+                    offset += 2 * 4;
+                } else if (field.getType() == Vec3f.class) {
+                    assertType(shaderAttrib, 3, GL11.GL_FLOAT, field.getName());
+                    offset += 3 * 4;
+                } else if (field.getType() == Vec4f.class) {
+                    assertType(shaderAttrib, 4, GL11.GL_FLOAT, field.getName());
+                    offset += 4 * 4;
+                } else throw BadException.die("unknown VS input field type: " + field.getType());
+            }
+            for (String attrib : shader.vertexAttribs.keySet()) if (!hasFields.contains(attrib)) throw new Error("buffer haven't field " + attrib);
+            type2structure.put(clazz, result);
         }
-        for (String attrib : shader.vertexAttribs.keySet()) if (!hasFields.contains(attrib)) throw new Error("buffer haven't field " + attrib);
         return result;
     }
 
