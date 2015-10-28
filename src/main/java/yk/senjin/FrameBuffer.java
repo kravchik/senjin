@@ -35,58 +35,14 @@ public class FrameBuffer {
     }
 
     public void beginRenderToFbo() {
-        // FBO render pass
-
         glViewport (0, 0, texture.width, texture.height);									// set The Current Viewport to the fbo size
-
-//        glBindTexture(GL_TEXTURE_2D, 0);								// unlink textures because if we dont it all is gonna fail
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);		// switch to rendering on our FBO
-
         glClearColor (0.0f, 1.0f, 0.0f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear Screen And Depth Buffer on the fbo to red
     }
 
-//    public void beginRenderToFbo(int w, int h) {
-//        // Normal render pass, draw cube with texture
-//
-//        glEnable(GL_TEXTURE_2D);										// enable texturing
-//        glBindTexture(GL_TEXTURE_2D, texture.textureObjectId);
-//        glGenerateMipmap(GL_TEXTURE_2D);
-//        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);					// switch to rendering on the framebuffer
-//
-//        glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
-//        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear Screen And Depth Buffer on the framebuffer to black
-//
-//        glBindTexture(GL_TEXTURE_2D, texture.textureObjectId);					// bind our FBO texture
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-//
-//        glViewport (0, 0, w, h);									// set The Current Viewport
-//
-//
-//        glMatrixMode(GL_PROJECTION);
-//        glLoadIdentity();
-//        glOrtho(0, 0, w, h, -1, 1);
-//        glMatrixMode(GL_MODELVIEW);
-//        glLoadIdentity();
-//
-//        glColor3f(1,1,1);												// set the color to white
-//        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//
-//        glBegin(GL_QUADS);
-//        glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  0f);
-//        glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  0f);
-//        glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  0f);
-//        glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  0f);
-//        glEnd();
-//
-//        glDisable(GL_TEXTURE_2D);
-//        glFlush();
-//    }
 
     public void endRenderToFbo() {
-//        glEnable(GL_TEXTURE_2D);										// enable texturing
-//        glBindTexture(GL_TEXTURE_2D, texture.textureObjectId);
-//        glGenerateMipmap(GL_TEXTURE_2D);
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);					// switch to rendering on the framebuffer
     }
 

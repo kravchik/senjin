@@ -3,6 +3,7 @@ package yk.senjin.shaders.gshader.examples.blend;
 import org.lwjgl.LWJGLException;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
+import yk.jcommon.utils.Rnd;
 import yk.senjin.DrawIndicesShort;
 import yk.senjin.FrameBuffer;
 import yk.senjin.Simple3DWatch;
@@ -64,7 +65,7 @@ public class WatchBlend extends Simple3DWatch {
         blendV.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
         blendProgram = new GShader(blendV, blendF);
         blendF.kSize = 8;
-        for (int i = 0; i < blendF.koeff.length; i++) blendF.koeff[i] = 1f/ blendF.kSize;
+        for (int i = 0; i < blendF.koeff.length; i++) blendF.koeff[i] = (Rnd.instance.nextFloat()+0.5f)/ blendF.kSize;
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO(
@@ -75,7 +76,7 @@ public class WatchBlend extends Simple3DWatch {
         vbo1.upload();
         indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 1, 2, 0, 2, 3));
 
-        fboSize = 256;
+        fboSize = 1024;
         SomeTexture renderTexture = new SomeTexture();
         renderTexture.init(fboSize, fboSize);
         fbo1 = new FrameBuffer();
