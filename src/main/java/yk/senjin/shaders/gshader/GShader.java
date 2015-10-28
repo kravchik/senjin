@@ -46,15 +46,15 @@ public class GShader extends AbstractState {
         init(vs, fs);
     }
 
-    public GShader(String srcDir, Object vs, Object fs) {
+    public GShader(String srcDir, ShaderParent vs, ShaderParent fs) {
         init(srcDir, vs, fs);
     }
 
-    public void init(Object vs, Object fs) {
+    public void init(ShaderParent vs, ShaderParent fs) {
         init("src/main/java/", vs, fs);
     }
 
-    public void init(String srcDir, Object vs, Object fs) {
+    public void init(String srcDir, ShaderParent vs, ShaderParent fs) {
         pvs = createProgram(srcDir, vs, "vs");
         pfs = createProgram(srcDir, fs, "fs");
         if (pvs.outputClass != pfs.inputClass) throw new Error("output of VS " + pvs.outputClass.getName() + " must be same as input to FS " + pfs.inputClass.getName());
@@ -109,7 +109,7 @@ public class GShader extends AbstractState {
         shader.createFromSrc(pvs.resultSrc, pfs.resultSrc);
     }
 
-    public static ProgramGenerator createProgram(String srcDir, Object vs, String programType) {
+    public static ProgramGenerator createProgram(String srcDir, ShaderParent vs, String programType) {
         String path1 = vs.getClass().getName();
         path1 = srcDir + path1.replace(".", "/") + ".groovy";
         System.out.println(path1);

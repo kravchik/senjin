@@ -9,8 +9,10 @@ import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.*
 import org.codehaus.groovy.control.CompilePhase
 import yk.jcommon.collections.YList
+import yk.jcommon.utils.BadException
 import yk.jcommon.utils.IO
 import yk.jcommon.utils.Reflector
+import yk.jcommon.utils.Tab
 import yk.senjin.shaders.UniformVariable
 import yk.senjin.shaders.VertexAttrib
 
@@ -30,7 +32,7 @@ import static yk.jcommon.collections.YHashSet.hs
  * Time: 17:10
  */
 class ProgramGenerator {
-    public final Object data
+    public final ShaderParent shaderGroovy
     public final String src
     public String resultSrc
 
@@ -43,13 +45,13 @@ class ProgramGenerator {
     private String inputName
     private String outputName
 
-    ProgramGenerator(String src, Object data, String programType) {
-        this.data = data
+    ProgramGenerator(String src, ShaderParent shaderGroovy, String programType) {
+        this.shaderGroovy = shaderGroovy
         this.src = src
         this.resultSrc = translate(programType)
 
     }
-
+    //TODO fill from ShaderParent by reflection
     private Set<String> glNames = hs("texture")
 
     private String programType;
@@ -88,62 +90,47 @@ class ProgramGenerator {
                 else if (type.equals("float")) attributes.add(new VertexAttrib(fn.name, GL_FLOAT, 1));
                 else if (type.equals("int")) attributes.add(new VertexAttrib(fn.name, GL_INT, 1));
                 else throw new RuntimeException("unknown varying type " + type)
-            }
-            if ("fs".equals(programType)) {
+            } else if ("fs".equals(programType)) {
                 result += "in " + type + " " + fn.name + "_fi;\n"
                 varyingFS.add(fn.name + "_fi")
-            }
+            } else BadException.shouldNeverReachHere()
         }
 
         for (fn in outputClass.getDeclaredFields()) {
+            if (Modifier.isStatic(fn.getModifiers())) continue;
+            if (Modifier.isTransient(fn.getModifiers())) continue
             if (glNames.contains(fn.name)) throw new Error("clash with gl names: " + fn.name + " in output data for " + programType)
             def type = translateType(fn.type.name)
             if ("fs".equals(programType)) {
                 result += "out " + type + " " + fn.name + ";\n"
-            } else {
+            } else if ("vs".equals(programType)) {
                 result += "out " + type + " " + fn.name + "_fi;\n"
-            }
+            } else BadException.shouldNeverReachHere()
         }
 
         for (o in mainClass.getFields()) {
-            FieldNode fn = o
-            if (fn.name.contains("\$") || fn.name.startsWith("__timeStamp") || fn.name.equals("metaClass")) continue
+            FieldNode fieldNode = o
+            if (fieldNode.name.contains("\$") || fieldNode.name.startsWith("__timeStamp") || fieldNode.name.equals("metaClass")) continue
+            if (glNames.contains(fieldNode.name)) throw new Error("clash with gl names: " + fieldNode.name + " in uniforms for " + programType)
 
-            if (glNames.contains(fn.name)) throw new Error("clash with gl names: " + fn.name + " in uniforms for " + programType)
+            def type = translateType(fieldNode.type.name)
+            result += stringForUniform(type, fieldNode)
 
-            def type = translateType(fn.type.name)
-            if (Modifier.isFinal(fn.modifiers)) {
-                result += "const " + type + " " + fn.name + " = " + translateExpression(((FieldNode) fn).initialExpression) + ";\n"
-            } else if ((fn.modifiers & Modifier.STATIC) == 0) {
-                if (type.endsWith("[]")) {
-                    def sizeExpression = translateExpression(((ArrayExpression) fn.initialExpression).sizeExpression.get(0))
-                    result += "uniform " + type.substring(0, type.length() - 2) + " " + fn.name + "[" + sizeExpression + "];\n"
-                } else {
-                    result += "uniform " + type + " " + fn.name + ";\n"
-                }
-
-                def field = data.class.getDeclaredField(fn.name)
-                Object dataInstance = data.class.newInstance()
-
-                field.setAccessible(true)
-                Object got = field.get(data)
-                if (type.equals("vec4")) uniforms.add(new UniformRefVec4f(fn.name, data, fn.name))
-//                if (type.equals("vec4")) uniforms.add(new Uniform4fG(fn.name, (Vec4f) got))
-                else if (type.equals("sampler2D")) {
-                    def sampler = (Sampler2D) got
-                    sampler.name = fn.name
-                    uniforms.add(sampler)
-                }
-                else if (type.equals("vec2")) uniforms.add(new UniformRefVec2f(fn.name, data, fn.name))
-                else if (type.equals("vec3")) uniforms.add(new UniformRefVec3f(fn.name, data, fn.name))
-                else if (type.equals("int")) uniforms.add(new UniformRefInt(fn.name, data, fn.name))
-                else if (type.equals("float")) uniforms.add(new UniformRefFloat(fn.name, data, fn.name))
-                else if (type.equals("int[]")) uniforms.add(new UniformRefIntArray(fn.name, data, fn.name, ((int[])Reflector.get(dataInstance, fn.name)).length))
-                else if (type.equals("float[]")) uniforms.add(new UniformRefFloatArray(fn.name, data, fn.name, ((float[])Reflector.get(dataInstance, fn.name)).length))
-                else if (type.equals("mat3")) uniforms.add(new UniformRefMatrix3(fn.name, data, fn.name))
-                else if (type.equals("mat4")) uniforms.add(new UniformRefMatrix4(fn.name, data, fn.name))
-                else throw new RuntimeException("unknown uniform type " + type)
+            if (type.equals("sampler2D")) {
+                def sampler = (Sampler2D) Reflector.get(shaderGroovy, fieldNode.name)
+                sampler.name = fieldNode.name
+                uniforms.add(sampler)
             }
+            else if (type.equals("vec2")) uniforms.add(new UniformRefVec2f(fieldNode.name, shaderGroovy, fieldNode.name))
+            else if (type.equals("vec3")) uniforms.add(new UniformRefVec3f(fieldNode.name, shaderGroovy, fieldNode.name))
+            else if (type.equals("vec4")) uniforms.add(new UniformRefVec4f(fieldNode.name, shaderGroovy, fieldNode.name))
+            else if (type.equals("int")) uniforms.add(new UniformRefInt(fieldNode.name, shaderGroovy, fieldNode.name))
+            else if (type.equals("float")) uniforms.add(new UniformRefFloat(fieldNode.name, shaderGroovy, fieldNode.name))
+            else if (type.equals("int[]")) uniforms.add(new UniformRefIntArray(fieldNode.name, shaderGroovy, fieldNode.name))
+            else if (type.equals("float[]")) uniforms.add(new UniformRefFloatArray(fieldNode.name, shaderGroovy, fieldNode.name))
+            else if (type.equals("mat3")) uniforms.add(new UniformRefMatrix3(fieldNode.name, shaderGroovy, fieldNode.name))
+            else if (type.equals("mat4")) uniforms.add(new UniformRefMatrix4(fieldNode.name, shaderGroovy, fieldNode.name))
+            else throw new RuntimeException("unknown uniform type " + type)
         }
 
         result += "\nvoid main(void) "
@@ -154,42 +141,28 @@ class ProgramGenerator {
         }
 
         result += ("\n")
-
-//        result += "uniforms: " + uniforms + "\n"
-//        result += "varying: " + varying + "\n"
         result
     }
-    private int indentation = 0
 
-    private String tab() {
-        String result = ""
-        for (int i = 0; i < indentation; i++) result += "    "
-        return result;
+    private String stringForUniform(String type, FieldNode fieldNode) {
+        String result = Modifier.isFinal(fieldNode.modifiers) ? "const " : "uniform "
+        if (type.endsWith("[]")) {
+            def sizeExpression = translateExpression(((ArrayExpression) fieldNode.initialExpression).sizeExpression.get(0))
+            result += type.substring(0, type.length() - 2) + " " + fieldNode.name + "[" + sizeExpression + "]"
+        } else {
+            result += type + " " + fieldNode.name
+        }
+        if (Modifier.isFinal(fieldNode.modifiers)) result += " = " + translateExpression(((FieldNode) fieldNode).initialExpression)
+        result + ";\n"
     }
 
-    private String translateExpression(Object o) {
-        println("" + o)
-        if (o instanceof ExpressionStatement) return translateExpression((ExpressionStatement)o)
-        if (o instanceof DeclarationExpression) return translateExpression((DeclarationExpression)o)
-        if (o instanceof VariableExpression) return translateExpression((VariableExpression)o)
-        if (o instanceof BinaryExpression) return translateExpression((BinaryExpression)o)
-        if (o instanceof UnaryMinusExpression) return translateExpression((UnaryMinusExpression)o)
-        if (o instanceof PropertyExpression) return translateExpression((PropertyExpression)o)
-        if (o instanceof ReturnStatement) return translateExpression(((ReturnStatement)o).expression)
-        if (o instanceof MethodCallExpression) return translateExpression((MethodCallExpression) o)
-        if (o instanceof ArgumentListExpression) return translateExpression((ArgumentListExpression) o)
-        if (o instanceof ConstantExpression) return translateExpression((ConstantExpression)o)
-        if (o instanceof StaticMethodCallExpression) return translateExpression((StaticMethodCallExpression)o)
-        if (o instanceof ClassExpression) return translateExpression((ClassExpression)o)
-        if (o instanceof IfStatement) return translateExpression((IfStatement)o)
-        if (o instanceof BooleanExpression) return translateExpression((BooleanExpression)o)
-        if (o instanceof CastExpression) return translateExpression((CastExpression)o)
-        if (o instanceof ForStatement) return translateExpression((ForStatement)o)
-        if (o instanceof PostfixExpression) return translateExpression((PostfixExpression)o)
-        if (o instanceof BlockStatement) return translateExpression((BlockStatement)o)
-        return ":"+o
+    private Tab tab = new Tab()
+
+    private String translateExpression(Object o) {//overloading resolved at runtime
+        return ":unknown:"+o
     }
 
+    @SuppressWarnings("GrMethodMayBeStatic")
     private String translateExpression(ConstantExpression e) {
         return convertions.containsKey(e.text) ? convertions.get(e.text) : e.text
     }
@@ -207,19 +180,19 @@ class ProgramGenerator {
     }
 
     private String translateExpression(StaticMethodCallExpression e) {
-        return e.methodAsString + "(" + translateExpression(e.arguments) + ")"
+        return translateType(e.methodAsString) + "(" + translateExpression(e.arguments) + ")"
     }
 
     private String translateExpression(BlockStatement e) {
         String result = "{\n"
-        indentation++
+        tab.inc()
         for (Statement s : e.statements) {
-            result += tab() + translateExpression(s)
+            result += tab.toString() + translateExpression(s)
             if (!(s instanceof IfStatement)) result += ";"
             result += "\n"
         }
-        indentation--
-        result += tab() + "}"
+        tab.dec()
+        result += tab.toString() + "}"
         return result
     }
 
@@ -234,8 +207,8 @@ class ProgramGenerator {
     private String translateExpression(ForStatement e) {
         def expressions = ((ClosureListExpression) (e.collectionExpression)).expressions
         String result = "for (" + translateExpression(expressions.get(0)) + "; " + translateExpression(expressions.get(1)) + "; " + translateExpression(expressions.get(2)) + ") {\n"
-        result += "    " + translateExpression(e.loopBlock)
-        result += ";\n    }"
+        result += tab.toString() + translateExpression(e.loopBlock)
+        result += ";\n" + tab + "}"
         return result
     }
 
@@ -305,21 +278,19 @@ class ProgramGenerator {
     static Map<String, String> convertions = hm(
             "[I", "int[]",
             "[F", "float[]",
-            "float", "float",
             "Integer", "int",
-            "int", "int",
-            "Matrix4", "mat4",
+            "Float", "float",
             "Matrix3", "mat3",
+            "Matrix4", "mat4",
             "Vec2f", "vec2",
             "Vec3f", "vec3",
             "Vec4f", "vec4",
-            "Vec3", "vec3",
-            "Vec2", "vec2",
-            "Sampler2D", "sampler2D",
-            "Float", "float")
+            "Sampler2D", "sampler2D"
+    )
     static String translateType(String groovyType) {
         def t = groovyType.split("\\.").last()
-        if (!convertions.containsKey(t)) throw new RuntimeException("unknown type " + t)
+        if (!convertions.containsKey(t)) return groovyType
+//        if (!convertions.containsKey(t)) throw new RuntimeException("unknown type " + t)
         return convertions.get(t)
     }
 

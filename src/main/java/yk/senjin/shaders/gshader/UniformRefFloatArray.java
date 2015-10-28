@@ -2,7 +2,9 @@ package yk.senjin.shaders.gshader;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
+import yk.jcommon.utils.Reflector;
 
+import java.lang.reflect.Array;
 import java.nio.FloatBuffer;
 
 /**
@@ -14,9 +16,9 @@ import java.nio.FloatBuffer;
 public class UniformRefFloatArray extends UniformRef {
     public FloatBuffer buffer;
 
-    public UniformRefFloatArray(String name, Object src, String fieldName, int count) {
+    public UniformRefFloatArray(String name, Object src, String fieldName) {
         super(name, src, fieldName);
-        buffer = BufferUtils.createFloatBuffer(count);
+        buffer = BufferUtils.createFloatBuffer(Array.getLength(Reflector.get(src, fieldName)));
     }
 
     @Override
