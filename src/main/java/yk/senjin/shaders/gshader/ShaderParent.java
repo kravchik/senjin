@@ -29,11 +29,11 @@ abstract public class ShaderParent {
         return new Vec4f(a / 255f, r / 255f, g / 255f, b / 255f);
     }
 
-    public static Vec2f vec2(double x, double y) {
+    public static Vec2f Vec2f(double x, double y) {
         return new Vec2f((float)x, (float)y);
     }
 
-    public static Vec2f vec2(double x) {
+    public static Vec2f Vec2f(double x) {
         return new Vec2f((float)x, (float)x);
     }
 

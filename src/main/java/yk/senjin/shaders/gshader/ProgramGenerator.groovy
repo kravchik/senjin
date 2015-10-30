@@ -1,14 +1,13 @@
 package yk.senjin.shaders.gshader
 
-import org.codehaus.groovy.ast.ASTNode
-import org.codehaus.groovy.ast.ClassNode
-import org.codehaus.groovy.ast.FieldNode
-import org.codehaus.groovy.ast.MethodNode
+import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.builder.AstBuilder
 import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.*
 import org.codehaus.groovy.control.CompilePhase
 import yk.jcommon.collections.YList
+import yk.jcommon.collections.YMap
+import yk.jcommon.collections.YSet
 import yk.jcommon.utils.BadException
 import yk.jcommon.utils.IO
 import yk.jcommon.utils.Reflector
@@ -16,6 +15,7 @@ import yk.jcommon.utils.Tab
 import yk.senjin.shaders.UniformVariable
 import yk.senjin.shaders.VertexAttrib
 
+import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT
@@ -45,6 +45,10 @@ class ProgramGenerator {
     private String inputName
     private String outputName
 
+    private mainClassNode
+    private String currentMethod
+    private YMap<String, YList<String, String>> caller2callee = hm()
+
     ProgramGenerator(String src, ShaderParent shaderGroovy, String programType) {
         this.shaderGroovy = shaderGroovy
         this.src = src
@@ -63,9 +67,9 @@ class ProgramGenerator {
 
         List<ASTNode> nodes = new AstBuilder().buildFromString(CompilePhase.INSTRUCTION_SELECTION, IO.readFile(src))
 
-        def mainClass = (ClassNode) nodes[1]
+        mainClassNode = (ClassNode) nodes[1]
 
-        for (MethodNode m in mainClass.getDeclaredMethods("main")) {
+        for (MethodNode m in this.mainClassNode.getDeclaredMethods("main")) {
             if (Modifier.isStatic(m.modifiers) || (m.modifiers & 0x00001000) != 0) continue
             Object input = m.parameters[0]
             inputName = input.name
@@ -108,7 +112,7 @@ class ProgramGenerator {
             } else BadException.shouldNeverReachHere()
         }
 
-        for (o in mainClass.getFields()) {
+        for (o in this.mainClassNode.getFields()) {
             FieldNode fieldNode = o
             if (fieldNode.name.contains("\$") || fieldNode.name.startsWith("__timeStamp") || fieldNode.name.equals("metaClass")) continue
             if (glNames.contains(fieldNode.name)) throw new Error("clash with gl names: " + fieldNode.name + " in uniforms for " + programType)
@@ -133,15 +137,59 @@ class ProgramGenerator {
             else throw new RuntimeException("unknown uniform type " + type)
         }
 
-        result += "\nvoid main(void) "
+        YMap<String, String> method2body = hm();
+        YSet<String> systemMethods = hs();
+        for (Method m : ShaderParent.getDeclaredMethods()) {
+            println "watching on " + m.name + " " + m.modifiers
+            if (Modifier.isStatic(m.modifiers) && Modifier.isPublic(m.modifiers)) systemMethods.add(translateType(m.name))
+        }
+        caller2callee.put("'OpenGL'", al("main"))
 
-        for (m in mainClass.getDeclaredMethods("main")) {
-            if (Modifier.isStatic(m.modifiers) || (m.modifiers & 0x00001000) != 0) continue
-            result += translateExpression(m.code)
+        while(true) {
+            String toConvert = null
+            for (Map.Entry<String, YList<String, String>> entry : caller2callee.entrySet()) {
+                toConvert = entry.getValue().first({ m -> !systemMethods.contains(m) && !method2body.containsKey(m) })
+                if (toConvert != null) break
+            }
+            if (toConvert == null) break
+//            if (systemMethods.contains(toConvert)) continue
+            MethodNode m = findByShortDesc(toConvert)
+            if (m == null) BadException.die("can't find method " + toConvert)
+            String body = ""
+            if (m.name == "main") {
+                body += "\nvoid main(void) "
+            } else {
+                YList<String> pp = al()
+                for (Parameter p : m.parameters) {
+                    def type = translateType(p.getType().name)
+                    pp.add("" + (isPrimitive(type) ? "in " : "inout ") + type + " " + p.name)
+                }
+                println m.parameters
+
+                body += "\n" + translateType(m.returnType.name) + " " + m.name + "(" + pp.toString(", ") + ") "
+            }
+            currentMethod = getMethodShortDesc(m)
+            body += translateExpression(m.code)
+            body += ("\n")
+            method2body.put(toConvert, body)
         }
 
-        result += ("\n")
+        def ordered = Orderer.orderMethods("main", method2body, caller2callee)
+        if (ordered == null) BadException.die("can't find proper order (check long recursions)")//TODO show best guess cycle
+
+        for (String m : ordered.reverse()) result += method2body.get(m) + "\n"
+
         result
+    }
+
+    private MethodNode findByShortDesc(String s) {
+        //TODO from imports
+        for (m in mainClassNode.getMethods()) {
+            if ((m.modifiers & 0x00001000) != 0) continue
+            if (Modifier.isStatic(m.modifiers)) continue
+            if (m.name == s) return m
+        }
+        return null
     }
 
     private String stringForUniform(String type, FieldNode fieldNode) {
@@ -177,10 +225,6 @@ class ProgramGenerator {
     private String translateExpression(ClassExpression e) {
         if (e.type.name.endsWith("myengine.optiseq.states.shaders.gshader.ShaderFunctions")) return ""
         throw new Error("don't know what to do with " + e)
-    }
-
-    private String translateExpression(StaticMethodCallExpression e) {
-        return translateType(e.methodAsString) + "(" + translateExpression(e.arguments) + ")"
     }
 
     private String translateExpression(BlockStatement e) {
@@ -240,23 +284,49 @@ class ProgramGenerator {
     private String translateExpression(BinaryExpression e) {
         def opName = e.operation.getText()
         if (opName == "[") return translateExpression(e.leftExpression) + "[" + translateExpression(e.rightExpression) + "]"
-        return translateExpression(e.leftExpression) + " " + opName + " " + translateExpression(e.rightExpression)
+        //TODO skip redundant ()
+        return "(" + translateExpression(e.leftExpression) + " " + opName + " " + translateExpression(e.rightExpression) + ")"
     }
 
     private String translateExpression(UnaryMinusExpression e) {
         return "-" + translateExpression(e.expression)
     }
 
+    //TODO Groovy can 'return' simple expressions, but glsl can't. Fix it (for ex: void foo() {Vec4f(0)} - valid in Groovy but not valid in glsl and I didn't fixed it
     private String translateExpression(ExpressionStatement e) {
         return translateExpression(e.expression)
+    }
+
+    private String translateExpression(ReturnStatement e) {
+        return "return " + translateExpression(e.expression)
     }
 
     private String translateExpression(ArgumentListExpression e) {
         return toYList(e.getExpressions()).map{ee -> translateExpression(ee)}.toString(", ")
     }
 
+    private static String getMethodShortDesc(MethodCall e) {
+        def name = translateType(e.methodAsString)
+        //TODO args
+        return name
+    }
+
+    private static String getMethodShortDesc(MethodNode e) {
+        def name = translateType(e.name)
+        //TODO args
+        return name
+    }
+
     private String translateExpression(MethodCallExpression e) {
-        return translateExpression(e.method) + "(" + translateExpression(e.arguments) + ")"
+        def name = translateType(e.methodAsString)
+        caller2callee.put(currentMethod, caller2callee.getOr(currentMethod, al()).with(getMethodShortDesc(e)))
+        return name + "(" + translateExpression(e.arguments) + ")"
+    }
+
+    private String translateExpression(StaticMethodCallExpression e) {
+        def name = translateType(e.methodAsString)
+        caller2callee.put(currentMethod, caller2callee.getOr(currentMethod, al()).with(getMethodShortDesc(e)))
+        return name + "(" + translateExpression(e.arguments) + ")"
     }
 
     private String translateExpression(PropertyExpression e) {
@@ -273,6 +343,11 @@ class ProgramGenerator {
     private static String fiName(String prop) {//TODO check names on BaseVSOutput by reflection
         if (prop.equals("gl_Position")) return prop;
         return prop + "_fi";
+    }
+
+    public static final YList<String> PRIMITIVES = al("int", "float")
+    static boolean isPrimitive(String oglType) {
+        return PRIMITIVES.contains(oglType)
     }
 
     static Map<String, String> convertions = hm(

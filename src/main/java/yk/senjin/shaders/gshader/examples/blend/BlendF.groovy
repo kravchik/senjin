@@ -27,7 +27,7 @@ class BlendF extends FragmentShaderParent<BlendFi> {
     @Override
     void main(BlendFi blendFi, StandardFrame o) {
         Vec4f sum = Vec4f(0.0); //результирующий цвет
-        Vec2f startDir = -direction*(float)(kSize-1)*0.5;
+        Vec2f startDir = -direction * (kSize - 1) * 0.5f
         for (int i=0; i<kSize; i++) //проходимся по всем коэффициентам
             sum += texture2D(txt, blendFi.vTexCoord + startDir + direction*(float)i) * koeff[i]; //суммируем выборки
         o.gl_FragColor = sum;

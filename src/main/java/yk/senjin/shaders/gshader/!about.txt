@@ -4,8 +4,10 @@
 code gen for uniforms
 code gen for buffers
 
+function overloading
 logging
 structures
+classes
 geometry shaders
 uniforms are common for both vertex and fragment, handle it some how
   check same type
@@ -14,6 +16,6 @@ uniforms are common for both vertex and fragment, handle it some how
   separate structure for uniforms ?
 
 //DONE
+functions
 prefix for VS output (FS input) to avoid name clashing
-
 
