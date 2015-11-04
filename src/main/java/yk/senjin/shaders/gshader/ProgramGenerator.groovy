@@ -8,13 +8,13 @@ import org.codehaus.groovy.control.CompilePhase
 import yk.jcommon.collections.YList
 import yk.jcommon.collections.YMap
 import yk.jcommon.collections.YSet
-import yk.jcommon.match2.Test1
 import yk.jcommon.utils.BadException
 import yk.jcommon.utils.IO
 import yk.jcommon.utils.Reflector
 import yk.jcommon.utils.Tab
 import yk.senjin.shaders.UniformVariable
 import yk.senjin.shaders.VertexAttrib
+import yk.senjin.shaders.gshader.analysis.GglslAnalyzer
 
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -141,7 +141,6 @@ class ProgramGenerator {
         YMap<String, String> method2body = hm();
         YSet<String> systemMethods = hs();
         for (Method m : ShaderParent.getDeclaredMethods()) {
-            println "watching on " + m.name + " " + m.modifiers
             if (Modifier.isStatic(m.modifiers) && Modifier.isPublic(m.modifiers)) systemMethods.add(translateType(m.name))
         }
         caller2callee.put("'OpenGL'", hs("main"))
@@ -155,22 +154,17 @@ class ProgramGenerator {
             }
             if (toConvert == null) break
             watched.add(toConvert)
-            println toConvert
-//            if (systemMethods.contains(toConvert)) continue
             MethodNode methodNode = findByShortDesc(toConvert)
             if (methodNode == null) BadException.die("can't find method " + toConvert)
-            caller2callee.putAll(Test1.calcCallers(methodNode))
+            caller2callee.putAll(GglslAnalyzer.calcCallers(methodNode))
         }
-
-        println("caller2callee " + caller2callee)
 
         YSet<MethodNode> methods = hs();
         methods.addAll(caller2callee.values().flatMap{cc -> cc}.map{c->findByShortDesc(c)})
-        def modifiersMap = Test1.inferInOutModifiers(methods.toArray())
-        println "modifiers: " + modifiersMap
+        def modifiersMap = GglslAnalyzer.inferInOutModifiers(methods.toArray())
 
         for (MethodNode method  : methods) {
-            def asserts = Test1.gAsserts(method, modifiersMap)
+            def asserts = GglslAnalyzer.gAsserts(method, modifiersMap)
             if (asserts.notEmpty()) {
                 println asserts.toString("\n")
                 BadException.die(asserts.toString())
@@ -179,7 +173,6 @@ class ProgramGenerator {
 
 
         for (MethodNode methodNode : methods) {
-            println( methodNode.name)
             String body = ""
             if (methodNode.name == "main") {
                 body += "\nvoid main(void) "
@@ -192,7 +185,6 @@ class ProgramGenerator {
                     def type = translateType(p.getType().name)
                     pp.add("" + (modifiers == null ? "" : modifiers.toString(" ")) + " " + type + " " + p.name)
                 }
-                println methodNode.parameters
 
                 body += "\n" + translateType(methodNode.returnType.name) + " " + methodNode.name + "(" + pp.toString(", ") + ") "
             }

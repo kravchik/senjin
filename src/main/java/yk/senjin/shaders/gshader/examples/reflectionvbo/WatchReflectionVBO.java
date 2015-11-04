@@ -18,17 +18,17 @@ import static yk.jcommon.utils.IO.readImage;
  * Date: 09/06/15
  * Time: 20:12
  */
-public class TestReflectionVBO extends Simple3DWatch {
+public class WatchReflectionVBO extends Simple3DWatch {
 
     private ShaderV vs;
 
-    public TestReflectionVBO(int w, int h, boolean createThread) throws LWJGLException {
+    public WatchReflectionVBO(int w, int h, boolean createThread) throws LWJGLException {
         super(w, h, createThread);
         SIMPLE_AA = true;
     }
 
     public static void main(String[] args) throws LWJGLException {
-        new TestReflectionVBO(800, 600, true);
+        new WatchReflectionVBO(800, 600, true);
     }
 
     GShader shader1;

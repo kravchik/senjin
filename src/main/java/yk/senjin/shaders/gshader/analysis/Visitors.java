@@ -1,4 +1,4 @@
-package yk.jcommon.match2;
+package yk.senjin.shaders.gshader.analysis;
 
 import org.codehaus.groovy.ast.*;
 import org.codehaus.groovy.ast.builder.AstBuilder;
@@ -8,10 +8,8 @@ import org.codehaus.groovy.ast.expr.VariableExpression;
 import org.codehaus.groovy.ast.stmt.BlockStatement;
 import org.codehaus.groovy.control.CompilePhase;
 import org.junit.Test;
-import yk.jcommon.collections.YHashMap;
-import yk.jcommon.collections.YList;
-import yk.jcommon.collections.YMap;
-import yk.jcommon.collections.YSet;
+import yk.jcommon.collections.*;
+import yk.jcommon.match2.*;
 import yk.jcommon.utils.IO;
 
 import java.util.List;
@@ -33,7 +31,7 @@ public class Visitors {
 
     @Test
     public void test1() {
-        String src = IO.readFile("src/main/java/yk/jcommon/match2/BlendF.groovy");
+        String src = IO.readFile("src/main/java/yk/senjin/shaders/gshader/analysis/BlendF.groovy");
         List<ASTNode> nodes = new AstBuilder().buildFromString(CompilePhase.INSTRUCTION_SELECTION, src);
         ClassNode classNode = (ClassNode) nodes.get(1);
         for (MethodNode methodNode : classNode.getMethods()) {
@@ -43,9 +41,9 @@ public class Visitors {
     }
 
     public static YHashMap<String, YSet<String>> inferInOutModifiers(Object nodes) {
-        YList<Object> accessors = al(new ByIndex(new Var("access")));
+        YList<Object> accessors = YArrayList.al(new ByIndex(new Var("access")));
         YList<Object> accessors2 = accessors.with(new Property("methodsList", new Var("access")));
-        YSet<YMap<String, Object>> method = Matcher.match(nodes, new Match2Deeper(accessors2, var("method", p(MethodNode.class, "name", var("methodName")))));
+        YSet<YMap<String, Object>> method = Matcher.match(nodes, new Deeper(accessors2, var("method", p(MethodNode.class, "name", var("methodName")))));
         YHashMap<String, YSet<String>> modifiers = hm();
         int oldModifiersCount = 0;
         while (true) {

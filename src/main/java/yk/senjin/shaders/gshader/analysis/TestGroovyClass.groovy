@@ -1,4 +1,4 @@
-package yk.jcommon.match2
+package yk.senjin.shaders.gshader.analysis
 
 import yk.jcommon.fastgeom.Vec3f
 

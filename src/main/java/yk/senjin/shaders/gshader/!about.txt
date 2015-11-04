@@ -4,6 +4,9 @@
 code gen for uniforms
 code gen for buffers
 
+todo asserts for modification methods
+todo asserts for in/out args in main
+assert last statement is returns (count ifs with elses)
 function overloading
 logging
 structures
