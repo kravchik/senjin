@@ -8,6 +8,7 @@ import org.codehaus.groovy.control.CompilePhase
 import yk.jcommon.collections.YList
 import yk.jcommon.collections.YMap
 import yk.jcommon.collections.YSet
+import yk.jcommon.match2.Test1
 import yk.jcommon.utils.BadException
 import yk.jcommon.utils.IO
 import yk.jcommon.utils.Reflector
@@ -47,7 +48,7 @@ class ProgramGenerator {
 
     private mainClassNode
     private String currentMethod
-    private YMap<String, YList<String, String>> caller2callee = hm()
+    private YMap<String, YSet<String>> caller2callee = hm()
 
     ProgramGenerator(String src, ShaderParent shaderGroovy, String programType) {
         this.shaderGroovy = shaderGroovy
@@ -143,35 +144,62 @@ class ProgramGenerator {
             println "watching on " + m.name + " " + m.modifiers
             if (Modifier.isStatic(m.modifiers) && Modifier.isPublic(m.modifiers)) systemMethods.add(translateType(m.name))
         }
-        caller2callee.put("'OpenGL'", al("main"))
+        caller2callee.put("'OpenGL'", hs("main"))
 
+        YSet<String> watched = hs();
         while(true) {
             String toConvert = null
-            for (Map.Entry<String, YList<String, String>> entry : caller2callee.entrySet()) {
-                toConvert = entry.getValue().first({ m -> !systemMethods.contains(m) && !method2body.containsKey(m) })
+            for (Map.Entry<String, YSet<String>> entry : caller2callee.entrySet()) {
+                toConvert = entry.getValue().first({ m -> !systemMethods.contains(m) && !watched.contains(m) })
                 if (toConvert != null) break
             }
             if (toConvert == null) break
+            watched.add(toConvert)
+            println toConvert
 //            if (systemMethods.contains(toConvert)) continue
-            MethodNode m = findByShortDesc(toConvert)
-            if (m == null) BadException.die("can't find method " + toConvert)
+            MethodNode methodNode = findByShortDesc(toConvert)
+            if (methodNode == null) BadException.die("can't find method " + toConvert)
+            caller2callee.putAll(Test1.calcCallers(methodNode))
+        }
+
+        println("caller2callee " + caller2callee)
+
+        YSet<MethodNode> methods = hs();
+        methods.addAll(caller2callee.values().flatMap{cc -> cc}.map{c->findByShortDesc(c)})
+        def modifiersMap = Test1.inferInOutModifiers(methods.toArray())
+        println "modifiers: " + modifiersMap
+
+        for (MethodNode method  : methods) {
+            def asserts = Test1.gAsserts(method, modifiersMap)
+            if (asserts.notEmpty()) {
+                println asserts.toString("\n")
+                BadException.die(asserts.toString())
+            }
+        }
+
+
+        for (MethodNode methodNode : methods) {
+            println( methodNode.name)
             String body = ""
-            if (m.name == "main") {
+            if (methodNode.name == "main") {
                 body += "\nvoid main(void) "
             } else {
-                YList<String> pp = al()
-                for (Parameter p : m.parameters) {
-                    def type = translateType(p.getType().name)
-                    pp.add("" + (isPrimitive(type) ? "in " : "inout ") + type + " " + p.name)
-                }
-                println m.parameters
 
-                body += "\n" + translateType(m.returnType.name) + " " + m.name + "(" + pp.toString(", ") + ") "
+                YList<String> pp = al()
+                for (int i = 0; i < methodNode.parameters.length; i++) {//TODO patterns
+                    Parameter p = methodNode.parameters[i];
+                    def modifiers = modifiersMap.get(methodNode.name + ":" + i)
+                    def type = translateType(p.getType().name)
+                    pp.add("" + (modifiers == null ? "" : modifiers.toString(" ")) + " " + type + " " + p.name)
+                }
+                println methodNode.parameters
+
+                body += "\n" + translateType(methodNode.returnType.name) + " " + methodNode.name + "(" + pp.toString(", ") + ") "
             }
-            currentMethod = getMethodShortDesc(m)
-            body += translateExpression(m.code)
+            currentMethod = getMethodShortDesc(methodNode)
+            body += translateExpression(methodNode.code)
             body += ("\n")
-            method2body.put(toConvert, body)
+            method2body.put(methodNode.name, body)
         }
 
         def ordered = Orderer.orderMethods("main", method2body, caller2callee)
@@ -319,13 +347,11 @@ class ProgramGenerator {
 
     private String translateExpression(MethodCallExpression e) {
         def name = translateType(e.methodAsString)
-        caller2callee.put(currentMethod, caller2callee.getOr(currentMethod, al()).with(getMethodShortDesc(e)))
         return name + "(" + translateExpression(e.arguments) + ")"
     }
 
     private String translateExpression(StaticMethodCallExpression e) {
         def name = translateType(e.methodAsString)
-        caller2callee.put(currentMethod, caller2callee.getOr(currentMethod, al()).with(getMethodShortDesc(e)))
         return name + "(" + translateExpression(e.arguments) + ")"
     }
 
@@ -346,7 +372,7 @@ class ProgramGenerator {
     }
 
     public static final YList<String> PRIMITIVES = al("int", "float")
-    static boolean isPrimitive(String oglType) {
+    public static boolean isPrimitive(String oglType) {
         return PRIMITIVES.contains(oglType)
     }
 
@@ -362,7 +388,7 @@ class ProgramGenerator {
             "Vec4f", "vec4",
             "Sampler2D", "sampler2D"
     )
-    static String translateType(String groovyType) {
+    public static String translateType(String groovyType) {
         def t = groovyType.split("\\.").last()
         if (!convertions.containsKey(t)) return groovyType
 //        if (!convertions.containsKey(t)) throw new RuntimeException("unknown type " + t)

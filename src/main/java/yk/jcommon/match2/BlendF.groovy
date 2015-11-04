@@ -1,10 +1,11 @@
-package yk.senjin.shaders.gshader.examples.blend
+package yk.jcommon.match2
 
 import yk.jcommon.fastgeom.Vec2f
 import yk.jcommon.fastgeom.Vec4f
 import yk.senjin.shaders.gshader.FragmentShaderParent
 import yk.senjin.shaders.gshader.Sampler2D
 import yk.senjin.shaders.gshader.StandardFrame
+import yk.senjin.shaders.gshader.examples.blend.BlendFi
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,21 +26,32 @@ class BlendF extends FragmentShaderParent<BlendFi> {
 
     @Override
     void main(BlendFi blendFi, StandardFrame o) {
+
+        testFoo(blendFi.vTexCoord)
+        testFoo(direction)
+        kSize = 5
+        txt.name = ""
+
         Vec4f sum = Vec4f(0.0); //результирующий цвет
 //        Vec2f startDir = foo(direction)
         Vec2f startDir = foo(direction) * 0.5f
         for (int i=0; i<kSize; i++) //проходимся по всем коэффициентам
             sum += texture2D(txt, blendFi.vTexCoord + startDir + direction*(float)i) * koeff[i]; //суммируем выборки
-        sum.w = 0
-        foo2(sum)
         o.gl_FragColor = sum;
     }
 
-    private Vec2f foo(Vec2f d) {
-        return -d * (kSize - 1)
+    private void testFoo(Vec2f modified) {
+        modified = new Vec2f()
+
+        modified.x = 0
+
+
     }
 
-    private void foo2(Vec4f vv) {
-        vv.w = 1
+    private Vec2f foo(Vec2f d) {
+        if (1 == 2) return direction
+        if (1 == 2) return d
+
+        return -d * (kSize - 1)
     }
 }
