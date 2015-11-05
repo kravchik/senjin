@@ -178,7 +178,7 @@ public class GShader extends AbstractState {
 
     @Override
     public void enable() {
-        if (fsWatcher.isChanged() | vsWatcher.isChanged()) {
+        if (fsWatcher != null && (fsWatcher.isChanged() | vsWatcher.isChanged())) {
             //TODO clean up on fails!
             GShader newShader = new GShader(srcDir, pvs.shaderGroovy, pfs.shaderGroovy);
             shader.deleteProgram();
