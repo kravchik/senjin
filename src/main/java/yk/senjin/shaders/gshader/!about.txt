@@ -29,6 +29,7 @@ Groovy don't detects wrong assignment
 
 
 //DONE
+real-time shaders reloading
 asserts
   varyings, uniforms, vectors
 functions

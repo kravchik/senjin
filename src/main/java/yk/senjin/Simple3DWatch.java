@@ -33,7 +33,7 @@ public class Simple3DWatch {
 
     public boolean firstFrame = true;
 
-    public boolean SIMPLE_AA = true;
+    public boolean SIMPLE_AA = false;
     SimpleAntiAliasing simpleAA;
 
     //TODO extract viewport

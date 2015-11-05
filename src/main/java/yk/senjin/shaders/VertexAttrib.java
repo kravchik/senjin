@@ -60,9 +60,6 @@ public class VertexAttrib {
 
     public void initForProgram(final int program) {
         index = GL20.glGetAttribLocation(program, name);
-        if (index == -1) {
-            throw new Error("program index " + program + " has no attribute '" + name + "'");
-        }
     }
 
     public boolean isNormalized() {

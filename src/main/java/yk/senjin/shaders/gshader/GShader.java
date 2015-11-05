@@ -1,6 +1,7 @@
 package yk.senjin.shaders.gshader;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.Util;
 import yk.jcommon.collections.YList;
 import yk.jcommon.collections.YMap;
 import yk.jcommon.collections.YSet;
@@ -8,6 +9,7 @@ import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
+import yk.jcommon.utils.FileWatcher;
 import yk.senjin.AbstractState;
 import yk.senjin.arraystructure.AbstractArrayStructure;
 import yk.senjin.arraystructure.VBOVertexAttrib;
@@ -36,11 +38,21 @@ import static yk.senjin.VertexStructureState.assertType;
 public class GShader extends AbstractState {
 
     public ShaderHandler shader;
-    private ProgramGenerator pvs;
-    private ProgramGenerator pfs;
+    public ProgramGenerator pvs;
+    public ProgramGenerator pfs;
 
     private ReflectionVBO currentVBO;
     private YList<AbstractArrayStructure> currentStructure;
+
+    private FileWatcher vsWatcher;
+    private FileWatcher fsWatcher;
+    private String srcDir;
+
+    public GShader(ShaderParent vs, ShaderParent fs, boolean watchChanged) {
+        init(vs, fs);
+        fsWatcher = new FileWatcher(pfs.srcPath);
+        vsWatcher = new FileWatcher(pvs.srcPath);
+    }
 
     public GShader(ShaderParent vs, ShaderParent fs) {
         init(vs, fs);
@@ -55,6 +67,12 @@ public class GShader extends AbstractState {
     }
 
     public void init(String srcDir, ShaderParent vs, ShaderParent fs) {
+        this.srcDir = srcDir;
+        initImpl(srcDir, vs, fs);
+        newShader();
+    }
+
+    private void initImpl(String srcDir, ShaderParent vs, ShaderParent fs) {
         pvs = createProgram(srcDir, vs, "vs");
         pfs = createProgram(srcDir, fs, "fs");
         if (pvs.outputClass != pfs.inputClass) throw new Error("output of VS " + pvs.outputClass.getName() + " must be same as input to FS " + pfs.inputClass.getName());
@@ -63,17 +81,17 @@ public class GShader extends AbstractState {
 
         Map<String, String> seenAt = hm();
         for (VertexAttrib a : pvs.attributes) {
-            System.out.println("checking " + a.getName());
+//            System.out.println("checking " + a.getName());
             String old = seenAt.put(a.getName(), "VS input");
             if (old != null) throw new Error("name clash for " + a.getName() + " at " + old + " and " + seenAt.get(a.getName()));
         }
         for (String a : pfs.varyingFS) {
-            System.out.println("checking " + a);
+//            System.out.println("checking " + a);
             String old = seenAt.put(a, "VS output");
             if (old != null) throw new Error("name clash for " + a + " at " + old + " and " + seenAt.get(a));
         }
         for (UniformVariable a : pvs.uniforms) {
-            System.out.println("checking " + a.name);
+//            System.out.println("checking " + a.name);
             String old = seenAt.put(a.name, "VS uniforms");
             if (old != null) {
                 throw new Error("name clash for " + a.name + " at " + old + " and " + seenAt.get(a.name));
@@ -81,7 +99,7 @@ public class GShader extends AbstractState {
         }
         for (Iterator<UniformVariable> iterator = pfs.uniforms.iterator(); iterator.hasNext(); ) {
             UniformVariable a = iterator.next();
-            System.out.println("checking " + a.name);
+//            System.out.println("checking " + a.name);
             String old = seenAt.put(a.name, "FS uniforms");
 //            if (old != null) throw new Error("name clash for " + a.name + " at " + old + " and " + seenAt.get(a.name));
             if (old != null) {
@@ -90,7 +108,9 @@ public class GShader extends AbstractState {
                 iterator.remove();
             }
         }
+    }
 
+    private void newShader() {
         shader = new ShaderHandler();
 
         String res = "";
@@ -112,7 +132,7 @@ public class GShader extends AbstractState {
     public static ProgramGenerator createProgram(String srcDir, ShaderParent vs, String programType) {
         String path1 = vs.getClass().getName();
         path1 = srcDir + path1.replace(".", "/") + ".groovy";
-        System.out.println(path1);
+//        System.out.println(path1);
         return new ProgramGenerator(path1, vs, programType);
     }
 
@@ -158,10 +178,22 @@ public class GShader extends AbstractState {
 
     @Override
     public void enable() {
+        if (fsWatcher.isChanged() | vsWatcher.isChanged()) {
+            //TODO clean up on fails!
+            GShader newShader = new GShader(srcDir, pvs.shaderGroovy, pfs.shaderGroovy);
+            shader.deleteProgram();
+            pvs = newShader.pvs;
+            pfs = newShader.pfs;
+            shader = newShader.shader;
+            init(srcDir, pvs.shaderGroovy, pfs.shaderGroovy);
+        }
+
         shader.enable();
         if (currentVBO != null) {//because we can use built in vertex attributes
             glBindBuffer(GL_ARRAY_BUFFER, currentVBO.bufferId);
+            Util.checkGLError();
             for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOn();
+            Util.checkGLError();
         }
     }
 

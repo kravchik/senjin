@@ -5,6 +5,7 @@ import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.ARBVertexShader;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.Util;
+import yk.jcommon.utils.BadException;
 import yk.senjin.AbstractState;
 
 import java.io.DataInputStream;
@@ -67,6 +68,7 @@ public class ShaderHandler extends AbstractState {
 
         final int length = iVal.get();
         System.out.println("Info log length:" + length);
+        String all = "";
         if (length > 0) {
             // We have some info we need to output.
             final ByteBuffer infoLog = BufferUtils.createByteBuffer(length);
@@ -77,7 +79,9 @@ public class ShaderHandler extends AbstractState {
             final String out = new String(infoBytes);
 
             System.out.println("Info log:\n" + out);
+            all += "\n" + out;
         }
+        if (all.contains(": error")) BadException.die("error on shader loading");
 
         Util.checkGLError();
     }
@@ -111,7 +115,7 @@ public class ShaderHandler extends AbstractState {
         return GL20.glGetUniformLocation(program, attributeName);
     }
 
-    private int program;
+    public int program;
     private final List<UniformVariable> uniforms = new ArrayList<UniformVariable>();
     public final Map<String, VertexAttrib> vertexAttribs = new HashMap<String, VertexAttrib>();
 
@@ -139,7 +143,6 @@ public class ShaderHandler extends AbstractState {
     }
 
     public void createProgram(final String[] vss, final String[] fss) {
-        program = ARBShaderObjects.glCreateProgramObjectARB();
         program = GL20.glCreateProgram();
         for (final String s : vss) {
             final int shader = createVertexShader(getProgramCode(s));
@@ -158,8 +161,9 @@ public class ShaderHandler extends AbstractState {
     }
 
     public void createFromSrc(String vsrc, String fsrc) {
-        program = ARBShaderObjects.glCreateProgramObjectARB();
+        Util.checkGLError();
         program = GL20.glCreateProgram();
+        Util.checkGLError();
 
         int shader = createVertexShader(stringToBuffer(vsrc));
         GL20.glAttachShader(program, shader);
@@ -210,4 +214,8 @@ public class ShaderHandler extends AbstractState {
         }
     }
 
+    public void deleteProgram() {
+        GL20.glDeleteProgram(program);
+        program = -1;
+    }
 }

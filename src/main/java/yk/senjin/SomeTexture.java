@@ -103,7 +103,7 @@ public class SomeTexture extends AbstractState {
     public void enable() {
         if (enabled) return;
         enabled = true;
-        glActiveTexture(textureSlot);
+        glActiveTexture(textureGlSlot);
         glBindTexture(GL_TEXTURE_2D, textureObjectId);
 
         glEnable( GL_TEXTURE_2D );
@@ -121,7 +121,7 @@ public class SomeTexture extends AbstractState {
     public void disable() {
         if (!enabled) return;
         enabled = false;
-        glActiveTexture(textureSlot);
+        glActiveTexture(textureGlSlot);
         glBindTexture(GL11.GL_TEXTURE_2D, 0);
         glDisable(GL_TEXTURE_2D);
     }

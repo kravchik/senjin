@@ -102,7 +102,7 @@ public class GglslAnalyzer {
             i(var("ARG_INDEX")),
             p(PropertyExpression.class,
                     "getObjectExpression", p(VariableExpression.class,
-                            "variable", "OBJ_NAME"),
+                            "variable", var("OBJ_NAME")),
                     "getProperty", p("value", var("FIELD_NAME"))));
 
     public static final Object G_WRITE_FIELD_PATTERN = stairs(

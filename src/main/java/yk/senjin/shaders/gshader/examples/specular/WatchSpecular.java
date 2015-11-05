@@ -23,7 +23,6 @@ public class WatchSpecular extends Simple3DWatch {
 
     public WatchSpecular(int w, int h, boolean createThread) throws LWJGLException {
         super(w, h, createThread);
-        SIMPLE_AA = true;
     }
 
     public static void main(String[] args) throws LWJGLException {
@@ -41,7 +40,7 @@ public class WatchSpecular extends Simple3DWatch {
     public void firstFrame() {
         fs = new SpecularF();
         vs = new SpecularV();
-        shader1 = new GShader(vs, fs);
+        shader1 = new GShader(vs, fs, true);
         texture = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO(
                 new SpecularVi(new Vec3f(0, 0, 0),  new Vec3f(-1, -1, 1).normalized(), new Vec2f(0, 1)),

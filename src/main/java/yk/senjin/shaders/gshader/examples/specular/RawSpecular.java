@@ -3,6 +3,7 @@ package yk.senjin.shaders.gshader.examples.specular;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.Util;
 import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.SomeTexture;
@@ -51,6 +52,7 @@ public class RawSpecular {
         indexBuffer.rewind();
 
         while (!Display.isCloseRequested()) {
+            Util.checkGLError();
             glClearColor(1, 1, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
@@ -63,6 +65,7 @@ public class RawSpecular {
             fragmentShader.shininess = 100;
             vertexShader.lightDir = new Vec3f(2, 1, 3).normalized();
             shaderProgram.setInput(vbo1);
+            texture.setSlot(0);
             texture.enable(0);
             fragmentShader.txt.set(texture);
 

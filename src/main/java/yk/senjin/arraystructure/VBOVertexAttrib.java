@@ -50,12 +50,16 @@ public class VBOVertexAttrib extends StrideOffset {
 
     @Override
     public void turnOff() {
-        GL20.glDisableVertexAttribArray(index);
+        if (index > -1) {
+            GL20.glDisableVertexAttribArray(index);
+        }
     }
 
     @Override
     public void turnOn() {
-        GL20.glEnableVertexAttribArray(index);
-        GL20.glVertexAttribPointer(index, size, type, normalized, stride, offset);
+        if (index > -1) {
+            GL20.glEnableVertexAttribArray(index);
+            GL20.glVertexAttribPointer(index, size, type, normalized, stride, offset);
+        }
     }
 }
