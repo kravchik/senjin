@@ -117,4 +117,36 @@ abstract public class ShaderParent {
     public static float pow(float value, float power) {
         return (float) Math.pow(value, power);
     }
+
+    public static float floor(float v) {
+        return (float) Math.floor(v);
+    }
+
+    public static Vec2f floor(Vec2f v) {
+        return new Vec2f(floor(v.x), floor(v.y));
+    }
+
+    public static Vec3f floor(Vec3f v) {
+        return new Vec3f(floor(v.x), floor(v.y), floor(v.z));
+    }
+
+    public static Vec4f floor(Vec4f v) {
+        return new Vec4f(floor(v.w), floor(v.x), floor(v.y), floor(v.z));
+    }
+
+    public static float fract(float v) {
+        return v - (float) Math.floor(v);
+    }
+
+    public static Vec2f fract(Vec2f v) {
+        return new Vec2f(fract(v.x), fract(v.y));
+    }
+
+    public static Vec3f fract(Vec3f v) {
+        return new Vec3f(fract(v.x), fract(v.y), fract(v.z));
+    }
+
+    public static Vec4f fract(Vec4f v) {
+        return new Vec4f(fract(v.w), fract(v.x), fract(v.y), fract(v.z));
+    }
 }

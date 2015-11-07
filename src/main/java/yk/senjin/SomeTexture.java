@@ -29,6 +29,12 @@ public class SomeTexture extends AbstractState {
     public BufferedImage image;
 
     public int wrapR = -1;
+    //Sets the wrap parameter for texture coordinate s to either
+    // GL_CLAMP_TO_EDGE,
+    // GL_MIRRORED_REPEAT, or
+    // GL_REPEAT.
+    //
+    // GL_CLAMP_TO_EDGE causes s coordinates to be clamped to the range 1 2N 1 - 1 2N , where N is the size of the texture in the direction of clamping. GL_REPEAT causes the integer part of the s coordinate to be ignored; the GL uses only the fractional part, thereby creating a repeating pattern. GL_MIRRORED_REPEAT causes the s coordinate to be set to the fractional part of the texture coordinate if the integer part of s is even; if the integer part of s is odd, then the s texture coordinate is set to 1 - frac ⁡ s , where frac ⁡ s represents the fractional part of s. Initially, GL_TEXTURE_WRAP_S is set to GL_REPEAT.    public int wrapS = GL_MIRRORED_REPEAT;
     public int wrapS = GL_MIRRORED_REPEAT;
     public int wrapT = GL_MIRRORED_REPEAT;
     public int magFilter = GL_LINEAR;

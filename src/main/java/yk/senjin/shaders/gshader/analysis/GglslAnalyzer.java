@@ -257,10 +257,10 @@ public class GglslAnalyzer {
         for (YMap<String, Object> m : match(mainClass, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), var("methodName")))) {
             Object methodName = m.get("methodName");
             String prefix = "(method " + methodName + ") ";
-            for (Parameter parameter : ((MethodNode)m.get("method")).getParameters()) if (!isPrimitive(translateType(parameter.getText()))) {
+            for (Parameter parameter : ((MethodNode)m.get("method")).getParameters()) if (!isPrimitive(translateType(parameter.getType().getName()))) {//TODO match type
                 //can't rewrite vector (use explicit copyFrom)
                 if (match(m.get("method"), varWritePattern, hm("VAR_NAME", parameter.getName())).notEmpty()) {
-                    errors.add(prefix + "parameter '" + parameter.getName() + "' is rewritten, but it's forbidden in gglsl (use explicity copyFrom)");
+                    errors.add(prefix + "parameter '" + parameter.getName() + " " + translateType(parameter.getType().getName()) + "' is rewritten, but it's forbidden in gglsl (use explicity copyFrom)");
                 }
                 //can't return vector (use explicit copy)
                 if (match(m.get("method"), varReturnPattern, hm("VAR_NAME", parameter.getName())).notEmpty()) {
