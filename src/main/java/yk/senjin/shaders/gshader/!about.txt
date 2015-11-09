@@ -1,34 +1,34 @@
 
 
 //TODO
+test github project to test dependencies
+
+geometry shader
+tessellation shader
+compute shader
+
 code gen for uniforms
 code gen for buffers
 
 all glsl functions
-
 bvec
 ivec
 uvec
 dvec
-
-swizzles
 
 StaticMethodCall for collect caller2callee
   and in Vec2f uv = Vec2f(v1, v2)
 
 assert "no such method" (now it is null pointer, although IDEA stresses it too)
 assert assignment vs copy
+assert last statement is returns (count ifs with elses)
 todo asserts for modification methods
 todo asserts for in/out args in main
-assert last statement is returns (count ifs with elses)
 function overloading
 logging
 structures
-classes
-geometry shader
-tessellation shader
-compute shader
-uniforms are common for both vertex and fragment, handle it some how
+classes, methods
+uniforms are common for both vertex and fragment, handle it somehow
   check same type
   prevent somehow from filling from FS
   fs extends vs ?
@@ -43,6 +43,7 @@ Groovy don't detects wrong assignment
 
 
 //DONE
+swizzles
 extension module for "float + Vec2f" like
 real-time shaders reloading
 asserts
