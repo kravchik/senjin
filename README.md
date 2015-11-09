@@ -5,6 +5,7 @@ SimpleENGINe, current version 0.13-SNAPSHOT
 
 Recent updates:
 
+* (almost) all glsl functions
 * run-time shader reloading
 * functions
 

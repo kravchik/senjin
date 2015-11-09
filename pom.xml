@@ -151,6 +151,12 @@
             <version>${lwjgl.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>yk</groupId>
+            <artifactId>gglsl.extmodule</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>

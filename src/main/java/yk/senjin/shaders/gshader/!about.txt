@@ -4,11 +4,20 @@
 code gen for uniforms
 code gen for buffers
 
-extension module for "float + Vec2f" like
+all glsl functions
+
+bvec
+ivec
+uvec
+dvec
+
+swizzles
+
 StaticMethodCall for collect caller2callee
   and in Vec2f uv = Vec2f(v1, v2)
 
 assert "no such method" (now it is null pointer, although IDEA stresses it too)
+assert assignment vs copy
 todo asserts for modification methods
 todo asserts for in/out args in main
 assert last statement is returns (count ifs with elses)
@@ -34,6 +43,7 @@ Groovy don't detects wrong assignment
 
 
 //DONE
+extension module for "float + Vec2f" like
 real-time shaders reloading
 asserts
   varyings, uniforms, vectors

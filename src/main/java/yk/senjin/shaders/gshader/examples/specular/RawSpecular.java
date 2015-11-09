@@ -36,7 +36,7 @@ public class RawSpecular {
         //shaders
         SpecularF fragmentShader = new SpecularF();
         SpecularV vertexShader = new SpecularV();
-        GShader shaderProgram = new GShader(vertexShader, fragmentShader);
+        GShader shaderProgram = GShader.initFromSrcMainJava(vertexShader, fragmentShader);
         //texture
         SomeTexture texture = new SomeTexture(readImage("jfdi.png"));
         //data

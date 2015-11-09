@@ -17,6 +17,7 @@ import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.UniformVariable;
 import yk.senjin.shaders.VertexAttrib;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
@@ -48,10 +49,23 @@ public class GShader extends AbstractState {
     private FileWatcher fsWatcher;
     private String srcDir;
 
-    public GShader(ShaderParent vs, ShaderParent fs, boolean watchChanged) {
-        init(vs, fs);
+    public GShader runtimeReload() {
+        if (fsWatcher != null) BadException.die("already watching");
         fsWatcher = new FileWatcher(pfs.srcPath);
         vsWatcher = new FileWatcher(pvs.srcPath);
+        return this;
+    }
+
+    public static GShader initFromSrcMainJava(ShaderParent vs, ShaderParent fs) {
+        return new GShader(vs, fs);
+    }
+
+    public static GShader initFromSrc(ShaderParent vs, ShaderParent fs) {
+        return new GShader("src/", vs, fs);
+    }
+
+    public static GShader initFrom(String src, ShaderParent vs, ShaderParent fs) {
+        return new GShader(src, vs, fs);
     }
 
     public GShader(ShaderParent vs, ShaderParent fs) {
@@ -67,6 +81,7 @@ public class GShader extends AbstractState {
     }
 
     public void init(String srcDir, ShaderParent vs, ShaderParent fs) {
+        srcDir = srcDir.replace("/", File.separator);
         this.srcDir = srcDir;
         initImpl(srcDir, vs, fs);
         newShader();

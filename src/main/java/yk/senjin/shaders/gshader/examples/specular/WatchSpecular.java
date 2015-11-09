@@ -40,7 +40,7 @@ public class WatchSpecular extends Simple3DWatch {
     public void firstFrame() {
         fs = new SpecularF();
         vs = new SpecularV();
-        shader1 = new GShader(vs, fs, true);
+        shader1 = GShader.initFromSrcMainJava(vs, fs).runtimeReload();
         texture = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO(
                 new SpecularVi(new Vec3f(0, 0, 0),  new Vec3f(-1, -1, 1).normalized(), new Vec2f(0, 1)),
