@@ -31,7 +31,11 @@ Recent updates:
 
 <repositories>
     <repository>
-        <id>yk.jcommon</id>
+        <id>yk.senjin</id>
+        <url>https://github.com/kravchik/mvn-repo/raw/master</url>
+    </repository>
+    <repository>
+        <id>yk.extmodule</id>
         <url>https://github.com/kravchik/mvn-repo/raw/master</url>
     </repository>
 </repositories>
