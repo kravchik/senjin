@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
  * Time: 12:37 PM
  */
 abstract public class ShaderParent {
+    //TODO move independent math to jcommon
     @Deprecated
     public Matrix4 gl_ModelViewMatrix;
     @Deprecated
@@ -244,37 +245,37 @@ public static Vec4f smoothstep(float arg0, float arg1, Vec4f arg2) {return Vec4f
 //gglsl auto generated text
 
 
-    static float length(float v) {return Math.abs(v);}
-    static float length(Vec2f v) {return v.length();}
-    static float length(Vec3f v) {return v.length();}
-    static float length(Vec4f v) {return v.length();}
+    public static float length(float v) {return Math.abs(v);}
+    public static float length(Vec2f v) {return v.length();}
+    public static float length(Vec3f v) {return v.length();}
+    public static float length(Vec4f v) {return v.length();}
 
-    static float distance(float v1, float v2) {return Math.abs(v1-v2);}
-    static float distance(Vec2f v1, Vec2f v2) {return v1.dist(v2);}
-    static float distance(Vec3f v1, Vec3f v2) {return v1.dist(v2);}
-    static float distance(Vec4f v1, Vec4f v2) {return v1.dist(v2);}
+    public static float distance(float v1, float v2) {return Math.abs(v1-v2);}
+    public static float distance(Vec2f v1, Vec2f v2) {return v1.dist(v2);}
+    public static float distance(Vec3f v1, Vec3f v2) {return v1.dist(v2);}
+    public static float distance(Vec4f v1, Vec4f v2) {return v1.dist(v2);}
 
-    static float dot(float v1, float v2) {return v1*v2;}
-    static float dot(Vec2f v1, Vec2f v2) {return v1.mulScalar(v2);}
-    static float dot(Vec3f v1, Vec3f v2) {return v1.scalarProduct(v2);}
-    static float dot(Vec4f v1, Vec4f v2) {return v1.dot(v2);}
+    public static float dot(float v1, float v2) {return v1*v2;}
+    public static float dot(Vec2f v1, Vec2f v2) {return v1.mulScalar(v2);}
+    public static float dot(Vec3f v1, Vec3f v2) {return v1.scalarProduct(v2);}
+    public static float dot(Vec4f v1, Vec4f v2) {return v1.dot(v2);}
 
-    static Vec3f cross(Vec3f v1, Vec3f v2) {return v1.crossProduct(v2);}
+    public static Vec3f cross(Vec3f v1, Vec3f v2) {return v1.crossProduct(v2);}
 
-    static float normalize(float v1) {return 1;}
-    static Vec2f normalize(Vec2f v1) {return v1.normalized();}
-    static Vec3f normalize(Vec3f v1) {return v1.normalized();}
-    static Vec4f normalize(Vec4f v1) {return v1.normalized();}
+    public static float normalize(float v1) {return 1;}
+    public static Vec2f normalize(Vec2f v1) {return v1.normalized();}
+    public static Vec3f normalize(Vec3f v1) {return v1.normalized();}
+    public static Vec4f normalize(Vec4f v1) {return v1.normalized();}
 
-    static float faceforward(float n, float i, float ng) {return i * ng < 0 ? n : -n;}
-    static Vec2f faceforward(Vec2f n, Vec2f i, Vec2f ng) {return i.dot(ng) < 0 ? n : n.negative();}
-    static Vec3f faceforward(Vec3f n, Vec3f i, Vec3f ng) {return i.dot(ng) < 0 ? n : n.negative();}
-    static Vec4f faceforward(Vec4f n, Vec4f i, Vec4f ng) {return i.dot(ng) < 0 ? n : n.negative();}
+    public static float faceforward(float n, float i, float ng) {return i * ng < 0 ? n : -n;}
+    public static Vec2f faceforward(Vec2f n, Vec2f i, Vec2f ng) {return i.dot(ng) < 0 ? n : n.negative();}
+    public static Vec3f faceforward(Vec3f n, Vec3f i, Vec3f ng) {return i.dot(ng) < 0 ? n : n.negative();}
+    public static Vec4f faceforward(Vec4f n, Vec4f i, Vec4f ng) {return i.dot(ng) < 0 ? n : n.negative();}
 
-    static float reflect(float i, float n) {return i - n * n * i * 2;}
-    static Vec2f reflect(Vec2f i, Vec2f n) {return i.sub(n.mul(n.dot(i) * 2));}
-    static Vec3f reflect(Vec3f i, Vec3f n) {return i.sub(n.mul(n.dot(i) * 2));}
-    static Vec4f reflect(Vec4f i, Vec4f n) {return i.sub(n.mul(n.dot(i) * 2));}
+    public static float reflect(float i, float n) {return i - n * n * i * 2;}
+    public static Vec2f reflect(Vec2f i, Vec2f n) {return i.sub(n.mul(n.dot(i) * 2));}
+    public static Vec3f reflect(Vec3f i, Vec3f n) {return i.sub(n.mul(n.dot(i) * 2));}
+    public static Vec4f reflect(Vec4f i, Vec4f n) {return i.sub(n.mul(n.dot(i) * 2));}
 
 //k = 1.0 - eta * eta * (1.0 - dot(N, I) * dot(N, I));
 //    if (k < 0.0)
@@ -283,7 +284,7 @@ public static Vec4f smoothstep(float arg0, float arg1, Vec4f arg2) {return Vec4f
 //    R = eta * I - (eta * dot(N, I) + sqrt(k)) * N;
 
 
-    static float refract(float I, float N, float eta) {
+    public static float refract(float I, float N, float eta) {
         float k = 1f - eta * eta * (1f - dot(N, I) * dot(N, I));
         if (k < 0f)
             return 0;
@@ -291,7 +292,7 @@ public static Vec4f smoothstep(float arg0, float arg1, Vec4f arg2) {return Vec4f
             return I * eta - (N * I * eta + (float)Math.sqrt(k)) * N;
     }
 
-    static Vec2f refract(Vec2f I, Vec2f N, float eta) {
+    public static Vec2f refract(Vec2f I, Vec2f N, float eta) {
         float k = 1f - eta * eta * (1f - dot(N, I) * dot(N, I));
         if (k < 0f)
             return new Vec2f(0, 0);
@@ -299,7 +300,7 @@ public static Vec4f smoothstep(float arg0, float arg1, Vec4f arg2) {return Vec4f
             return I.mul(eta).sub(N.mul(dot(N, I) * eta + (float)Math.sqrt(k)));
     }
 
-    static Vec3f refract(Vec3f I, Vec3f N, float eta) {
+    public static Vec3f refract(Vec3f I, Vec3f N, float eta) {
         float k = 1f - eta * eta * (1f - dot(N, I) * dot(N, I));
         if (k < 0.0)
             return new Vec3f(0, 0, 0);
@@ -307,7 +308,7 @@ public static Vec4f smoothstep(float arg0, float arg1, Vec4f arg2) {return Vec4f
             return I.mul(eta).sub(N.mul(dot(N, I) * eta + (float)Math.sqrt(k)));
     }
 
-    static Vec4f refract(Vec4f I, Vec4f N, float eta) {
+    public static Vec4f refract(Vec4f I, Vec4f N, float eta) {
         float k = 1f - eta * eta * (1f - dot(N, I) * dot(N, I));
         if (k < 0.0)
             return new Vec4f(0, 0, 0, 0);
