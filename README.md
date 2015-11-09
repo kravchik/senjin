@@ -2,6 +2,7 @@
 SimpleENGINe, current version 0.13-SNAPSHOT
 
 [![Join the chat at https://gitter.im/kravchik/senjin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kravchik/senjin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+(welcome to chat if you have any questions!)
 
 Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-testing, refactorings and full IDE support.
 
@@ -9,6 +10,7 @@ Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-
 
 Recent updates:
 
+* fixed mvn dependency (welcome to chat if you have any problems!)
 * glsl swizzles ```v.xz = v2.yy```
 * (almost) all glsl functions
 * run-time shader reloading
