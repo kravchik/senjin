@@ -20,7 +20,12 @@ Recent updates:
     <dependency>
         <groupId>yk</groupId>
         <artifactId>senjin</artifactId>
-        <version>0.12</version>
+        <version>0.13-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>yk</groupId>
+        <artifactId>extmodule</artifactId>
+        <version>0.1-SNAPSHOT</version>
     </dependency>
 </dependencies>
 
