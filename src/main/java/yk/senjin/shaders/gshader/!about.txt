@@ -3,6 +3,8 @@
 //TODO
 test github project to test dependencies
 
+java reloadable classes (tick, first init, full, except watcher)
+java "common operations", because Operations.clamp - are too slow
 geometry shader
 tessellation shader
 compute shader
@@ -19,8 +21,11 @@ dvec
 StaticMethodCall for collect caller2callee
   and in Vec2f uv = Vec2f(v1, v2)
 
+statics from other files
 assert "no such method" (now it is null pointer, although IDEA stresses it too)
 assert assignment vs copy
+  but count consts like varying, uniforms, finals
+assert finals are effectively final
 assert last statement is returns (count ifs with elses)
 todo asserts for modification methods
 todo asserts for in/out args in main

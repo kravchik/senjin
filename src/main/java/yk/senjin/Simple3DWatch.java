@@ -34,7 +34,7 @@ public class Simple3DWatch {
     public boolean firstFrame = true;
 
     public boolean SIMPLE_AA = true;
-    SimpleAntiAliasing simpleAA;
+    SimpleAntiAliasing2 simpleAA;
 
     //TODO extract viewport
     public final Cam cam = new Cam();
@@ -64,7 +64,9 @@ public class Simple3DWatch {
     public Simple3DWatch(int w, int h, boolean createThread) {
         this.w = w;
         this.h = h;
-        if (SIMPLE_AA) simpleAA = new SimpleAntiAliasing();
+        if (SIMPLE_AA) {
+            simpleAA = new SimpleAntiAliasing2();
+        }
 
         final Simple3DWatch THIS = this;
         cam.lookAt = new Vec3f(0, 0, 100);
@@ -158,15 +160,15 @@ public class Simple3DWatch {
 
         glEnd();
 
-        camModelViewMatrix = new Matrix4()
-                 .setIdentity()
-                 .translate(cam.lookAt.mul(-1))
-                 .multiply(cam.lookRot.conjug().toMatrix4());
-        camNormalMatrix = camModelViewMatrix
-                 .invert()
-                 .transpose();
-        camModelViewProjectionMatrix = camModelViewMatrix
-                 .multiply(perspective(45.0f, (float) w / h, magnifier, 1000.0f * magnifier));
+        Matrix4 perspectiveMatrix;
+//        if (ortho) {
+//            perspectiveMatrix = ortho(-cam.lookAt.z / 3, cam.lookAt.z / 3, -cam.lookAt.z / 3, cam.lookAt.z / 6, 1, 1200);
+//        } else {
+            perspectiveMatrix = perspective(45.0f, (float) w / h, 1, 1200.0f * 1);
+//        }
+        camModelViewMatrix = cam.lookRot.conjug().toMatrix4().multiply(Matrix4.identity().translate(cam.lookAt.mul(-1))); ;
+        camNormalMatrix = camModelViewMatrix.invert().transpose();
+        camModelViewProjectionMatrix = perspectiveMatrix.multiply(camModelViewMatrix);
     }
 
     protected void onFirstFrame() throws LWJGLException {
@@ -177,7 +179,7 @@ public class Simple3DWatch {
         Display.create();
         Display.makeCurrent();
         //aa
-        if (SIMPLE_AA) simpleAA.initAA(w * 2, h * 2);
+        if (SIMPLE_AA) simpleAA.initAA(w, h);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

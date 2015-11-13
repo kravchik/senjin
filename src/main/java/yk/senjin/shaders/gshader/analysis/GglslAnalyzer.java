@@ -136,6 +136,12 @@ public class GglslAnalyzer {
             for (YMap<String, Object> mcp : match(mp.get("method"), methodCalls)) {
                 result.put((String) mp.get("methodName"), result.getOr((String) mp.get("methodName"), hs()).with((String) mcp.get("callMethodName")));
             }
+
+            //TODO statics in other class
+            methodCalls = stairs(deeper(G_BODY_ACCESSORS), p(StaticMethodCallExpression.class, "getMethod"), var("callMethodName"));
+            for (YMap<String, Object> mcp : match(mp.get("method"), methodCalls)) {
+                result.put((String) mp.get("methodName"), result.getOr((String) mp.get("methodName"), hs()).with((String) mcp.get("callMethodName")));
+            }
         }
         return result;
     }

@@ -37,7 +37,7 @@ public class FrameBuffer {
     public void beginRenderToFbo() {
         glViewport (0, 0, texture.width, texture.height);									// set The Current Viewport to the fbo size
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);		// switch to rendering on our FBO
-        glClearColor (0.0f, 1.0f, 0.0f, 1.f);
+        glClearColor (0, 0, 0, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear Screen And Depth Buffer on the fbo to red
     }
 
@@ -47,15 +47,15 @@ public class FrameBuffer {
     }
 
     public static void renderFBO2(int w, int h) {
-        glClearColor (0.0f, 0.0f, 0.0f, 1.f);
+        glClearColor (.0f, 0.0f, 0.0f, 0.f);
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear Screen And Depth Buffer on the framebuffer to black
 
         glViewport (0, 0, w, h);
-//        glMatrixMode(GL_PROJECTION);
-//        glLoadIdentity();
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
 //        glOrtho(0, 0, w, h, -1, 1);
-//        glMatrixMode(GL_MODELVIEW);
-//        glLoadIdentity();
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
         glColor3f(1,1,1);												// set the color to white
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

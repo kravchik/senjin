@@ -77,6 +77,12 @@ public class DDDUtils {//TODO extract to another lib
         glMultMatrix(multMatrixTemp);
     }
 
+    public static void glLoadMatrix(Matrix4 m) {
+        m.store(multMatrixTemp);
+        multMatrixTemp.rewind();
+        GL11.glLoadMatrix(multMatrixTemp);
+    }
+
     public static void fillFromQuaternion(Quaternionf q, FloatBuffer matrixBuffer) {
         float x2 = q.i * q.i;
         float y2 = q.j * q.j;

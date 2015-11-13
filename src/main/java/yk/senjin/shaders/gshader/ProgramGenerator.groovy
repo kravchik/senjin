@@ -141,7 +141,7 @@ class ProgramGenerator {
         YMap<String, String> method2body = hm();
         YSet<String> systemMethods = hs();
         for (Method m : ShaderParent.getDeclaredMethods()) {
-            if (Modifier.isStatic(m.modifiers) && Modifier.isPublic(m.modifiers)) systemMethods.add(translateType(m.name))
+            if (Modifier.isStatic(m.modifiers) && Modifier.isPublic(m.modifiers)) systemMethods.add(m.name)
         }
         caller2callee.put("'OpenGL'", hs("main"))
 
@@ -160,7 +160,7 @@ class ProgramGenerator {
         }
 
         YSet<MethodNode> methods = hs();
-        methods.addAll(caller2callee.values().flatMap{cc -> cc}.map{c->findByShortDesc(c)})
+        methods.addAll(caller2callee.values().flatMap{cc -> cc}.filter{cc -> !systemMethods.contains(cc)}.map{c->findByShortDesc(c)})
         def modifiersMap = GglslAnalyzer.inferInOutModifiers(methods.toArray())
 
         for (MethodNode method  : methods) {
@@ -204,9 +204,9 @@ class ProgramGenerator {
 
     private MethodNode findByShortDesc(String s) {
         //TODO from imports
-        for (m in mainClassNode.getMethods()) {
+        for (m in ((ClassNode)mainClassNode).getMethods()) {
             if ((m.modifiers & 0x00001000) != 0) continue
-            if (Modifier.isStatic(m.modifiers)) continue
+            if (s.equals("main") && Modifier.isStatic(m.modifiers)) continue
             if (m.name == s) return m
         }
         return null
@@ -312,6 +312,14 @@ class ProgramGenerator {
         return "-" + translateExpression(e.expression)
     }
 
+    private String translateExpression(BreakStatement e) {
+        return "break"
+    }
+
+    private String translateExpression(EmptyExpression e) {
+        return ""
+    }
+
     //TODO Groovy can 'return' simple expressions, but glsl can't. Fix it (for ex: void foo() {Vec4f(0)} - valid in Groovy but not valid in glsl and I didn't fixed it
     private String translateExpression(ExpressionStatement e) {
         return translateExpression(e.expression)
@@ -349,7 +357,9 @@ class ProgramGenerator {
 
     private String translateExpression(PropertyExpression e) {
         String obj = translateExpression(e.objectExpression)
+        //TODO fix for "not in main case"
         if (obj.equals(outputName) && programType.equals("vs")) return fiName(e.propertyAsString)
+        //TODO fix for "not in main case"
         if (obj.equals(inputName) && programType.equals("fs")) return fiName(e.propertyAsString)
         if (obj.equals(outputName)) return e.propertyAsString
         if (obj.equals(inputName)) return e.propertyAsString

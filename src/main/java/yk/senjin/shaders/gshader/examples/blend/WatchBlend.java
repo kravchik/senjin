@@ -97,28 +97,19 @@ public class WatchBlend extends Simple3DWatch {
     @Override
     public void tick(float dt) {
         //scene -> fbo1
-
         specularV.modelViewProjectionMatrix = camModelViewProjectionMatrix;
         specularV.normalMatrix = camNormalMatrix.get33();
         specularV.lightDir = new Vec3f(1, 1, 1).normalized();
-        textureJfdi.enable(0);
         specularF.txt.set(textureJfdi);
-        specularProgram.setInput(vbo1);
-
-        specularProgram.enable();
-        indices.draw();
-
-        specularProgram.disable();
-        textureJfdi.disable();
-
+        cameraDraw(specularProgram, vbo1, indices, textureJfdi);
         fbo1.endRenderToFbo();
 
         // fbo1 -> fbo2 (with horizontal blur)
-
         fbo2.beginRenderToFbo();
         fbo1.texture.enable(0);
         blendF.txt.set(fbo1.texture);
         blendF.direction = new Vec2f(0.003f, 0f);
+//        cameraDraw(fbo2, blendProgram, ???, ???, fbo1.texture);
         blendProgram.shader.enable();
         FrameBuffer.renderFBO2(fboSize, fboSize);
         blendProgram.shader.disable();
@@ -126,16 +117,35 @@ public class WatchBlend extends Simple3DWatch {
         fbo2.endRenderToFbo();
 
         //fbo2 -> standard frame (with result blur)
-
         fbo2.texture.enable(0);
         blendF.txt.set(fbo2.texture);
         blendF.direction = new Vec2f(0f, 0.003f);
+//        cameraDraw(blendProgram, ???, ???, fbo2.texture);
         blendProgram.shader.enable();
         FrameBuffer.renderFBO2(w, h);
         blendProgram.shader.disable();
         fbo2.texture.disable();
     }
 
+    public static void cameraDraw(FrameBuffer fbo, GShader shader1, ReflectionVBO vbo1, DrawIndicesShort indices, SomeTexture... textures) {
+        fbo.beginRenderToFbo();
+        for (int i = 0; i < textures.length; i++) textures[i].enable(i);
+        shader1.setInput(vbo1);
+        shader1.enable();
+        indices.draw();
+        shader1.disable();
+        for (int i = textures.length-1; i >= 0; i--) textures[i].disable();
+        fbo.endRenderToFbo();
+    }
+
+    public static void cameraDraw(GShader shader1, ReflectionVBO vbo1, DrawIndicesShort indices, SomeTexture... textures) {
+        for (int i = 0; i < textures.length; i++) textures[i].enable(i);
+        shader1.setInput(vbo1);
+        shader1.enable();
+        indices.draw();
+        shader1.disable();
+        for (int i = textures.length-1; i >= 0; i--) textures[i].disable();
+    }
 
 
 

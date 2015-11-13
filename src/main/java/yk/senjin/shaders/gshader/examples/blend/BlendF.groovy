@@ -39,7 +39,7 @@ class BlendF extends FragmentShaderParent<BlendFi> {
         return -d * (kSize - 1)
     }
 
-    private void foo2(Vec4f vv) {
+    private static void foo2(Vec4f vv) {
         vv.w = 1
     }
 }

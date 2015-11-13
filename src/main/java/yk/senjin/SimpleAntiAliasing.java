@@ -1,7 +1,6 @@
 package yk.senjin;
 
 import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.SGISGenerateMipmap;
 
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -37,13 +36,13 @@ public class SimpleAntiAliasing {
 
         // initialize color texture
         glBindTexture(GL_TEXTURE_2D, colorTextureID);									// Bind the colorbuffer texture
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);				// make it linear filterd
-        glTexParameteri(GL_TEXTURE_2D,
-                SGISGenerateMipmap.GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+//        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);				// make it linear filterd
+//        glTexParameteri(GL_TEXTURE_2D,
+//                SGISGenerateMipmap.GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureW, textureH, 0, GL_RGBA, GL_INT, (java.nio.ByteBuffer) null);	// Create the texture data
 
 /////
-        glGenerateMipmap(GL_TEXTURE_2D);
+//        glGenerateMipmap(GL_TEXTURE_2D);
 
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D, colorTextureID, 0); // attach it to the framebuffer
 
@@ -82,6 +81,7 @@ public class SimpleAntiAliasing {
 
         glBindTexture(GL_TEXTURE_2D, colorTextureID);					// bind our FBO texture
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
         glViewport (0, 0, w/x, h/x);									// set The Current Viewport
 
@@ -91,7 +91,7 @@ public class SimpleAntiAliasing {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        glColor3f(1,1,1);												// set the color to white
+        glColor4f(1, 1, 1, 1);												// set the color to white
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         glBegin(GL_QUADS);

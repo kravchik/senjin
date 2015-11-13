@@ -109,10 +109,10 @@ public class SomeTexture extends AbstractState {
     public void enable() {
         if (enabled) return;
         enabled = true;
-        glActiveTexture(textureGlSlot);
+        glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, textureObjectId);
+        glActiveTexture(textureGlSlot);
 
-        glEnable( GL_TEXTURE_2D );
 
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 //        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
