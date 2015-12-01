@@ -59,13 +59,17 @@ public class SomeTexture extends AbstractState {
     }
 
     public SomeTexture(BufferedImage image) {
-        this.image = image;
-        ByteBuffer byteBuffer = convertToGL(image);
-//        ByteBuffer byteBuffer = VisualRealmManager.convertToGLUnoptimized(image);
         IntBuffer texNames;
         texNames = BufferUtils.createIntBuffer(1);
         GL11.glGenTextures(texNames);
         textureObjectId = texNames.get(0);
+        setImage(image);
+    }
+
+    public void setImage(BufferedImage image) {
+        this.image = image;
+        ByteBuffer byteBuffer = convertToGL(image);
+//        ByteBuffer byteBuffer = VisualRealmManager.convertToGLUnoptimized(image);
         GL11.glBindTexture(GL_TEXTURE_2D, textureObjectId);
         GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, byteBuffer);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
@@ -110,8 +114,8 @@ public class SomeTexture extends AbstractState {
         if (enabled) return;
         enabled = true;
         glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, textureObjectId);
         glActiveTexture(textureGlSlot);
+        glBindTexture(GL_TEXTURE_2D, textureObjectId);
 
 
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);

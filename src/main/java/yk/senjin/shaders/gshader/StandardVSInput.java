@@ -1,6 +1,6 @@
-package yk.senjin.shaders.gshader
+package yk.senjin.shaders.gshader;
 
-import yk.jcommon.fastgeom.Vec4f
+import yk.jcommon.fastgeom.Vec4f;
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,7 +8,7 @@ import yk.jcommon.fastgeom.Vec4f
  * Date: 14/12/14
  * Time: 16:52
  */
-class StandardVSInput {
+public class StandardVSInput {//TODO rename this or BaseVSOutput
 
     public Vec4f gl_Vertex;
     public Vec4f gl_Normal;

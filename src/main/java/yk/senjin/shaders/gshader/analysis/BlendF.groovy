@@ -2,10 +2,10 @@ package yk.senjin.shaders.gshader.analysis
 
 import yk.jcommon.fastgeom.Vec2f
 import yk.jcommon.fastgeom.Vec4f
+import yk.senjin.examples.blend.BlendFi
 import yk.senjin.shaders.gshader.FragmentShaderParent
 import yk.senjin.shaders.gshader.Sampler2D
 import yk.senjin.shaders.gshader.StandardFrame
-import yk.senjin.shaders.gshader.examples.blend.BlendFi
 
 /**
  * Created with IntelliJ IDEA.

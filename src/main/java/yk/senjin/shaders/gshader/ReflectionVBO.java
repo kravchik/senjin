@@ -61,6 +61,8 @@ public class ReflectionVBO {
                     Vec2f vec2f = (Vec2f) value;
                     buffer.putFloat(vec2f.x);
                     buffer.putFloat(vec2f.y);
+                } else if (value instanceof Float) {
+                    buffer.putFloat((Float) value);
                 } else if (value instanceof Vec4f) {
                     Vec4f vec4f = (Vec4f) value;
                     buffer.putFloat(vec4f.x);
@@ -82,10 +84,11 @@ public class ReflectionVBO {
         if (result == null) {
             result = 0;
             Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
+            for (Field field : fields) if (!Modifier.isTransient(field.getModifiers())) {
                 if (field.getType() == Vec2f.class) result += 4 * 2;
                 else if (field.getType() == Vec3f.class) result += 4 * 3;
                 else if (field.getType() == Vec4f.class) result += 4 * 4;
+                else if (field.getType() == float.class) result += 4;
                 else BadException.die("unknown type " + field.getType());
             }
             type2size.put(clazz, result);

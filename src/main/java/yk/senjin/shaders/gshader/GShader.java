@@ -11,11 +11,11 @@ import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.FileWatcher;
 import yk.senjin.AbstractState;
-import yk.senjin.arraystructure.AbstractArrayStructure;
-import yk.senjin.arraystructure.VBOVertexAttrib;
 import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.UniformVariable;
 import yk.senjin.shaders.VertexAttrib;
+import yk.senjin.shaders.arraystructure.AbstractArrayStructure;
+import yk.senjin.shaders.arraystructure.VBOVertexAttrib;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -91,7 +91,7 @@ public class GShader extends AbstractState {
         pvs = createProgram(srcDir, vs, "vs");
         pfs = createProgram(srcDir, fs, "fs");
         if (pvs.outputClass != pfs.inputClass) throw new Error("output of VS " + pvs.outputClass.getName() + " must be same as input to FS " + pfs.inputClass.getName());
-        if (!BaseVSOutput.class.isAssignableFrom(pvs.outputClass)) throw new Error("output of VS must extends BaseVSOutput");
+        if (!StandardFSInput.class.isAssignableFrom(pvs.outputClass)) throw new Error("output of VS must extends StandardFSInput");
         if (pfs.outputClass != StandardFrame.class) throw new Error("output of FS must be StandardFrame class");
 
         Map<String, String> seenAt = hm();
@@ -168,7 +168,10 @@ public class GShader extends AbstractState {
 
                 result.add(new VBOVertexAttrib(shaderAttrib.getIndex(), shaderAttrib.getSize(), shaderAttrib.getType(), shaderAttrib.isNormalized(), stride, offset));
 
-                if (field.getType() == Vec2f.class) {
+                if (field.getType() == float.class) {
+                    assertType(shaderAttrib, 1, GL11.GL_FLOAT, field.getName());
+                    offset += 1 * 4;
+                } else if (field.getType() == Vec2f.class) {
                     assertType(shaderAttrib, 2, GL11.GL_FLOAT, field.getName());
                     offset += 2 * 4;
                 } else if (field.getType() == Vec3f.class) {
@@ -221,4 +224,8 @@ public class GShader extends AbstractState {
         shader.disable();
     }
 
+    @Override
+    public void release() {
+        shader.deleteProgram();
+    }
 }

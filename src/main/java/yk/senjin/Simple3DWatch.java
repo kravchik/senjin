@@ -32,6 +32,7 @@ public class Simple3DWatch {
     //TODO onKeyUp
 
     public boolean firstFrame = true;
+    public boolean drawAxis = true;
 
     public boolean SIMPLE_AA = true;
     SimpleAntiAliasing2 simpleAA;
@@ -39,8 +40,8 @@ public class Simple3DWatch {
     //TODO extract viewport
     public final Cam cam = new Cam();
     public int w, h;
-    Vec2f mousePressedAt;
-    Vec2f mouseCur;
+    public Vec2f mousePressedAt;
+    public Vec2f mouseCur;
     Quaternionf cameraOld;
     public final float magnifier = 1;
     float camPitch = 0;
@@ -132,6 +133,16 @@ public class Simple3DWatch {
         glBindTexture(GL_TEXTURE_2D, 0);
         glDepthMask(true);
 
+        Matrix4 perspectiveMatrix;
+//        if (ortho) {
+//            perspectiveMatrix = ortho(-cam.lookAt.z / 3, cam.lookAt.z / 3, -cam.lookAt.z / 3, cam.lookAt.z / 6, 1, 1200);
+//        } else {
+        perspectiveMatrix = perspective(45.0f, (float) w / h, 1, 1200.0f * 1);
+//        }
+        camModelViewMatrix = cam.lookRot.conjug().toMatrix4().multiply(Matrix4.identity().translate(cam.lookAt.mul(-1))); ;
+        camNormalMatrix = camModelViewMatrix.invert().transpose();
+        camModelViewProjectionMatrix = perspectiveMatrix.multiply(camModelViewMatrix);
+
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(45.0f, (float) w / h, magnifier, 1000.0f * magnifier);
@@ -141,6 +152,11 @@ public class Simple3DWatch {
         if (skyBox != null) skyBox.render(cam.lookAt);
         glEnable(GL_DEPTH_TEST);
 
+        if (drawAxis) drawAxis();
+
+    }
+
+    public void drawAxis() {
         glLineWidth(3);
         glBegin(GL_LINES);
 
@@ -159,16 +175,6 @@ public class Simple3DWatch {
         glVertex3f(0, 0, len);
 
         glEnd();
-
-        Matrix4 perspectiveMatrix;
-//        if (ortho) {
-//            perspectiveMatrix = ortho(-cam.lookAt.z / 3, cam.lookAt.z / 3, -cam.lookAt.z / 3, cam.lookAt.z / 6, 1, 1200);
-//        } else {
-            perspectiveMatrix = perspective(45.0f, (float) w / h, 1, 1200.0f * 1);
-//        }
-        camModelViewMatrix = cam.lookRot.conjug().toMatrix4().multiply(Matrix4.identity().translate(cam.lookAt.mul(-1))); ;
-        camNormalMatrix = camModelViewMatrix.invert().transpose();
-        camModelViewProjectionMatrix = perspectiveMatrix.multiply(camModelViewMatrix);
     }
 
     protected void onFirstFrame() throws LWJGLException {
@@ -196,9 +202,10 @@ public class Simple3DWatch {
 
     public void resetModelView() {
         glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        DDDUtils.multMatrix(cam.lookRot.conjug());
-        glTranslatef(-cam.lookAt.x, -cam.lookAt.y, -cam.lookAt.z);
+//        glLoadIdentity();
+//        DDDUtils.multMatrix(cam.lookRot.conjug());
+//        glTranslatef(-cam.lookAt.x, -cam.lookAt.y, -cam.lookAt.z);
+        DDDUtils.glLoadMatrix(camModelViewMatrix);
     }
 
     public void tick(float dt) {

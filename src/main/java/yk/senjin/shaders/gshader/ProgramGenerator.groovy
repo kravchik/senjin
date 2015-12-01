@@ -16,6 +16,7 @@ import yk.senjin.shaders.UniformVariable
 import yk.senjin.shaders.VertexAttrib
 import yk.senjin.shaders.gshader.analysis.GglslAnalyzer
 
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
@@ -368,8 +369,8 @@ class ProgramGenerator {
         return obj + "." + e.propertyAsString
     }
 
-    private static String fiName(String prop) {//TODO check names on BaseVSOutput by reflection
-        if (prop.equals("gl_Position")) return prop;
+    private static String fiName(String prop) {
+        for (Field f : StandardFSInput.class.getDeclaredFields()) if (f.name.equals(prop)) return prop
         return prop + "_fi";
     }
 

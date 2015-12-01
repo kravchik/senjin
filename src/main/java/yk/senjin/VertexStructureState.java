@@ -6,11 +6,11 @@ import yk.jcommon.collections.YSet;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
-import yk.senjin.arraystructure.*;
-import yk.senjin.bufferstructure.StructureBundleTight;
-import yk.senjin.bufferstructure.StructureUnit;
 import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.VertexAttrib;
+import yk.senjin.shaders.arraystructure.*;
+import yk.senjin.shaders.bufferstructure.StructureBundleTight;
+import yk.senjin.shaders.bufferstructure.StructureUnit;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

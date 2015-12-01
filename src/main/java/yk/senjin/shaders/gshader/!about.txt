@@ -3,8 +3,7 @@
 //TODO
 test github project to test dependencies
 
-java reloadable classes (tick, first init, full, except watcher)
-java "common operations", because Operations.clamp - are too slow
+bufferless vertex input
 geometry shader
 tessellation shader
 compute shader
@@ -48,6 +47,8 @@ Groovy don't detects wrong assignment
 
 
 //DONE
+java "common operations", because Operations.clamp - are too slow
+java reloadable classes (tick, first init, full, except watcher)
 swizzles
 extension module for "float + Vec2f" like
 real-time shaders reloading
