@@ -2,6 +2,7 @@ package yk.senjin;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.XYit;
 
 import java.awt.*;
@@ -43,6 +44,11 @@ public class SomeTexture extends AbstractState {
     public int width;
     public int height;
 
+    //https://www.opengl.org/sdk/docs/man/html/glTexImage2D.xhtml
+    public int internalformat = GL_RGBA;
+    public int pixelDataFormat = GL_RGBA;
+    public int pixelDataType = GL_UNSIGNED_BYTE;
+
     public SomeTexture() {
     }
 
@@ -54,7 +60,7 @@ public class SomeTexture extends AbstractState {
         GL11.glGenTextures(texNames);
         textureObjectId = texNames.get(0);
         GL11.glBindTexture(GL_TEXTURE_2D, textureObjectId);
-        GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (java.nio.ByteBuffer)null);
+        GL11.glTexImage2D(GL_TEXTURE_2D, 0, internalformat, width, height, 0, pixelDataFormat, pixelDataType, (java.nio.ByteBuffer)null);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
@@ -71,7 +77,7 @@ public class SomeTexture extends AbstractState {
         ByteBuffer byteBuffer = convertToGL(image);
 //        ByteBuffer byteBuffer = VisualRealmManager.convertToGLUnoptimized(image);
         GL11.glBindTexture(GL_TEXTURE_2D, textureObjectId);
-        GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, byteBuffer);
+        GL11.glTexImage2D(GL_TEXTURE_2D, 0, internalformat, image.getWidth(), image.getHeight(), 0, pixelDataFormat, pixelDataType, byteBuffer);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
@@ -111,10 +117,11 @@ public class SomeTexture extends AbstractState {
 
     @Override
     public void enable() {
-        if (enabled) return;
+        if (enabled) BadException.die("already enabled");
         enabled = true;
-        glEnable(GL_TEXTURE_2D);
+        if (textureGlSlot == -1) BadException.die("not set texture slot");
         glActiveTexture(textureGlSlot);
+        glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, textureObjectId);
 
 
@@ -129,7 +136,7 @@ public class SomeTexture extends AbstractState {
 
     @Override
     public void disable() {
-        if (!enabled) return;
+        if (!enabled) BadException.die("already disabled");
         enabled = false;
         glActiveTexture(textureGlSlot);
         glBindTexture(GL11.GL_TEXTURE_2D, 0);
