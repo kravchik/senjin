@@ -12,7 +12,7 @@ Recent updates:
 
 12.15
 
-* interactive development
+* interactive development (runtime class and shader reloading)
 * HDR
 * deferred shading
 * multiple render targets
