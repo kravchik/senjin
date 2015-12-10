@@ -3,6 +3,11 @@
 //TODO
 test github project to test dependencies
 
+fix implicit ordering in multiple render targets
+  (buffers vs fragment output)
+  give buffer targets names?
+fix name clashing of local vars and inputs/outputs
+  (in groovy they in different scopes, but glsl they are not)
 bufferless vertex input
 geometry shader
 tessellation shader

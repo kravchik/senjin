@@ -1,6 +1,7 @@
 package yk.senjin.examples.hdr;
 
 import yk.jcommon.fastgeom.Vec2f;
+import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.shaders.gshader.StandardFSInput;
 
 /**
@@ -11,4 +12,5 @@ import yk.senjin.shaders.gshader.StandardFSInput;
  */
 public class HdrFi extends StandardFSInput {
     public Vec2f vTexCoord;
+    public Vec3f wsPos;
 }

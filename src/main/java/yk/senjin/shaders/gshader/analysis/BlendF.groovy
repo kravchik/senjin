@@ -5,7 +5,7 @@ import yk.jcommon.fastgeom.Vec4f
 import yk.senjin.examples.blend.BlendFi
 import yk.senjin.shaders.gshader.FragmentShaderParent
 import yk.senjin.shaders.gshader.Sampler2D
-import yk.senjin.shaders.gshader.StandardFrame
+import yk.senjin.shaders.gshader.StandardFSOutput
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +14,7 @@ import yk.senjin.shaders.gshader.StandardFrame
  * Time: 20:46
  */
 //initially based on http://habrahabr.ru/post/239085/
-class BlendF extends FragmentShaderParent<BlendFi> {
+class BlendF extends FragmentShaderParent<BlendFi, StandardFSOutput> {
 
     final int MAX_KOEFF_SIZE = 32; //максимальный размер ядра (массива коэффициентов)
 
@@ -25,7 +25,7 @@ class BlendF extends FragmentShaderParent<BlendFi> {
     public Vec2f direction = new Vec2f(0.003f, 0f); //направление размытия с учетом радиуса размытия и aspect ratio, например (0.003, 0.0) - горизонтальное и (0.0, 0.002) - вертикальное
 
     @Override
-    void main(BlendFi blendFi, StandardFrame o) {
+    void main(BlendFi blendFi, StandardFSOutput o) {
 
         testFoo(blendFi.vTexCoord)
         testFoo(direction)

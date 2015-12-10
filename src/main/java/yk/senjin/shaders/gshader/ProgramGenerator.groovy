@@ -80,7 +80,7 @@ class ProgramGenerator {
             inputClass = Class.forName(input.type.name)
             outputClass = Class.forName(output.type.name)
         }
-        if (programType.equals("fs") && outputClass != StandardFrame.class) throw new Error("Fragment shader must have ${StandardFrame.class.getSimpleName()} output type, but it is " + outputClass)
+        if (programType.equals("fs") && !StandardFSOutput.class.isAssignableFrom(outputClass)) throw new Error("Fragment shader must have ${StandardFSOutput.class.getSimpleName()} output type, but it is " + outputClass)
 
 
         if (inputClass != StandardVSInput.class) for (fn in inputClass.getDeclaredFields()) {

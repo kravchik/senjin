@@ -106,25 +106,25 @@ public class WatchBlend extends Simple3DWatch {
 
         // fbo1 -> fbo2 (with horizontal blur)
         fbo2.beginRenderToFbo();
-        fbo1.texture.enable(0);
-        blendF.txt.set(fbo1.texture);
+        fbo1.textures.car().enable(0);
+        blendF.txt.set(fbo1.textures.car());
         blendF.direction = new Vec2f(0.003f, 0f);
 //        cameraDraw(fbo2, blendProgram, ???, ???, fbo1.texture);
         blendProgram.shader.enable();
         FrameBuffer.renderFBO2(fboSize, fboSize);
         blendProgram.shader.disable();
-        fbo1.texture.disable();
+        fbo1.textures.car().disable();
         fbo2.endRenderToFbo();
 
         //fbo2 -> standard frame (with result blur)
-        fbo2.texture.enable(0);
-        blendF.txt.set(fbo2.texture);
+        fbo2.textures.car().enable(0);
+        blendF.txt.set(fbo2.textures.car());
         blendF.direction = new Vec2f(0f, 0.003f);
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
         blendProgram.shader.enable();
         FrameBuffer.renderFBO2(w, h);
         blendProgram.shader.disable();
-        fbo2.texture.disable();
+        fbo2.textures.car().disable();
     }
 
     public static void cameraDraw(FrameBuffer fbo, GShader shader1, ReflectionVBO vbo1, DrawIndicesShort indices, SomeTexture... textures) {

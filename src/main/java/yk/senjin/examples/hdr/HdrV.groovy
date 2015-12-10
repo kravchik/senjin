@@ -16,5 +16,7 @@ class HdrV extends VertexShaderParent<StandardVSInput, HdrFi> {
     void main(StandardVSInput i, HdrFi o) {
         o.gl_Position = modelViewProjectionMatrix * i.gl_Vertex;
         o.vTexCoord = i.gl_MultiTexCoord0.xy;
+        o.wsPos = i.gl_Vertex.xyz
+//        o.vTexCoord = Vec2f(i.gl_MultiTexCoord0.x, 1-i.gl_MultiTexCoord0.y);
     }
 }

@@ -92,7 +92,7 @@ public class GShader extends AbstractState {
         pfs = createProgram(srcDir, fs, "fs");
         if (pvs.outputClass != pfs.inputClass) throw new Error("output of VS " + pvs.outputClass.getName() + " must be same as input to FS " + pfs.inputClass.getName());
         if (!StandardFSInput.class.isAssignableFrom(pvs.outputClass)) throw new Error("output of VS must extends StandardFSInput");
-        if (pfs.outputClass != StandardFrame.class) throw new Error("output of FS must be StandardFrame class");
+        if (!StandardFSOutput.class.isAssignableFrom(pfs.outputClass)) throw new Error("output of FS must be StandardFrame class");
 
         Map<String, String> seenAt = hm();
         for (VertexAttrib a : pvs.attributes) {

@@ -1,11 +1,9 @@
 package yk.senjin.examples.hdr;
 
+import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.*;
-import yk.senjin.examples.specular.SpecularF;
-import yk.senjin.examples.specular.SpecularV;
-import yk.senjin.examples.specular.SpecularVi;
 import yk.senjin.shaders.gshader.GShader;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
@@ -24,9 +22,9 @@ import static yk.senjin.examples.blend.WatchBlend.cameraDraw;
  */
 public class WatchHdr implements LoadTickUnload<WatchReloadable> {
 
-    public HdrV blendV;
-    public HdrF blendF;
-    public GShader blendProgram;
+    public HdrV vs;
+    public HdrF fs;
+    public GShader shader;
 
     public SpecularF specularF;
     public SpecularV specularV;
@@ -51,10 +49,10 @@ public class WatchHdr implements LoadTickUnload<WatchReloadable> {
         specularV = new SpecularV();
         specularProgram = new GShader(specularV, specularF).runtimeReload();
 
-        blendF = new HdrF();
-        blendV = new HdrV();
-        blendV.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
-        blendProgram = new GShader(blendV, blendF).runtimeReload();
+        fs = new HdrF();
+        vs = new HdrV();
+        vs.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
+        shader = new GShader(vs, fs).runtimeReload();
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO(
@@ -66,11 +64,14 @@ public class WatchHdr implements LoadTickUnload<WatchReloadable> {
         indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 1, 2, 0, 2, 3));
 
         fboSize = 1024;
-        SomeTexture renderTexture = new SomeTexture();
-        renderTexture.internalformat = GL_RGBA32F;
-        renderTexture.init(fboSize, fboSize);
+        SomeTexture renderTexture1 = new SomeTexture();
+        renderTexture1.internalformat = GL_RGBA32F;
+        renderTexture1.init(fboSize, fboSize);
+        SomeTexture renderTexture2 = new SomeTexture();
+        renderTexture2.internalformat = GL_RGBA32F;
+        renderTexture2.init(fboSize, fboSize);
         fbo1 = new FrameBuffer();
-        fbo1.initFBO(renderTexture);
+        fbo1.initFBO(renderTexture1, renderTexture2);
     }
 
     @Override
@@ -86,21 +87,25 @@ public class WatchHdr implements LoadTickUnload<WatchReloadable> {
         fbo1.endRenderToFbo();
 
         //fbo1 -> standard frame (with result blur)
-        fbo1.texture.enable(0);
-        blendF.txt.set(fbo1.texture);
+        fbo1.textures.car().enable(0);
+        fbo1.textures.cadr().enable(1);
+        fs.txt1.set(fbo1.textures.car());
+        fs.txt2.set(fbo1.textures.cadr());
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
-        blendProgram.enable();
+        vs.modelViewProjectionMatrix = Matrix4.identity();
+        shader.enable();
         FrameBuffer.renderFBO2(watch.w, watch.h);
-        blendProgram.disable();
-        fbo1.texture.disable();
+        shader.disable();
+        fbo1.textures.car().disable();
+        fbo1.textures.cadr().disable();
     }
 
     @Override
     public void onUnload() {
-        blendProgram.release();
+        shader.release();
         specularProgram.release();
         vbo1.release();
         textureJfdi.release();
-        fbo1.texture.release();
+        fbo1.release();
     }
 }

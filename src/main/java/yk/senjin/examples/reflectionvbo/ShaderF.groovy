@@ -3,7 +3,7 @@ package yk.senjin.examples.reflectionvbo
 import yk.jcommon.fastgeom.Vec4f
 import yk.senjin.shaders.gshader.Sampler2D
 import yk.senjin.shaders.gshader.ShaderParent
-import yk.senjin.shaders.gshader.StandardFrame
+import yk.senjin.shaders.gshader.StandardFSOutput
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,7 +15,7 @@ class ShaderF extends ShaderParent {
     public Vec4f color = new Vec4f(1, 1, 1, 1)
     public Sampler2D txt = new Sampler2D()
 
-    def main(VSOutput i, StandardFrame o) {
+    def main(VSOutput i, StandardFSOutput o) {
 //        o.gl_FragColor = vec4(1, 0, 0, 1)
 //        o.gl_FragColor = color;
         o.gl_FragColor = texture2D(txt, i.pos.xy);

@@ -5,6 +5,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.Util;
 import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Quaternionf;
 import yk.jcommon.fastgeom.Vec2f;
@@ -78,7 +79,7 @@ public class Simple3DWatch {
             public void tick(float dt) throws Exception {
                 commonTick(dt);
                 THIS.tick(dt);
-                //aa
+                Util.checkGLError();
                 if (SIMPLE_AA) simpleAA.renderFBO();
                 Display.update();
                 if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) || Display.isCloseRequested()) exit = true;

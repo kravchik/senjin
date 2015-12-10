@@ -30,9 +30,9 @@ public class SimpleAntiAliasing2 {
 
     public void renderFBO() {
         fbo.endRenderToFbo();
-        fbo.texture.enable(0);
+        fbo.textures.car().enable(0);
         glGenerateMipmap(GL_TEXTURE_2D);
         FrameBuffer.renderFBO2(w, h);
-        fbo.texture.disable();
+        fbo.textures.car().disable();
     }
 }

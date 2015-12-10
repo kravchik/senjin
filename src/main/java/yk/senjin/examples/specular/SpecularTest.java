@@ -7,7 +7,7 @@ import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.utils.IO;
 import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.Sampler2D;
-import yk.senjin.shaders.gshader.StandardFrame;
+import yk.senjin.shaders.gshader.StandardFSOutput;
 
 import static org.junit.Assert.assertEquals;
 import static yk.jcommon.fastgeom.Matrix4.perspective;
@@ -33,7 +33,7 @@ public class SpecularTest {
 
 
 
-        StandardFrame frame = new StandardFrame();
+        StandardFSOutput frame = new StandardFSOutput();
 
         SpecularF f = new SpecularF();
         f.lightDir = new Vec3f(0, 0, 1);
