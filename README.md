@@ -12,8 +12,9 @@ Recent updates:
 
 12.15
 
-* interactive development and education
-* hdr tests
+* interactive development
+* education tools
+* HDR tests
 * multiple render targets
 - some bugs fixed
 
