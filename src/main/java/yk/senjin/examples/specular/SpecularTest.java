@@ -43,7 +43,7 @@ public class SpecularTest {
 
         SpecularFi vso = new SpecularFi();
         vso.normal = new Vec3f(0, 0, 1);
-        vso.csEyeDir = new Vec3f(0, 0, 1);
+        vso.csPos = new Vec3f(0, 0, 1);
         vso.csLightDir = new Vec3f(0, 0, 1);
         vso.csNormal = new Vec3f(0, 0, 1);
         vso.uv = new Vec2f(0, 0);
@@ -57,7 +57,7 @@ public class SpecularTest {
         f.lightDir = new Vec3f(1, 0, 0);
         vso.csLightDir = new Vec3f(1, 0, 0);
         vso.normal = new Vec3f(0, 0, 1);
-        vso.csEyeDir = new Vec3f(0, 0, 1);
+        vso.csPos = new Vec3f(0, 0, 1);
         vso.csNormal = new Vec3f(0, 0, 1);
         vso.uv = new Vec2f(0, 0);
 

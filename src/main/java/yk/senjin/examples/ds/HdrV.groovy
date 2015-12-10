@@ -1,4 +1,4 @@
-package yk.senjin.examples.hdr
+package yk.senjin.examples.ds
 
 import yk.jcommon.fastgeom.Matrix4
 import yk.senjin.shaders.gshader.StandardVSInput
@@ -15,7 +15,7 @@ class HdrV extends VertexShaderParent<StandardVSInput, HdrFi> {
     @Override
     void main(StandardVSInput i, HdrFi o) {
         o.gl_Position = modelViewProjectionMatrix * i.gl_Vertex;
-        o.vTexCoord = i.gl_MultiTexCoord0.xy;
+        o.uv = i.gl_MultiTexCoord0.xy;//todo get rid
         o.wsPos = i.gl_Vertex.xyz
 //        o.vTexCoord = Vec2f(i.gl_MultiTexCoord0.x, 1-i.gl_MultiTexCoord0.y);
     }

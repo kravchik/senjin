@@ -53,6 +53,7 @@ public class WatchSpecular extends Simple3DWatch {
     @Override
     public void tick(float dt) {
         vs.modelViewProjectionMatrix = camModelViewProjectionMatrix;
+        vs.modelViewMatrix = camModelViewMatrix;
         vs.normalMatrix = camNormalMatrix.get33();
         fs.shininess = 100;
 

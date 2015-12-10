@@ -13,7 +13,7 @@ import yk.senjin.shaders.gshader.StandardFSInput;
 public class SpecularFi extends StandardFSInput {
     public Vec3f normal;
     public Vec3f csNormal;//cam space normal
-    public Vec3f csEyeDir;
+    public Vec3f csPos;
     public Vec2f uv;
     public Vec3f csLightDir;//cam space light dir
 }
