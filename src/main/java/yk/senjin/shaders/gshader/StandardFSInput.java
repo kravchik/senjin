@@ -11,6 +11,7 @@ import yk.jcommon.fastgeom.Vec4f;
 public class StandardFSInput {
 
     public Vec4f gl_Position;
+    public Vec4f gl_FragCoord;
     public Vec4f gl_FrontColor;
     public Vec4f gl_Color;
     public boolean gl_FrontFacing;
