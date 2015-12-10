@@ -10,6 +10,15 @@ Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-
 
 Recent updates:
 
+12.15
+
+* interactive development and education
+* hdr tests
+* multiple render targets
+- some bugs fixed
+
+11.15
+
 * fixed mvn dependency (welcome to chat if you have any problems!)
 * glsl swizzles ```v.xz = v2.yy```
 * (almost) all glsl functions
