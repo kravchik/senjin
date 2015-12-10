@@ -306,6 +306,7 @@ class ProgramGenerator {
         def opName = e.operation.getText()
         if (opName == "[") return translateExpression(e.leftExpression) + "[" + translateExpression(e.rightExpression) + "]"
         //TODO skip redundant ()
+        if (opName == "=") return translateExpression(e.leftExpression) + " " + opName + " " + translateExpression(e.rightExpression)
         return "(" + translateExpression(e.leftExpression) + " " + opName + " " + translateExpression(e.rightExpression) + ")"
     }
 
