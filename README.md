@@ -10,6 +10,10 @@ Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-
 
 Recent updates:
 
+02.16
+* better buffers
+- some bugs fixed
+
 12.15
 
 * interactive development (runtime class and shader reloading)

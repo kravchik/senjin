@@ -27,17 +27,28 @@ public class Test2D extends BaseEdu2D {
         drawCircle(0,5,5);
 
         //smile
-        drawCircle(14,14,3);
-        drawLine(12,13,15,13);
-        drawCircle(12,15,0.3);
-        drawPoint(12,15);
-        drawCircle(15,15,0.3);
-        drawPoint(15,15);
+        setColor(1,0,0);
+        fillEllipse(14,8,3,4);
+        drawLine(7,10,14,9);
+        drawLine(21,10,14,9);
+        setColor (1,1,0);//жёлтый
+        fillCircle(14,14,3);//голова
+        setColor(0,0,0);//чёрный
+        drawLine(12,13,15,13);//рот
+        setColor(1,1,1);
+        fillCircle(12,15,0.3);//левый глаз
+        setColor(0,0,0);
+        drawPoint(12,15);//левый зрачёк
+        setColor(1,1,1);
+        fillCircle(15,15,0.3);//правый глаз
+        setColor(1,1,1);
+        setColor(0,0,0);
+        drawPoint(15,15);//правый зрачёк
+        drawPoint(13.5,14);
+
 
         drawPoint(1, 1);
-
-
-
+        setColor (1,1,0);
 
 
 
