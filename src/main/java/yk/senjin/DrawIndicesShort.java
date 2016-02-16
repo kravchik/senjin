@@ -24,6 +24,14 @@ public class DrawIndicesShort extends AbstractState {
         fill(indices);
     }
 
+    public static DrawIndicesShort simple(int count, int primitiveType) {
+        DrawIndicesShort result = new DrawIndicesShort(primitiveType);
+        result.indexBuffer = BufferUtils.createShortBuffer(count);
+        for (int i = 0; i < count; i++) result.indexBuffer.put((short) i);
+        result.indexBuffer.rewind();
+        return result;
+    }
+
     public DrawIndicesShort(final int primitiveType) {
         this.primitiveType = primitiveType;
     }

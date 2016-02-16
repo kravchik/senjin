@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <lwjgl.version>2.8.4</lwjgl.version>
+        <lwjgl.version>2.9.3</lwjgl.version>
     </properties>
 
     <build>
@@ -98,10 +98,14 @@
 
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
-                <!--<filtering>true</filtering>-->
+                <directory>src/main/java/</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.groovy</include>
+                </includes>
             </resource>
         </resources>
+
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>

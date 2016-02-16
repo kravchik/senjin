@@ -3,7 +3,9 @@ package yk.senjin;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
+import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.*;
+import yk.senjin.examples.ds.PoconuvVi;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -13,6 +15,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.util.glu.GLU.gluProject;
 import static org.lwjgl.util.glu.GLU.gluUnProject;
+import static yk.jcommon.collections.YArrayList.al;
+import static yk.jcommon.fastgeom.Vec3f.v3;
 
 
 /**
@@ -404,6 +408,10 @@ public class DDDUtils {//TODO extract to another lib
         glColor3f(color.x, color.y, color.z);
     }
 
+    public static void glColor(Vec4f color) {
+        glColor4f(color.x, color.y, color.z, color.w);
+    }
+
     public static Matrix4 get2DProjectionMatrix(float w, float h, float f) {
         Matrix4 result = new Matrix4();
         result.set(0, 0, 2f / w); result.set(3, 0, -1);
@@ -431,6 +439,50 @@ public class DDDUtils {//TODO extract to another lib
         glVec3f(b.sub(center).mul(shrink).add(center));
         glVec3f(c.sub(center).mul(shrink).add(center));
     }
+
+    public static YList<YList<PoconuvVi>> CUBE = cube();
+    
+    public static YList<YList<PoconuvVi>> cube() {
+        return al(
+                al(
+                        new PoconuvVi(new Vec3f(-1, -1, -1),v3(0, 0, -1), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(1, -1, -1), v3(0, 0, -1), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(1, 1, -1),  v3(0, 0, -1), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(-1, 1, -1), v3(0, 0, -1), new Vec2f(0, 0))
+                ),
+                al(
+                        new PoconuvVi(new Vec3f(1, -1, 1),  v3(0, 0, 1), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(-1, -1, 1), v3(0, 0, 1), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(-1, 1, 1),  v3(0, 0, 1), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(1, 1, 1),   v3(0, 0, 1), new Vec2f(0, 0))
+                ),
+                al(
+                        new PoconuvVi(new Vec3f(1, -1, -1), v3(1, 0, 0), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(1, -1, 1),  v3(1, 0, 0), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(1, 1, 1),   v3(1, 0, 0), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(1, 1, -1),  v3(1, 0, 0), new Vec2f(0, 0))
+                ),
+                al(
+                        new PoconuvVi(new Vec3f(-1, -1, 1), v3(-1, 0, 0), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(-1, -1, -1),v3(-1, 0, 0), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(-1, 1, -1), v3(-1, 0, 0), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(-1, 1, 1),  v3(-1, 0, 0), new Vec2f(0, 0))
+                ),
+                al(
+                        new PoconuvVi(new Vec3f(-1, 1, 1),  v3(0, 1, 0), new Vec2f(0, 0)),
+                        new PoconuvVi(new Vec3f(1, 1, 1),   v3(0, 1, 0), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(1, 1, -1),  v3(0, 1, 0), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(-1, 1, -1), v3(0, 1, 0), new Vec2f(0, 1))
+                ),
+                al(
+                        new PoconuvVi(new Vec3f(-1, -1, -1),v3(0, -1, 0), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(1, -1, -1), v3(0, -1, 0), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(1, -1, 1),  v3(0, -1, 0), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(-1, -1, 1), v3(0, -1, 0), new Vec2f(0, 0))
+                )
+        );
+    }
+    
 
     public static void uniform(int index, Vec2f v) {
         uniform(index, v.x, v.y);

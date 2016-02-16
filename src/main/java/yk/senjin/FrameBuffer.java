@@ -11,8 +11,7 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_COMPLETE;
+import static org.lwjgl.opengl.GL30.*;
 import static yk.jcommon.collections.YArrayList.al;
 
 /**
@@ -24,6 +23,20 @@ public class FrameBuffer {
     public int framebufferID;
     public int depthRenderBufferID;
     public YList<SomeTexture> textures;
+
+    public static FrameBuffer multipleRenderTargetsF32(int count, int w, int h) {
+        SomeTexture tt[] = new SomeTexture[count];
+        for (int i = 0; i < count; i++) {
+            SomeTexture texture = new SomeTexture();
+            texture.internalformat = GL_RGBA32F;
+            texture.init(w, h);
+            tt[i] = texture;
+        }
+
+        FrameBuffer result = new FrameBuffer();
+        result.initFBO(tt);
+        return result;
+    }
 
     public void initFBO(SomeTexture... tt) {
         // init our fbo
@@ -90,6 +103,14 @@ public class FrameBuffer {
         glEnd();
 
         glFlush();
+    }
+
+    public void enableTextures() {
+        for (int i = 0; i < textures.size(); i++) textures.get(i).enable(i);
+    }
+
+    public void disableTextures() {
+        for (int i = 0; i < textures.size(); i++) textures.get(i).disable();
     }
 
     public void release() {

@@ -1,7 +1,6 @@
 package yk.senjin.examples.ds;
 
 import yk.jcommon.fastgeom.Vec2f;
-import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.shaders.gshader.StandardFSInput;
 
 /**
@@ -10,7 +9,6 @@ import yk.senjin.shaders.gshader.StandardFSInput;
  * Date: 23/10/15
  * Time: 20:46
  */
-public class HdrFi extends StandardFSInput {
+public class UvFi extends StandardFSInput {
     public Vec2f uv;
-    public Vec3f wsPos;
 }

@@ -20,7 +20,7 @@ import static yk.senjin.DDDUtils.glVec3f;
 public class SkyBox {
     public BufferedImage image;
     private SomeTexture st;
-    private YList<SomeTexture> st2;
+    public YList<SomeTexture> st2;
 
     public Quaternionf rot;
     public boolean enableTexture = true;

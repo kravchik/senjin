@@ -14,6 +14,7 @@ import yk.senjin.shaders.gshader.StandardFSOutput
 public class SpecularF extends FragmentShaderParent<SpecularFi, StandardFSOutput> {
     public Sampler2D txt = new Sampler2D()
     public float shininess = 10;
+    public float shininessStrength = 20;
     public Vec3f ambient = Vec3f(0.1, 0.1, 0.1);
     public Vec3f lightDir
 
@@ -24,9 +25,10 @@ public class SpecularF extends FragmentShaderParent<SpecularFi, StandardFSOutput
 
         Vec3f diffuse  = color * (max(0f, dot(i.csNormal, i.csLightDir)) * lightColor + ambient);
         Vec3f r = normalize(reflect(normalize(i.csLightDir), normalize(i.csNormal)));
-        Vec3f specular = lightColor * matSpec * pow(max(0f, dot(r, -normalize(-i.csPos))), shininess) * 20;
+        Vec3f specular = lightColor * matSpec * pow(max(0f, dot(r, -normalize(-i.csPos))), shininess) * shininessStrength;
 
 //        o.gl_FragColor =  clamp(Vec4f(ambient + diffuse + specular, 1), 0, 1);
         o.gl_FragColor =  Vec4f(diffuse + specular, 1);
+//        o.gl_FragColor =  Vec4f(diffuse, 1);
     }
 }

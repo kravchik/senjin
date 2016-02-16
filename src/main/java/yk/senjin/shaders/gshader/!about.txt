@@ -3,6 +3,10 @@
 //TODO
 test github project to test dependencies
 
+bug:
+    in      o.out2 = Vec4f(fNormal2(i.pos2), 1);
+    can't find fNormal2 method
+
 fix implicit ordering in multiple render targets
   (buffers vs fragment output)
   give buffer targets names?

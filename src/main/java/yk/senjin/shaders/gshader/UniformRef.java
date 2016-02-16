@@ -1,7 +1,7 @@
 package yk.senjin.shaders.gshader;
 
+import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.Reflector;
-import yk.senjin.DDDUtils;
 import yk.senjin.shaders.UniformVariable;
 
 import java.lang.reflect.Field;
@@ -16,8 +16,6 @@ abstract public class UniformRef<T> extends UniformVariable {
     protected Object src;
     protected Field _field;
 
-
-
     public UniformRef(String name, Object src, String fieldName) {
         _field = Reflector.getField(src.getClass(), fieldName);
         this.src = src;
@@ -26,7 +24,9 @@ abstract public class UniformRef<T> extends UniformVariable {
 
     public T getValue() {
         try {
-            return (T) _field.get(src);
+            T result = (T) _field.get(src);
+            if (result == null) BadException.die("null in field " + _field.getName());
+            return result;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

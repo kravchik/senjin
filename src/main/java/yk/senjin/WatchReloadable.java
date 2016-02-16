@@ -1,5 +1,7 @@
 package yk.senjin;
 
+import java.util.function.Consumer;
+
 /**
  * Created with IntelliJ IDEA.
  * User: yuri
@@ -33,5 +35,20 @@ public class WatchReloadable extends Simple3DWatch {
     @Override
     public void tick(float dt) {
         newWatcher.tick(this, dt);
+    }
+
+    public Consumer<Integer> mouseDownListener;
+    public Consumer<Integer> mouseUpListener;
+
+    @Override
+    public void onMousePressed(int button) {
+        super.onMousePressed(button);
+        if (mouseDownListener != null) mouseDownListener.accept(button);
+    }
+
+    @Override
+    public void onMouseReleased(int button) {
+        super.onMouseReleased(button);
+        if (mouseUpListener != null) mouseUpListener.accept(button);
     }
 }

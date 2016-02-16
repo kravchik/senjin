@@ -10,7 +10,6 @@ import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Quaternionf;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
-import yk.jcommon.utils.Cam;
 import yk.jcommon.utils.Threads;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -34,8 +33,9 @@ public class Simple3DWatch {
 
     public boolean firstFrame = true;
     public boolean drawAxis = true;
+    public boolean workMouse = true;
 
-    public boolean SIMPLE_AA = true;
+    public boolean SIMPLE_AA = false;
     SimpleAntiAliasing2 simpleAA;
 
     //TODO extract viewport
@@ -66,9 +66,9 @@ public class Simple3DWatch {
     public Simple3DWatch(int w, int h, boolean createThread) {
         this.w = w;
         this.h = h;
-        if (SIMPLE_AA) {
+//        if (SIMPLE_AA) {
             simpleAA = new SimpleAntiAliasing2();
-        }
+//        }
 
         final Simple3DWatch THIS = this;
         cam.lookAt = new Vec3f(0, 0, 100);
@@ -93,8 +93,30 @@ public class Simple3DWatch {
         onRender(dt);
     }
 
+    public void onMousePressed(int button) {
+
+    };
+
+    public void onMouseReleased(int button) {
+
+    };
+
+    public void onMouseMoved() {
+
+    };
+
     protected void onRender(float dt) {
         //aa
+
+        if (workMouse) while (Mouse.next()){
+            if (Mouse.getEventButtonState()) {
+                onMousePressed(Mouse.getEventButton());
+            } else {
+                if (Mouse.getEventButton() == -1) onMouseMoved();
+                else onMouseReleased(Mouse.getEventButton());
+            }
+        }
+
         if (SIMPLE_AA) simpleAA.switchToFBO();
         mouseCur = new Vec2f(Mouse.getX(), Mouse.getY());
         if (Mouse.isButtonDown(0)) {

@@ -72,12 +72,25 @@ public class SomeTexture extends AbstractState {
         setImage(image);
     }
 
+    public SomeTexture(int[] data, int w, int h) {
+        this.width = w;
+        this.height = h;
+        IntBuffer texNames;
+        texNames = BufferUtils.createIntBuffer(1);
+        GL11.glGenTextures(texNames);
+        textureObjectId = texNames.get(0);
+        uploadData(w, h, convertToGL(data));
+    }
+
     public void setImage(BufferedImage image) {
         this.image = image;
-        ByteBuffer byteBuffer = convertToGL(image);
-//        ByteBuffer byteBuffer = VisualRealmManager.convertToGLUnoptimized(image);
+        uploadData(image.getWidth(), image.getHeight(), convertToGL(image));
+    }
+
+    private void uploadData(int w, int h, ByteBuffer byteBuffer) {
+        //        ByteBuffer byteBuffer = VisualRealmManager.convertToGLUnoptimized(image);
         GL11.glBindTexture(GL_TEXTURE_2D, textureObjectId);
-        GL11.glTexImage2D(GL_TEXTURE_2D, 0, internalformat, image.getWidth(), image.getHeight(), 0, pixelDataFormat, pixelDataType, byteBuffer);
+        GL11.glTexImage2D(GL_TEXTURE_2D, 0, internalformat, w, h, 0, pixelDataFormat, pixelDataType, byteBuffer);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
@@ -93,6 +106,19 @@ public class SomeTexture extends AbstractState {
             data.put((byte) buf[i]);
             data.put((byte) buf[i + 1]);
             data.put((byte) buf[i + 2]);
+            data.put((byte) 255);
+        }
+        data.rewind();
+        return data;
+    }
+
+    public static ByteBuffer convertToGL(int[] ii) {
+        ByteBuffer data;
+        data = BufferUtils.createByteBuffer(ii.length / 3 * 4);
+        for (int i = 0; i < ii.length; i += 3) {
+            data.put((byte) ii[i]);
+            data.put((byte) ii[i + 1]);
+            data.put((byte) ii[i + 2]);
             data.put((byte) 255);
         }
         data.rewind();

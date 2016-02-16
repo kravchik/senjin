@@ -23,12 +23,12 @@ import static yk.senjin.examples.blend.WatchBlend.cameraDraw;
  */
 public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
 
-    public HdrV hdrV;
-    public HdrF hdrF;
+    public PosuvV hdrV;
+    public DeferredShadeF hdrF;
     public GShader hdrProgram;
 
-    public SpecularF specularF;
-    public SpecularV specularV;
+    public DeferredDataF specularF;
+    public PoconuvV specularV;
     public GShader specularProgram;
 
     public ReflectionVBO vbo1;
@@ -46,21 +46,21 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
 
     @Override
     public void onLoad(WatchReloadable watch) {
-        specularF = new SpecularF();
-        specularV = new SpecularV();
+        specularF = new DeferredDataF();
+        specularV = new PoconuvV();
         specularProgram = new GShader(specularV, specularF).runtimeReload();
 
-        hdrF = new HdrF();
-        hdrV = new HdrV();
+        hdrF = new DeferredShadeF();
+        hdrV = new PosuvV();
         hdrV.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
         hdrProgram = new GShader(hdrV, hdrF).runtimeReload();
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO(
-                new SpecularVi(new Vec3f(0, 0, 0),  new Vec3f(-1, -1, 1).normalized(), new Vec2f(0, 1)),
-                new SpecularVi(new Vec3f(10, 0, 0), new Vec3f( 1, -1, 1).normalized(), new Vec2f(1, 1)),
-                new SpecularVi(new Vec3f(10, 10, 0),new Vec3f( 1,  1, 1).normalized(), new Vec2f(1, 0)),
-                new SpecularVi(new Vec3f(0, 10, 0), new Vec3f(-1,  1, 1).normalized(), new Vec2f(0, 0)));
+                new PoconuvVi(new Vec3f(0, 0, 0),  new Vec3f(-1, -1, 1).normalized(), new Vec2f(0, 1)),
+                new PoconuvVi(new Vec3f(10, 0, 0), new Vec3f( 1, -1, 1).normalized(), new Vec2f(1, 1)),
+                new PoconuvVi(new Vec3f(10, 10, 0),new Vec3f( 1,  1, 1).normalized(), new Vec2f(1, 0)),
+                new PoconuvVi(new Vec3f(0, 10, 0), new Vec3f(-1,  1, 1).normalized(), new Vec2f(0, 0)));
         vbo1.upload();
         indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 1, 2, 0, 2, 3));
 

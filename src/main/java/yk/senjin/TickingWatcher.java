@@ -9,7 +9,7 @@ import yk.jcommon.utils.ClassChangeWatcher;
  * Time: 10:03
  */
 public class TickingWatcher<T> {
-    private ClassChangeWatcher<LoadTickUnload<T>> watcher;
+    public ClassChangeWatcher<LoadTickUnload<T>> watcher;
 
     public TickingWatcher(String path, T t, LoadTickUnload<T> o, Class... otherClasses) {
         watcher = ClassChangeWatcher.watch(path, o, otherClasses);

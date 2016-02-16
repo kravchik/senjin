@@ -14,6 +14,8 @@ import yk.senjin.examples.specular.SpecularVi;
 import yk.senjin.shaders.gshader.GShader;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
@@ -145,6 +147,15 @@ public class WatchBlend extends Simple3DWatch {
         indices.draw();
         shader1.disable();
         for (int i = textures.length-1; i >= 0; i--) textures[i].disable();
+    }
+
+    public static void cameraDraw(GShader shader1, ReflectionVBO vbo1, DrawIndicesShort indices, List<SomeTexture> textures) {
+        for (int i = 0; i < textures.size(); i++) textures.get(i).enable(i);
+        shader1.setInput(vbo1);
+        shader1.enable();
+        indices.draw();
+        shader1.disable();
+        for (int i = textures.size()-1; i >= 0; i--) textures.get(i).disable();
     }
 
 

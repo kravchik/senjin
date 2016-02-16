@@ -27,11 +27,11 @@ abstract public class ShaderParent {
         //TODO clamp, mag, filter, etc
         //now works as GL_REPEAT, mag filter GL_LINEAR, min filter - I don't know
         float fx = fract(uv.x);
-        float fy = fract(uv.x);
+        float fy = fract(uv.y);
         int x = (int) (fx * image.getWidth());
         int y = (int) (fy * image.getHeight());
-        float ffx = fx - x;
-        float ffy = fy - y;
+        float ffx = fx * image.getWidth() - x;
+        float ffy = fy * image.getHeight()  - y;
 
         Vec4f c00 = getColor(p, x, y);
         Vec4f c10 = getColor(p, x+1, y);
@@ -45,9 +45,9 @@ abstract public class ShaderParent {
         x = (int) mod(x, image.getWidth());
         y = (int) mod(y, image.getHeight());
         int color = image.getRGB(x, y);
-        float a = (color & 0xff000000) >> 24;
-        float r = (color & 0x00ff0000) >> 16;
-        float g = (color & 0x0000ff00) >> 8;
+        float a = (color & 0xff000000) >>> 24;
+        float r = (color & 0x00ff0000) >>> 16;
+        float g = (color & 0x0000ff00) >>> 8;
         float b = color & 0x000000ff;
         return new Vec4f(a / 255f, r / 255f, g / 255f, b / 255f);
     }

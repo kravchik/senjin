@@ -10,6 +10,7 @@ import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.FileWatcher;
+import yk.jcommon.utils.IO;
 import yk.senjin.AbstractState;
 import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.UniformVariable;
@@ -51,8 +52,16 @@ public class GShader extends AbstractState {
 
     public GShader runtimeReload() {
         if (fsWatcher != null) BadException.die("already watching");
-        fsWatcher = new FileWatcher(pfs.srcPath);
-        vsWatcher = new FileWatcher(pvs.srcPath);
+        try {
+            fsWatcher = new FileWatcher(pfs.srcPath);
+        } catch (Exception e) {
+            System.out.println("warning: not watching for " + pfs.srcPath);
+        }
+        try {
+            vsWatcher = new FileWatcher(pvs.srcPath);
+        } catch (Exception e) {
+            System.out.println("warning: not watching for " + pvs.srcPath);
+        }
         return this;
     }
 
@@ -146,9 +155,17 @@ public class GShader extends AbstractState {
 
     public static ProgramGenerator createProgram(String srcDir, ShaderParent vs, String programType) {
         String path1 = vs.getClass().getName();
-        path1 = srcDir + path1.replace(".", "/") + ".groovy";
-//        System.out.println(path1);
-        return new ProgramGenerator(path1, vs, programType);
+        String resultPath = srcDir + path1.replace(".", "/") + ".groovy";
+        String src;
+        if (!new File(resultPath).exists()) {
+            resultPath = path1.replace(".", "/") + ".groovy";
+            src = IO.streamToString(vs.getClass().getResourceAsStream("/" + resultPath));
+        } else {
+            src = IO.readFile(resultPath);
+        }
+
+
+        return new ProgramGenerator(src, resultPath, vs, programType);
     }
 
     private YMap<Class, YList<AbstractArrayStructure>> type2structure = hm();
@@ -196,7 +213,8 @@ public class GShader extends AbstractState {
 
     @Override
     public void enable() {
-        if (fsWatcher != null && (fsWatcher.isChanged() | vsWatcher.isChanged())) {
+        boolean changed = fsWatcher != null && fsWatcher.isChanged() || vsWatcher != null && vsWatcher.isChanged();
+        if (changed) {
             //TODO clean up on fails!
             GShader newShader = new GShader(srcDir, pvs.shaderGroovy, pfs.shaderGroovy);
             shader.deleteProgram();
