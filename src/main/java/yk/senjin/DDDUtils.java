@@ -445,40 +445,40 @@ public class DDDUtils {//TODO extract to another lib
     public static YList<YList<PoconuvVi>> cube() {
         return al(
                 al(
-                        new PoconuvVi(new Vec3f(-1, -1, -1),v3(0, 0, -1), new Vec2f(0, 1)),
-                        new PoconuvVi(new Vec3f(1, -1, -1), v3(0, 0, -1), new Vec2f(1, 1)),
-                        new PoconuvVi(new Vec3f(1, 1, -1),  v3(0, 0, -1), new Vec2f(1, 0)),
-                        new PoconuvVi(new Vec3f(-1, 1, -1), v3(0, 0, -1), new Vec2f(0, 0))
+                        new PoconuvVi(new Vec3f(1, 1, -1), v3(1, 0, 0), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(1, 1, 1),  v3(1, 0, 0), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(1, -1, 1),   v3(1, 0, 0), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(1, -1, -1),  v3(1, 0, 0), new Vec2f(0, 0))
                 ),
                 al(
-                        new PoconuvVi(new Vec3f(1, -1, 1),  v3(0, 0, 1), new Vec2f(0, 1)),
-                        new PoconuvVi(new Vec3f(-1, -1, 1), v3(0, 0, 1), new Vec2f(1, 1)),
-                        new PoconuvVi(new Vec3f(-1, 1, 1),  v3(0, 0, 1), new Vec2f(1, 0)),
-                        new PoconuvVi(new Vec3f(1, 1, 1),   v3(0, 0, 1), new Vec2f(0, 0))
-                ),
-                al(
-                        new PoconuvVi(new Vec3f(1, -1, -1), v3(1, 0, 0), new Vec2f(0, 1)),
-                        new PoconuvVi(new Vec3f(1, -1, 1),  v3(1, 0, 0), new Vec2f(1, 1)),
-                        new PoconuvVi(new Vec3f(1, 1, 1),   v3(1, 0, 0), new Vec2f(1, 0)),
-                        new PoconuvVi(new Vec3f(1, 1, -1),  v3(1, 0, 0), new Vec2f(0, 0))
-                ),
-                al(
-                        new PoconuvVi(new Vec3f(-1, -1, 1), v3(-1, 0, 0), new Vec2f(0, 1)),
-                        new PoconuvVi(new Vec3f(-1, -1, -1),v3(-1, 0, 0), new Vec2f(1, 1)),
-                        new PoconuvVi(new Vec3f(-1, 1, -1), v3(-1, 0, 0), new Vec2f(1, 0)),
-                        new PoconuvVi(new Vec3f(-1, 1, 1),  v3(-1, 0, 0), new Vec2f(0, 0))
+                        new PoconuvVi(new Vec3f(-1, 1, 1), v3(-1, 0, 0), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(-1, 1, -1),v3(-1, 0, 0), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(-1, -1, -1), v3(-1, 0, 0), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(-1, -1, 1),  v3(-1, 0, 0), new Vec2f(0, 0))
                 ),
                 al(
                         new PoconuvVi(new Vec3f(-1, 1, 1),  v3(0, 1, 0), new Vec2f(0, 0)),
-                        new PoconuvVi(new Vec3f(1, 1, 1),   v3(0, 1, 0), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(1, 1,  1),   v3(0, 1, 0), new Vec2f(1, 0)),
                         new PoconuvVi(new Vec3f(1, 1, -1),  v3(0, 1, 0), new Vec2f(1, 1)),
-                        new PoconuvVi(new Vec3f(-1, 1, -1), v3(0, 1, 0), new Vec2f(0, 1))
+                        new PoconuvVi(new Vec3f(-1, 1,-1), v3(0, 1, 0), new Vec2f(0, 1))
                 ),
                 al(
-                        new PoconuvVi(new Vec3f(-1, -1, -1),v3(0, -1, 0), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(-1, -1,-1),v3(0, -1, 0), new Vec2f(0, 1)),
                         new PoconuvVi(new Vec3f(1, -1, -1), v3(0, -1, 0), new Vec2f(1, 1)),
-                        new PoconuvVi(new Vec3f(1, -1, 1),  v3(0, -1, 0), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(1, -1,  1),  v3(0, -1, 0), new Vec2f(1, 0)),
                         new PoconuvVi(new Vec3f(-1, -1, 1), v3(0, -1, 0), new Vec2f(0, 0))
+                ),
+                al(
+                        new PoconuvVi(new Vec3f(-1, -1, 1),  v3(0, 0, 1), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(1, -1, 1), v3(0, 0, 1), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(1, 1, 1),  v3(0, 0, 1), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(-1, 1, 1),   v3(0, 0, 1), new Vec2f(0, 0))
+                ),
+                al(
+                        new PoconuvVi(new Vec3f(1, -1, -1),v3(0, 0, -1), new Vec2f(0, 1)),
+                        new PoconuvVi(new Vec3f(-1, -1, -1), v3(0, 0, -1), new Vec2f(1, 1)),
+                        new PoconuvVi(new Vec3f(-1, 1, -1),  v3(0, 0, -1), new Vec2f(1, 0)),
+                        new PoconuvVi(new Vec3f(1, 1, -1), v3(0, 0, -1), new Vec2f(0, 0))
                 )
         );
     }

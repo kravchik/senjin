@@ -39,6 +39,7 @@ class DeferredShadeF extends FragmentShaderParent<UvFi, StandardFSOutput> {
 //            color = (csLightDir + 1)/2
         if (normal == Vec3f(0, 0, 0)) {
         } else {
+//            color = color * (max(0f, dot(normal, csLightDir)) * lightColor + ambient);
             color = specular + color * (max(0f, dot(normal, csLightDir)) * lightColor + ambient);
         }
 //        } else {
@@ -50,6 +51,7 @@ class DeferredShadeF extends FragmentShaderParent<UvFi, StandardFSOutput> {
         float fExposure = 2f
         color = 1f - exp(-fExposure * color)
 
+//        o.gl_FragColor = Vec4f(normal.x, normal.y, normal.z, 1);
         o.gl_FragColor = Vec4f(color, 1);
 
     }

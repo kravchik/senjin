@@ -37,7 +37,9 @@ import static yk.senjin.VertexStructureState.assertType;
  * Date: 14/12/14
  * Time: 18:46
  */
-public class GShader extends AbstractState {
+public class GShader<V, F> extends AbstractState {
+    public V vs;
+    public F fs;
 
     public ShaderHandler shader;
     public ProgramGenerator pvs;
@@ -99,6 +101,7 @@ public class GShader extends AbstractState {
     private void initImpl(String srcDir, ShaderParent vs, ShaderParent fs) {
         pvs = createProgram(srcDir, vs, "vs");
         pfs = createProgram(srcDir, fs, "fs");
+
         if (pvs.outputClass != pfs.inputClass) throw new Error("output of VS " + pvs.outputClass.getName() + " must be same as input to FS " + pfs.inputClass.getName());
         if (!StandardFSInput.class.isAssignableFrom(pvs.outputClass)) throw new Error("output of VS must extends StandardFSInput");
         if (!StandardFSOutput.class.isAssignableFrom(pfs.outputClass)) throw new Error("output of FS must be StandardFrame class");
@@ -132,6 +135,10 @@ public class GShader extends AbstractState {
                 iterator.remove();
             }
         }
+
+        this.vs = (V) vs;
+        this.fs = (F) fs;
+
     }
 
     private void newShader() {

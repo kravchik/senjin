@@ -11,10 +11,11 @@ import yk.senjin.shaders.gshader.Sampler2D
  */
 public class DeferredDataF extends FragmentShaderParent<PoconuvFi, DeferredDataFo> {
     public Sampler2D txt = new Sampler2D()
+    public float textureStrength = 1;
 
     def void main(PoconuvFi i, DeferredDataFo o) {
-        o.out1 = i.color + Vec4f(texture2D(txt, i.uv).xyz, 1);
-        o.out2 = Vec4f(i.csNormal, 0);
+        o.out1 = i.color + Vec4f(texture2D(txt, i.uv).xyz, 1) * textureStrength;
+        o.out2 = Vec4f(i.csNormal, 1);
         o.out3 = Vec4f(i.csPos, 1);
     }
 }
