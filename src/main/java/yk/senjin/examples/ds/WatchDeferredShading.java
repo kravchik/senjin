@@ -13,7 +13,6 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
 import static yk.jcommon.utils.IO.readImage;
-import static yk.senjin.examples.blend.WatchBlend.cameraDraw;
 
 /**
  * Created with IntelliJ IDEA.
@@ -89,7 +88,7 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
         specularV.modelViewMatrix = watch.camModelViewMatrix;
         specularV.normalMatrix = watch.camNormalMatrix.get33();
         specularF.txt.set(textureJfdi);
-        cameraDraw(specularProgram, vbo1, indices, textureJfdi);
+        DDDUtils.cameraDraw(specularProgram, vbo1, indices, textureJfdi);
         watch.drawAxis();
         fbo1.endRenderToFbo();
 
@@ -106,7 +105,7 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
         hdrV.modelViewProjectionMatrix = Matrix4.identity();
         hdrProgram.enable();
-        FrameBuffer.renderFBO2(watch.w, watch.h);
+        FrameBuffer.renderFBO(watch.w, watch.h);
         hdrProgram.disable();
         fbo1.textures.get(2).disable();
         fbo1.textures.get(1).disable();

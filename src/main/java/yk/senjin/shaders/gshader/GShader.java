@@ -37,7 +37,7 @@ import static yk.senjin.VertexStructureState.assertType;
  * Date: 14/12/14
  * Time: 18:46
  */
-public class GShader<V, F> extends AbstractState {
+public class GShader<V extends VertexShaderParent, F extends FragmentShaderParent> extends AbstractState {
     public V vs;
     public F fs;
 
@@ -52,7 +52,7 @@ public class GShader<V, F> extends AbstractState {
     private FileWatcher fsWatcher;
     private String srcDir;
 
-    public GShader runtimeReload() {
+    public <V extends VertexShaderParent, F extends FragmentShaderParent> GShader<V, F> runtimeReload() {
         if (fsWatcher != null) BadException.die("already watching");
         try {
             fsWatcher = new FileWatcher(pfs.srcPath);
@@ -64,7 +64,7 @@ public class GShader<V, F> extends AbstractState {
         } catch (Exception e) {
             System.out.println("warning: not watching for " + pvs.srcPath);
         }
-        return this;
+        return (GShader<V, F>) this;
     }
 
     public static GShader initFromSrcMainJava(ShaderParent vs, ShaderParent fs) {

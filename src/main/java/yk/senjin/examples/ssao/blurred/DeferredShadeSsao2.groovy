@@ -1,4 +1,4 @@
-package yk.senjin.examples.ssao
+package yk.senjin.examples.ssao.blurred
 
 import yk.jcommon.fastgeom.Vec2f
 import yk.jcommon.fastgeom.Vec3f
@@ -13,15 +13,12 @@ import yk.senjin.shaders.gshader.StandardFSOutput
  * Date: 23/10/15
  * Time: 20:46
  */
-class DeferredShadeSsao extends FragmentShaderParent<UvFi, StandardFSOutput> {
+
+//render to mono texture
+class DeferredShadeSsao2 extends FragmentShaderParent<UvFi, StandardFSOutput> {
     public Sampler2D txt1 = new Sampler2D();
     public Sampler2D txt2 = new Sampler2D();
     public Sampler2D txt3 = new Sampler2D();
-
-    public float shininess = 10;
-    public float shininessStrength = 20;
-    public Vec3f ambient = Vec3f(0.1, 0.1, 0.1);
-    public Vec3f csLightDir = Vec3f(1, 1, 1)
 
     public static float hash12(Vec2f p) {
         float h = dot(p,Vec2f(127f,311f));
@@ -58,19 +55,11 @@ class DeferredShadeSsao extends FragmentShaderParent<UvFi, StandardFSOutput> {
     @Override
     void main(UvFi i, StandardFSOutput o) {
 
-        Vec3f color = texture2D(txt1, i.uv).xyz;
         Vec3f normal = texture2D(txt2, i.uv).xyz
         Vec3f pos = texture2D(txt3, i.uv).xyz
 
-        Vec3f lightColor = Vec3f(1, 1, 1);
-        Vec3f matSpec = Vec3f(0.6, 0.5, 0.3);
-
         float d = -0.1f/pos.z;
-//        float d = 0.02f;
         float d2 = d / 2f;
-//        float d1 = 1-(
-//                        calcDelta(normal, pos, i.uv, Vec2f(d, 0))
-//        )
 
         float d1 = 1-(
                         calcDelta(normal, pos, i.uv, Vec2f(d, 0)) +
@@ -88,27 +77,17 @@ class DeferredShadeSsao extends FragmentShaderParent<UvFi, StandardFSOutput> {
                         calcDelta(normal, pos, i.uv, Vec2f(-d2, -d2)) +
                         calcDelta(normal, pos, i.uv, Vec2f(d2, -d2))
         )/8f
-        if (pos.z == 0) d1 = 0;
+//        if (pos.z == 0) d1 = 0;
 
-        Vec3f r = normalize(reflect(normalize(csLightDir), normalize(normal)));
-        Vec3f specular = lightColor * matSpec * pow(max(0f, dot(r, -normalize(-pos))), shininess) * shininessStrength;
-
-        if (normal == Vec3f(0, 0, 0)) {
-        } else {
-            color = specular + color * (max(0f, dot(normal, csLightDir)) * lightColor + ambient);
-        }
-
-
-        float fExposure = 2f
-        color = 1f - exp(-fExposure * color)
 
 //        o.gl_FragColor = Vec4f(0, 0, -pos.z/20, 1);
-        color *= d1;
 //        o.gl_FragColor = Vec4f(color.x, color.y*d1, color.x*d1, 1);
 //        o.gl_FragColor = Vec4f(0, d1, -pos.z, 1);
 //        o.gl_FragColor = Vec4f(0, (1-dark)/1, 0, 1);
 //        o.gl_FragColor = Vec4f(normal.x, normal.y, normal.z, 1);
-        o.gl_FragColor = Vec4f(color, 1);
+
+        o.gl_FragColor = Vec4f(d1, pos.z, 0, 1);
+//        o.gl_FragColor = Vec4f(d1, pos.z, 0, 0);
 
     }
 }

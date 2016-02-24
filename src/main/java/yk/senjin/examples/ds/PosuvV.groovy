@@ -4,6 +4,8 @@ import yk.jcommon.fastgeom.Matrix4
 import yk.senjin.shaders.gshader.StandardVSInput
 import yk.senjin.shaders.gshader.VertexShaderParent
 
+import static yk.jcommon.fastgeom.Matrix4.ortho
+
 /**
  * Created with IntelliJ IDEA.
  * User: yuri
@@ -11,7 +13,7 @@ import yk.senjin.shaders.gshader.VertexShaderParent
  * Time: 20:47
  */
 class PosuvV extends VertexShaderParent<StandardVSInput, UvFi> {
-    public Matrix4 modelViewProjectionMatrix;
+    public Matrix4 modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
     @Override
     void main(StandardVSInput i, UvFi o) {
         o.gl_Position = modelViewProjectionMatrix * i.gl_Vertex;

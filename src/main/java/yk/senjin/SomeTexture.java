@@ -45,14 +45,22 @@ public class SomeTexture extends AbstractState {
     public int height;
 
     //https://www.opengl.org/sdk/docs/man/html/glTexImage2D.xhtml
+    //Specifies the number of color components in the texture
+    //GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL, GL_RED, GL_RG, GL_RGB, GL_RGBA
+    //GL_R32F..., GL_RGBA32F,...
+    //INTERNAL
     public int internalformat = GL_RGBA;
+    //Specifies the format of the pixel data. The following symbolic values are accepted: GL_RED, GL_RG, GL_RGB, GL_BGR, GL_RGBA, GL_BGRA, GL_RED_INTEGER, GL_RG_INTEGER, GL_RGB_INTEGER, GL_BGR_INTEGER, GL_RGBA_INTEGER, GL_BGRA_INTEGER, GL_STENCIL_INDEX, GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL
+    //DATA
     public int pixelDataFormat = GL_RGBA;
+    //Specifies the data type of the pixel data. The following symbolic values are accepted: GL_UNSIGNED_BYTE, GL_BYTE...
+    //DATA
     public int pixelDataType = GL_UNSIGNED_BYTE;
 
     public SomeTexture() {
     }
 
-    public void init(int w, int h) {
+    public SomeTexture init(int w, int h) {
         width = w;
         height = h;
         IntBuffer texNames;
@@ -62,6 +70,7 @@ public class SomeTexture extends AbstractState {
         GL11.glBindTexture(GL_TEXTURE_2D, textureObjectId);
         GL11.glTexImage2D(GL_TEXTURE_2D, 0, internalformat, width, height, 0, pixelDataFormat, pixelDataType, (java.nio.ByteBuffer)null);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        return this;
     }
 
     public SomeTexture(BufferedImage image) {

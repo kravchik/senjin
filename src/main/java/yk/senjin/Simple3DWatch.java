@@ -47,6 +47,7 @@ public class Simple3DWatch {
     public final float magnifier = 1;
     float camPitch = 0;
     float camYaw = 0;
+    public Matrix4 perspectiveMatrix;
     public Matrix4 camModelViewMatrix;
     public Matrix4 camModelViewProjectionMatrix;
     public Matrix4 camNormalMatrix;//TODO or Matrix3?
@@ -156,7 +157,6 @@ public class Simple3DWatch {
         glBindTexture(GL_TEXTURE_2D, 0);
         glDepthMask(true);
 
-        Matrix4 perspectiveMatrix;
 //        if (ortho) {
 //            perspectiveMatrix = ortho(-cam.lookAt.z / 3, cam.lookAt.z / 3, -cam.lookAt.z / 3, cam.lookAt.z / 6, 1, 1200);
 //        } else {

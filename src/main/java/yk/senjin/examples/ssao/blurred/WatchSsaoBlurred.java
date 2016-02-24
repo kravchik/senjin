@@ -1,9 +1,7 @@
-package yk.senjin.examples.ssao;
+package yk.senjin.examples.ssao.blurred;
 
 import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.Matrix4;
-import yk.jcommon.fastgeom.Vec3f;
-import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.Rnd;
 import yk.senjin.*;
 import yk.senjin.examples.ds.DeferredDataF;
@@ -19,8 +17,8 @@ import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
 import static yk.jcommon.fastgeom.Vec3f.v3;
-import static yk.jcommon.fastgeom.Vec4f.v4;
 import static yk.jcommon.utils.IO.readImage;
+import static yk.senjin.examples.ssao.WatchSsao.makeCube;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,30 +26,33 @@ import static yk.jcommon.utils.IO.readImage;
  * Date: 09/12/15
  * Time: 12:09
  */
-public class WatchSsao implements LoadTickUnload<WatchReloadable> {
+public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
 
-    public GShader<PosuvV, DeferredShadeSsao> ssaoProgram;
     public GShader<PoconuvV, DeferredDataF> defDataProgram;
+
+    public GShader<PosuvV, DeferredShadeSsao2> ssaoProgram;
+    public GShader<PosuvV, DefShaderFinal> finalProgram;
 
     public ReflectionVBO vbo1;
     public SomeTexture textureJfdi;
     public DrawIndicesShort indices;
-    public FrameBuffer fbo1;
-    public FrameBuffer ssaoBuffer;
+    public FrameBuffer dataFrame;
     private int fboSize;
 
+    public Blender2 blender = new Blender2();
 
     public static void main(String[] args) {
-        new WatchReloadable(new WatchSsao()) {{
+        new WatchReloadable(new WatchSsaoBlurred()) {{
             SIMPLE_AA = false;
         }};
     }
 
     @Override
     public void onLoad(WatchReloadable watch) {
-        defDataProgram = new GShader(new PoconuvV(), new DeferredDataF()).runtimeReload();
-        ssaoProgram = new GShader<>(new PosuvV(), new DeferredShadeSsao()).runtimeReload();
+        defDataProgram = new GShader<>(new PoconuvV(), new DeferredDataF()).runtimeReload();
+        ssaoProgram = new GShader<>(new PosuvV(), new DeferredShadeSsao2()).runtimeReload();
         ssaoProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
+        finalProgram = new GShader<>(new PosuvV(), new DefShaderFinal()).runtimeReload();
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
 
@@ -82,57 +83,88 @@ public class WatchSsao implements LoadTickUnload<WatchReloadable> {
         renderTexture3.magFilter = GL_NEAREST;
         renderTexture3.minFilter = GL_NEAREST;
 
-        fbo1 = new FrameBuffer();
-        fbo1.initFBO(renderTexture1, renderTexture2, renderTexture3);
+        dataFrame = new FrameBuffer();
+        dataFrame.initFBO(renderTexture1, renderTexture2, renderTexture3);
 
-        SomeTexture ssaoTexture = new SomeTexture();
-        ssaoTexture.init(256, 256);
-        ssaoBuffer = new FrameBuffer();
-        ssaoBuffer.initFBO(ssaoTexture);
-    }
-
-    public static YList<PoconuvVi> makeCube(Vec3f pos, Vec3f size, Vec4f color) {
-        return DDDUtils.CUBE.flatMap(q -> q.map((PoconuvVi poco) -> new PoconuvVi(poco.pos.mul(size).add(pos), poco.normal, color, poco.uv)));
+        blender.size = 512;
+        blender.init();
     }
 
     @Override
     public void onTick(WatchReloadable watch, float dt) {
 
-        //scene -> fbo1
-        fbo1.beginRenderToFbo();
+        //scene -> data
+        dataFrame.beginRenderToFbo();
         defDataProgram.vs.modelViewProjectionMatrix = watch.camModelViewProjectionMatrix;
         defDataProgram.vs.modelViewMatrix = watch.camModelViewMatrix;
         defDataProgram.vs.normalMatrix = watch.camNormalMatrix.get33();
         defDataProgram.fs.txt.set(textureJfdi);
         defDataProgram.fs.textureStrength = 0;
         DDDUtils.cameraDraw(defDataProgram, vbo1, indices, textureJfdi);
-        fbo1.endRenderToFbo();
+        dataFrame.endRenderToFbo();
 
+        blender.fbo1.beginRenderToFbo();
 
-        //fbo1 -> ssao texture
-        ssaoBuffer.beginRenderToFbo();
-        ssaoBuffer.endRenderToFbo();
-
-        //blur ssao texture
-
-
-
-        //fbo1 -> standard frame
-        fbo1.textures.get(0).enable(0);
-        fbo1.textures.get(1).enable(1);
-        fbo1.textures.get(2).enable(2);
-        ssaoProgram.fs.txt1.set(fbo1.textures.get(0));
-        ssaoProgram.fs.txt2.set(fbo1.textures.get(1));
-        ssaoProgram.fs.txt3.set(fbo1.textures.get(2));
-        ssaoProgram.fs.csLightDir = watch.camNormalMatrix.multiply(v4(1, 0.9f, 0.8f, 0)).getXyz().normalized();
-
+        //data -> ssao
+        dataFrame.textures.get(0).enable(0);
+        dataFrame.textures.get(1).enable(1);
+        dataFrame.textures.get(2).enable(2);
+        ssaoProgram.fs.txt1.set(dataFrame.textures.get(0));
+        ssaoProgram.fs.txt2.set(dataFrame.textures.get(1));
+        ssaoProgram.fs.txt3.set(dataFrame.textures.get(2));
         ssaoProgram.vs.modelViewProjectionMatrix = Matrix4.identity();
+
         ssaoProgram.enable();
-        FrameBuffer.renderFBO(watch.w, watch.h);
+        FrameBuffer.renderFBO(blender.size, blender.size);
         ssaoProgram.disable();
-        fbo1.textures.get(2).disable();
-        fbo1.textures.get(1).disable();
-        fbo1.textures.get(0).disable();
+
+        dataFrame.textures.get(2).disable();
+        dataFrame.textures.get(1).disable();
+        dataFrame.textures.get(0).disable();
+
+        blender.fbo1.endRenderToFbo();
+
+
+
+
+        //blending
+        blender.render21();
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //data + blended ssao -> standard frame
+        dataFrame.textures.get(0).enable(0);
+        dataFrame.textures.get(1).enable(1);
+        dataFrame.textures.get(2).enable(2);
+        blender.fbo1.textures.car().enable(3);
+
+        finalProgram.fs.txt1.set(dataFrame.textures.get(0));
+        finalProgram.fs.txt2.set(dataFrame.textures.get(1));
+        finalProgram.fs.txt3.set(dataFrame.textures.get(2));
+        finalProgram.fs.txt4.set(blender.fbo1.textures.car());
+
+        finalProgram.vs.modelViewProjectionMatrix = Matrix4.identity();
+
+        finalProgram.enable();
+        FrameBuffer.renderFBO(watch.w, watch.h);
+        finalProgram.disable();
+
+        blender.fbo1.textures.car().disable();
+        dataFrame.textures.get(0).disable();
+        dataFrame.textures.get(1).disable();
+        dataFrame.textures.get(2).disable();
+
+
     }
 
     @Override
@@ -141,6 +173,6 @@ public class WatchSsao implements LoadTickUnload<WatchReloadable> {
         defDataProgram.release();
         vbo1.release();
         textureJfdi.release();
-        fbo1.release();
+        dataFrame.release();
     }
 }

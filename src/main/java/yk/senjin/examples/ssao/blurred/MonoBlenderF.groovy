@@ -1,7 +1,8 @@
-package yk.senjin.examples.blend
+package yk.senjin.examples.ssao.blurred
 
 import yk.jcommon.fastgeom.Vec2f
 import yk.jcommon.fastgeom.Vec4f
+import yk.senjin.examples.blend.BlendFi
 import yk.senjin.shaders.gshader.FragmentShaderParent
 import yk.senjin.shaders.gshader.Sampler2D
 import yk.senjin.shaders.gshader.StandardFSOutput
@@ -9,11 +10,10 @@ import yk.senjin.shaders.gshader.StandardFSOutput
 /**
  * Created with IntelliJ IDEA.
  * User: yuri
- * Date: 23/10/15
- * Time: 20:46
+ * Date: 24/02/16
+ * Time: 15:13
  */
-//initially based on http://habrahabr.ru/post/239085/
-class BlendF extends FragmentShaderParent<BlendFi, StandardFSOutput> {
+class MonoBlenderF extends FragmentShaderParent<BlendFi, StandardFSOutput> {
 
     final int MAX_KOEFF_SIZE = 32; //максимальный размер ядра (массива коэффициентов)
 

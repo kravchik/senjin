@@ -38,7 +38,7 @@ public class FrameBuffer {
         return result;
     }
 
-    public void initFBO(SomeTexture... tt) {
+    public FrameBuffer initFBO(SomeTexture... tt) {
         // init our fbo
         this.textures = al(tt);
         for (SomeTexture t : textures) if (t.width != textures.car().width || t.height != textures.car().height) BadException.die("all textures must be of same size");
@@ -67,6 +67,8 @@ public class FrameBuffer {
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);									// Swithch back to normal framebuffer rendering
 
         Util.checkGLError();
+
+        return this;
     }
 
     public void beginRenderToFbo() {
@@ -81,7 +83,7 @@ public class FrameBuffer {
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);					// switch to rendering on the framebuffer
     }
 
-    public static void renderFBO2(int w, int h) {
+    public static void renderFBO(int w, int h) {
         glClearColor (.0f, 0.0f, 0.0f, 0.f);
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear Screen And Depth Buffer on the framebuffer to black
 
