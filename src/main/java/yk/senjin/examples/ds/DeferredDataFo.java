@@ -13,4 +13,5 @@ public class DeferredDataFo extends StandardFSOutput {
     public Vec4f out1 = Vec4f.ZERO;//color
     public Vec4f out2 = Vec4f.ZERO;//normal
     public Vec4f out3 = Vec4f.ZERO;//csPos
+    public Vec4f out4 = Vec4f.ZERO;//z
 }

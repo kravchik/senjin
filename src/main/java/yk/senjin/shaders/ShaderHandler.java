@@ -1,10 +1,7 @@
 package yk.senjin.shaders;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.ARBShaderObjects;
-import org.lwjgl.opengl.ARBVertexShader;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.Util;
+import org.lwjgl.opengl.*;
 import yk.jcommon.utils.BadException;
 import yk.senjin.AbstractState;
 
@@ -17,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.lwjgl.opengl.GL20.*;
 
 /**
  * Created by: Yuri Kravchik Date: 2/11/2007 Time: 11:29:31
@@ -37,26 +36,32 @@ public class ShaderHandler extends AbstractState {
     private static ByteBuffer getProgramCode(final String filename) {
         final ClassLoader fileLoader = ShaderHandler.class.getClassLoader();
         InputStream fileInputStream = fileLoader.getResourceAsStream(filename);
-        byte[] shaderCode = null;
 
         try {
-            if (fileInputStream == null) {
-                fileInputStream = new FileInputStream(filename);
-            }
-            final DataInputStream dataStream = new DataInputStream(fileInputStream);
-            dataStream.readFully(shaderCode = new byte[fileInputStream.available()]);
-            fileInputStream.close();
-            dataStream.close();
-            final ByteBuffer shaderPro = BufferUtils.createByteBuffer(shaderCode.length);
-
-            shaderPro.put(shaderCode);
-            shaderPro.flip();
-
-            return shaderPro;
+            if (fileInputStream == null) fileInputStream = new FileInputStream(filename);
+            return streamToByteBuffer(fileInputStream);
         } catch (final Exception e) {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    private static ByteBuffer streamToByteBuffer(InputStream fileInputStream) {
+        try {
+        final DataInputStream dataStream = new DataInputStream(fileInputStream);
+        byte[] shaderCode = new byte[fileInputStream.available()];
+        dataStream.readFully(shaderCode);
+        fileInputStream.close();
+        dataStream.close();
+        final ByteBuffer shaderPro = BufferUtils.createByteBuffer(shaderCode.length);
+
+        shaderPro.put(shaderCode);
+        shaderPro.flip();
+        return shaderPro;
+        } catch (final Exception e) {
+            System.out.println(e.getMessage());
+            throw BadException.die(e);
+        }
     }
 
     private static void printLogInfo(final int obj) {
@@ -87,7 +92,7 @@ public class ShaderHandler extends AbstractState {
     }
 
     public static int createFragmentShader(final ByteBuffer program) {
-        final int fs = GL20.glCreateShader(GL20.GL_FRAGMENT_SHADER);
+        final int fs = glCreateShader(GL20.GL_FRAGMENT_SHADER);
         GL20.glShaderSource(fs, program);
         GL20.glCompileShader(fs);
         printLogInfo(fs);
@@ -99,6 +104,15 @@ public class ShaderHandler extends AbstractState {
                 .glCreateShaderObjectARB(ARBVertexShader.GL_VERTEX_SHADER_ARB);
         ARBShaderObjects.glShaderSourceARB(vs, program);
         ARBShaderObjects.glCompileShaderARB(vs);
+        printLogInfo(vs);
+        return vs;
+    }
+
+    public static int createGeometryShader(final ByteBuffer program) {
+        int vs = glCreateShader(ARBGeometryShader4.GL_GEOMETRY_SHADER_ARB);
+        if (vs == 0) BadException.die("0");
+        glShaderSource(vs, program);
+        glCompileShader(vs);
         printLogInfo(vs);
         return vs;
     }
@@ -142,6 +156,8 @@ public class ShaderHandler extends AbstractState {
         createProgram(new String[]{vss}, new String[]{fss});
     }
 
+
+    public String geometryShaderString;
     public void createProgram(final String[] vss, final String[] fss) {
         program = GL20.glCreateProgram();
         for (final String s : vss) {
@@ -151,6 +167,11 @@ public class ShaderHandler extends AbstractState {
         }
         for (final String s : fss) {
             final int shader = createFragmentShader(getProgramCode(s));
+            GL20.glAttachShader(program, shader);
+            GL20.glDeleteShader(shader);
+        }
+        if (geometryShaderString != null) {
+            final int shader = createGeometryShader(stringToBuffer(geometryShaderString));
             GL20.glAttachShader(program, shader);
             GL20.glDeleteShader(shader);
         }
@@ -165,13 +186,20 @@ public class ShaderHandler extends AbstractState {
         program = GL20.glCreateProgram();
         Util.checkGLError();
 
-        int shader = createVertexShader(stringToBuffer(vsrc));
-        GL20.glAttachShader(program, shader);
-        GL20.glDeleteShader(shader);
+        if (geometryShaderString != null) {
+            int gshader = createGeometryShader(stringToBuffer(geometryShaderString));
+            GL20.glAttachShader(program, gshader);
+            GL20.glDeleteShader(gshader);
+        }
 
-        shader = createFragmentShader(stringToBuffer(fsrc));
-        GL20.glAttachShader(program, shader);
-        GL20.glDeleteShader(shader);
+
+        int vshader = createVertexShader(stringToBuffer(vsrc));
+        GL20.glAttachShader(program, vshader);
+        GL20.glDeleteShader(vshader);
+
+        int fshader = createFragmentShader(stringToBuffer(fsrc));
+        GL20.glAttachShader(program, fshader);
+        GL20.glDeleteShader(fshader);
 
         GL20.glLinkProgram(program);
         printLogInfo(program);

@@ -1,5 +1,6 @@
 package yk.senjin.examples.ds;
 
+import org.lwjgl.BufferUtils;
 import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
@@ -8,7 +9,9 @@ import yk.senjin.*;
 import yk.senjin.shaders.gshader.GShader;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import java.nio.FloatBuffer;
+
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
@@ -110,6 +113,9 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
         fbo1.textures.get(2).disable();
         fbo1.textures.get(1).disable();
         fbo1.textures.get(0).disable();
+
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(4);
+        glReadPixels(watch.w / 2, watch.h / 2, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, buffer);
     }
 
     @Override

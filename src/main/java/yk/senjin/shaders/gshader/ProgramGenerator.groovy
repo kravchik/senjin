@@ -82,7 +82,7 @@ class ProgramGenerator {
         if (programType.equals("fs") && !StandardFSOutput.class.isAssignableFrom(outputClass)) throw new Error("Fragment shader must have ${StandardFSOutput.class.getSimpleName()} output type, but it is " + outputClass)
 
 
-        if (inputClass != StandardVSInput.class) for (fn in inputClass.getDeclaredFields()) {
+        if (inputClass != StandardVSInput.class) for (fn in getFieldsForData(inputClass)) {
             if (Modifier.isStatic(fn.getModifiers())) continue;
             if (Modifier.isTransient(fn.getModifiers())) continue
             if (glNames.contains(fn.name)) throw new Error("clash with gl names: " + fn.name + " in input data for " + programType)
@@ -200,6 +200,11 @@ class ProgramGenerator {
         for (String m : ordered.reverse()) result += method2body.get(m) + "\n"
 
         result
+    }
+
+    public static YList<Field> getFieldsForData(Class inputClass) {
+        if (inputClass == StandardFSInput.class || inputClass == Object.class || inputClass == StandardVSInput.class) return al();
+        return getFieldsForData(inputClass.getSuperclass()).with(inputClass.getDeclaredFields())
     }
 
     private MethodNode findByShortDesc(String s) {

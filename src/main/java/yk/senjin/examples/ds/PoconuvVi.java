@@ -15,6 +15,8 @@ import yk.jcommon.fastgeom.Vec4f;
 //poscolnoruv
 //colposnoruv
 //coponouv
+
+//Pocontex
 public class PoconuvVi {//TODO rename
 
     public Vec3f normal = Vec3f.ZERO;

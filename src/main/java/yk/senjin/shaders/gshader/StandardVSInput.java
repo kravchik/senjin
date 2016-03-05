@@ -8,7 +8,7 @@ import yk.jcommon.fastgeom.Vec4f;
  * Date: 14/12/14
  * Time: 16:52
  */
-public class StandardVSInput {//TODO rename this or BaseVSOutput
+public class StandardVSInput {
 
     public Vec4f gl_Vertex;
     public Vec4f gl_Normal;

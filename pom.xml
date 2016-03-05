@@ -102,6 +102,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>**/*.groovy</include>
+                    <include>**/*.shader</include>
                 </includes>
             </resource>
         </resources>

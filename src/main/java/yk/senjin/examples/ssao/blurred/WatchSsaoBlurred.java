@@ -13,7 +13,7 @@ import yk.senjin.shaders.gshader.ReflectionVBO;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL30.GL_RGBA32F;
+import static org.lwjgl.opengl.GL30.GL_RGB32F;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
 import static yk.jcommon.fastgeom.Vec3f.v3;
@@ -42,7 +42,7 @@ public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
     public Blender2 blender = new Blender2();
 
     public static void main(String[] args) {
-        new WatchReloadable(new WatchSsaoBlurred()) {{
+        new WatchReloadable(new WatchSsaoBlurred(), Blender2.class) {{
             SIMPLE_AA = false;
         }};
     }
@@ -68,17 +68,17 @@ public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
 
         fboSize = 1024;
         SomeTexture renderTexture1 = new SomeTexture();
-        renderTexture1.internalformat = GL_RGBA32F;
+        renderTexture1.internalformat = GL_RGB32F;
         renderTexture1.init(fboSize, fboSize);
 
         SomeTexture renderTexture2 = new SomeTexture();
-        renderTexture2.internalformat = GL_RGBA32F;
+        renderTexture2.internalformat = GL_RGB32F;
         renderTexture2.init(fboSize, fboSize);
         renderTexture2.magFilter = GL_NEAREST;
         renderTexture2.minFilter = GL_NEAREST;
 
         SomeTexture renderTexture3 = new SomeTexture();
-        renderTexture3.internalformat = GL_RGBA32F;
+        renderTexture3.internalformat = GL_RGB32F;
         renderTexture3.init(fboSize, fboSize);
         renderTexture3.magFilter = GL_NEAREST;
         renderTexture3.minFilter = GL_NEAREST;

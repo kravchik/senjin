@@ -49,6 +49,7 @@ public class WatchReflectionVBO extends Simple3DWatch {
 
     @Override
     public void tick(float dt) {
+
         vs.mvp = camModelViewProjectionMatrix;
         vbo1.upload();
         texture.enable(0);

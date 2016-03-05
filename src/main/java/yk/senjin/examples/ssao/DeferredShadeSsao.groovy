@@ -103,7 +103,9 @@ class DeferredShadeSsao extends FragmentShaderParent<UvFi, StandardFSOutput> {
         color = 1f - exp(-fExposure * color)
 
 //        o.gl_FragColor = Vec4f(0, 0, -pos.z/20, 1);
-        color *= d1;
+//        if (d1 > 0)
+//        color = color / 2 + (1-d1)/2;
+        color = color * d1;
 //        o.gl_FragColor = Vec4f(color.x, color.y*d1, color.x*d1, 1);
 //        o.gl_FragColor = Vec4f(0, d1, -pos.z, 1);
 //        o.gl_FragColor = Vec4f(0, (1-dark)/1, 0, 1);

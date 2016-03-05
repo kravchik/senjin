@@ -1,7 +1,7 @@
 package yk.senjin.shaders.gshader;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.ARBBufferObject;
+import yk.jcommon.collections.YList;
 import yk.jcommon.collections.YMap;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
@@ -46,7 +46,7 @@ public class ReflectionVBO {
         if (data == null || data.size() != vertices.size()) buffer = BufferUtils.createByteBuffer(getSizeOfType(inputType) * vertices.size());
         data = vertices;
 
-        Field[] fields = inputType.getFields();
+        YList<Field> fields = ProgramGenerator.getFieldsForData(inputType);
         for (Object vertex : vertices) {
             if (vertex.getClass() != inputType) BadException.die("wrong input type: " + vertex + ", expected: " + inputType);
             for (Field field : fields) {
@@ -80,6 +80,8 @@ public class ReflectionVBO {
 
     private static final YMap<Class, Integer> type2size = hm();
     public static int getSizeOfType(Class clazz) {
+        if (clazz == StandardFSInput.class || clazz == StandardVSInput.class || clazz == Object.class) return 0;
+
         Integer result = type2size.get(clazz);
         if (result == null) {
             result = 0;
@@ -93,7 +95,7 @@ public class ReflectionVBO {
             }
             type2size.put(clazz, result);
         }
-        return result;
+        return getSizeOfType(clazz.getSuperclass()) + result;
     }
 
     public void upload() {
@@ -103,6 +105,6 @@ public class ReflectionVBO {
     }
 
     public void release() {
-        ARBBufferObject.glDeleteBuffersARB(bufferId);
+        glDeleteBuffers(bufferId);
     }
 }

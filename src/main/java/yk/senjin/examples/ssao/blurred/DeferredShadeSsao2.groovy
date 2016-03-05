@@ -33,20 +33,31 @@ class DeferredShadeSsao2 extends FragmentShaderParent<UvFi, StandardFSOutput> {
         float d = -0.05f/pos.z;
         float v1 = hash12(iuv) *d
         float v2 = hash12(iuv + Vec2f(0.1f, 0)) *d
-        Vec2f newPos = iuv + dif + Vec2f(v1, v2)
+        Vec2f newPos = iuv + dif + Vec2f(v1, v2);
 
 //without noise
 //        Vec2f newPos = iuv + dif
 
-        float longest = -pos.z/10;
+        float longest = 0.3f;
+//        float longest = -pos.z/10;
+
 //        float longest = 0.5f
 
         if (newPos.x < 0 || newPos.y < 0 || newPos.x > 1 || newPos.y > 1) return 0;
         Vec3f ray = texture2D(txt3, newPos).xyz - pos
-        if (length(ray) < 0.01f) return 0;
+
+        float rayLen = length(ray)
+        if (rayLen < 0.01f) return 0;
 //        if (ray.z > longest || ray.z < -longest) d1 = d1 * 0.3f/(0.3f+longest-ray.z)
+        if (rayLen > longest) return 0
         if (ray.z > longest || ray.z < -longest) return 0
-        float d1 = dot(normal, normalize(ray));
+//        float d1 = (longest-rayLen)/longest;
+//        float d1 = (longest / (longest-rayLen));
+
+//        float len2 = length(dif);
+//        float d1 = dot(normal, normalize(ray)) /len2;
+//        float d1 = dot(normal, normalize(ray)) * (0.5f-len2)/longest;
+        float d1 = dot(normal, normalize(ray))// * (longest-rayLen)/longest;
 //        if (d1 > 0.1f) d1 = 1;
         return min(1f, max(0, d1));
 //        return min(1f, max(0, d1/(max(0.1f, abs(ray.z*4)))));
@@ -62,10 +73,10 @@ class DeferredShadeSsao2 extends FragmentShaderParent<UvFi, StandardFSOutput> {
         float d2 = d / 2f;
 
         float d1 = 1-(
-                        calcDelta(normal, pos, i.uv, Vec2f(d, 0)) +
-                        calcDelta(normal, pos, i.uv, Vec2f(-d, 0)) +
-                        calcDelta(normal, pos, i.uv, Vec2f(0, d)) +
-                        calcDelta(normal, pos, i.uv, Vec2f(0, -d)) +
+                        calcDelta(normal, pos, i.uv, Vec2f(d, 0))/2 +
+                        calcDelta(normal, pos, i.uv, Vec2f(-d, 0))/2 +
+                        calcDelta(normal, pos, i.uv, Vec2f(0, d))/2 +
+                        calcDelta(normal, pos, i.uv, Vec2f(0, -d))/2 +
 
 //                        calcDelta(normal, pos, i.uv, Vec2f(d2, 0)) +
 //                        calcDelta(normal, pos, i.uv, Vec2f(-d2, 0)) +
@@ -76,7 +87,7 @@ class DeferredShadeSsao2 extends FragmentShaderParent<UvFi, StandardFSOutput> {
                         calcDelta(normal, pos, i.uv, Vec2f(-d2, d2)) +
                         calcDelta(normal, pos, i.uv, Vec2f(-d2, -d2)) +
                         calcDelta(normal, pos, i.uv, Vec2f(d2, -d2))
-        )/8f
+        )/6f
 //        if (pos.z == 0) d1 = 0;
 
 

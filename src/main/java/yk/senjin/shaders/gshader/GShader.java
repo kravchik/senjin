@@ -87,22 +87,29 @@ public class GShader<V extends VertexShaderParent, F extends FragmentShaderParen
         init(srcDir, vs, fs);
     }
 
-    public void init(ShaderParent vs, ShaderParent fs) {
-        init("src/main/java/", vs, fs);
+    public GShader() {
     }
 
-    public void init(String srcDir, ShaderParent vs, ShaderParent fs) {
+    public GShader<V, F> init(ShaderParent vs, ShaderParent fs) {
+        init("src/main/java/", vs, fs);
+        return this;
+    }
+
+    public GShader<V, F> init(String srcDir, ShaderParent vs, ShaderParent fs) {
         srcDir = srcDir.replace("/", File.separator);
         this.srcDir = srcDir;
         initImpl(srcDir, vs, fs);
         newShader();
+        return this;
     }
 
     private void initImpl(String srcDir, ShaderParent vs, ShaderParent fs) {
         pvs = createProgram(srcDir, vs, "vs");
         pfs = createProgram(srcDir, fs, "fs");
 
-        if (pvs.outputClass != pfs.inputClass) throw new Error("output of VS " + pvs.outputClass.getName() + " must be same as input to FS " + pfs.inputClass.getName());
+        if (geometryShaderString == null && pvs.outputClass != pfs.inputClass) {
+            throw new Error("output of VS " + pvs.outputClass.getName() + " must be same as input to FS " + pfs.inputClass.getName());
+        }
         if (!StandardFSInput.class.isAssignableFrom(pvs.outputClass)) throw new Error("output of VS must extends StandardFSInput");
         if (!StandardFSOutput.class.isAssignableFrom(pfs.outputClass)) throw new Error("output of FS must be StandardFrame class");
 
@@ -141,8 +148,10 @@ public class GShader<V extends VertexShaderParent, F extends FragmentShaderParen
 
     }
 
+    public String geometryShaderString;
     private void newShader() {
         shader = new ShaderHandler();
+        if (geometryShaderString != null) shader.geometryShaderString = geometryShaderString;
 
         String res = "";
         //for (String s : pfs.getVaryingFS()) res += s;
@@ -180,7 +189,7 @@ public class GShader<V extends VertexShaderParent, F extends FragmentShaderParen
         YList<AbstractArrayStructure> result = type2structure.get(clazz);
         if (result == null) {
             result = al();
-            Field[] fields = clazz.getDeclaredFields();
+            YList<Field> fields = ProgramGenerator.getFieldsForData(clazz);
             int stride = ReflectionVBO.getSizeOfType(clazz);
             int offset = 0;
             YSet<String> hasFields = hs();
@@ -188,21 +197,22 @@ public class GShader<V extends VertexShaderParent, F extends FragmentShaderParen
                 if (Modifier.isTransient(field.getModifiers())) continue;
                 hasFields.add(field.getName());
                 VertexAttrib shaderAttrib = shader.getVertexAttrib(field.getName());
-                if (shaderAttrib == null) throw new RuntimeException("shader has no attribute " + field.getName());
 
-                result.add(new VBOVertexAttrib(shaderAttrib.getIndex(), shaderAttrib.getSize(), shaderAttrib.getType(), shaderAttrib.isNormalized(), stride, offset));
+//                if (shaderAttrib == null) throw new RuntimeException("shader has no attribute " + field.getName());
+
+                if (shaderAttrib != null) result.add(new VBOVertexAttrib(shaderAttrib.getIndex(), shaderAttrib.getSize(), shaderAttrib.getType(), shaderAttrib.isNormalized(), stride, offset));
 
                 if (field.getType() == float.class) {
-                    assertType(shaderAttrib, 1, GL11.GL_FLOAT, field.getName());
+                    if (shaderAttrib != null) assertType(shaderAttrib, 1, GL11.GL_FLOAT, field.getName());
                     offset += 1 * 4;
                 } else if (field.getType() == Vec2f.class) {
-                    assertType(shaderAttrib, 2, GL11.GL_FLOAT, field.getName());
+                    if (shaderAttrib != null) assertType(shaderAttrib, 2, GL11.GL_FLOAT, field.getName());
                     offset += 2 * 4;
                 } else if (field.getType() == Vec3f.class) {
-                    assertType(shaderAttrib, 3, GL11.GL_FLOAT, field.getName());
+                    if (shaderAttrib != null) assertType(shaderAttrib, 3, GL11.GL_FLOAT, field.getName());
                     offset += 3 * 4;
                 } else if (field.getType() == Vec4f.class) {
-                    assertType(shaderAttrib, 4, GL11.GL_FLOAT, field.getName());
+                    if (shaderAttrib != null) assertType(shaderAttrib, 4, GL11.GL_FLOAT, field.getName());
                     offset += 4 * 4;
                 } else throw BadException.die("unknown VS input field type: " + field.getType());
             }

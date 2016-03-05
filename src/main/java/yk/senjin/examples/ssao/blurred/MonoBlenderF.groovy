@@ -25,11 +25,27 @@ class MonoBlenderF extends FragmentShaderParent<BlendFi, StandardFSOutput> {
 
     @Override
     void main(BlendFi blendFi, StandardFSOutput o) {
-        Vec4f sum = Vec4f(0.0); //результирующий цвет
+        Vec4f sum = Vec4f(0); //результирующий цвет
+//        float sum = 1; //результирующий цвет
         Vec2f startDir = -0.5f*direction*(kSize)
-        for (int i=0; i<kSize; i++) //проходимся по всем коэффициентам
-            sum += texture2D(txt, blendFi.vTexCoord + startDir + direction*i) * koeff[i]; //суммируем выборки
+
+        Vec4f center = texture2D(txt, blendFi.vTexCoord)
+        for (int i=0; i<kSize; i++) {
+            Vec4f cur = texture2D(txt, blendFi.vTexCoord + startDir + direction * i)
+            if (cur.x - 0.1f > center.x) sum += min(center, cur) * koeff[i];
+            else
+            sum += cur * koeff[i];
+        }
+//        for (int i=0; i<kSize; i++) {
+//            float cur = texture2D(txt, blendFi.vTexCoord + startDir + direction * i).x
+////            sum += max(center*0.8f, cur) * koeff[i];
+//            sum = min(sum, cur * koeff[i]);
+//        }
         sum.w = 1
+
+//        o.gl_FragColor = center;
         o.gl_FragColor = sum;
+//        o.gl_FragColor = Vec4f(sum, center.y, center.z, center.w);
+//        o.gl_FragColor = max(texture2D(txt, blendFi.vTexCoord), sum);
     }
 }

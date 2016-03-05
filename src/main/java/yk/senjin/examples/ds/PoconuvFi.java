@@ -12,8 +12,8 @@ import yk.senjin.shaders.gshader.StandardFSInput;
  * Time: 13:58
  */
 public class PoconuvFi extends StandardFSInput {//TODO rename
-    public Vec3f csNormal;
     public Vec3f csPos;
+    public Vec3f csNormal;
     public Vec2f uv;
     public Vec4f color;
 }

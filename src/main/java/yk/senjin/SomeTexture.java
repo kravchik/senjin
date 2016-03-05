@@ -96,8 +96,7 @@ public class SomeTexture extends AbstractState {
         uploadData(image.getWidth(), image.getHeight(), convertToGL(image));
     }
 
-    private void uploadData(int w, int h, ByteBuffer byteBuffer) {
-        //        ByteBuffer byteBuffer = VisualRealmManager.convertToGLUnoptimized(image);
+    public void uploadData(int w, int h, ByteBuffer byteBuffer) {
         GL11.glBindTexture(GL_TEXTURE_2D, textureObjectId);
         GL11.glTexImage2D(GL_TEXTURE_2D, 0, internalformat, w, h, 0, pixelDataFormat, pixelDataType, byteBuffer);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);

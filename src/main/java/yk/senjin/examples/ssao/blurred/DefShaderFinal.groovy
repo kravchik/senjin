@@ -32,10 +32,13 @@ class DefShaderFinal extends FragmentShaderParent<UvFi, StandardFSOutput> {
         float longest = -pos.z/10/5;//like in ssao
 
         Vec4f ssao = texture2D(txt4, i.uv)
+//        Vec4f ssao = texture2D(txt4, i.uv+Vec2f(-0.0f/256f, -0.0f/256f))
 
         float d1 = ssao.x;
+//        if (d1 <0.81f) d1 = 0;
 //        if (pos.z < ssao.y-0.01f) d1 = 1;
-//        if (pos.z > ssao.y+0.001f) d1 = 1;
+//        if (pos.z > ssao.y+0.2f) d1 = 1;
+//        if (pos.z > ssao.y+0.02f) o.gl_FragColor = Vec4f(1*d1, color.y * d1, color.z * d1, 1);
 //        if (d1 == 0) d1 = 1;
         o.gl_FragColor = Vec4f(color.x*d1, color.y * d1, color.z * d1, 1);
 
