@@ -5,7 +5,7 @@ import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.DrawIndicesShort;
 import yk.senjin.Simple3DWatch;
 import yk.senjin.SomeTexture;
-import yk.senjin.shaders.gshader.GShader;
+import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
@@ -31,7 +31,7 @@ public class WatchReflectionVBO extends Simple3DWatch {
         new WatchReflectionVBO(800, 600, true);
     }
 
-    GShader shader1;
+    GProgram shader1;
     ReflectionVBO vbo1;
     SomeTexture texture;
     DrawIndicesShort indices;
@@ -41,7 +41,7 @@ public class WatchReflectionVBO extends Simple3DWatch {
     public void firstFrame() {
         fs = new ShaderF();
         vs = new ShaderV();
-        shader1 = new GShader(vs, fs);
+        shader1 = new GProgram(vs, fs);
         texture = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO(new VSInput(new Vec3f(0, 0, 0)), new VSInput(new Vec3f(0, 10, 0)), new VSInput(new Vec3f(10, 10, 0)));
         indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 1, 2));

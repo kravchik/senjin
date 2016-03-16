@@ -64,7 +64,7 @@ public class ShaderHandler extends AbstractState {
         }
     }
 
-    private static void printLogInfo(final int obj) {
+    public static void printLogInfo(final int obj) {
         final IntBuffer iVal = BufferUtils.createIntBuffer(1);
         ARBShaderObjects.glGetObjectParameterARB(
                 obj,
@@ -100,8 +100,7 @@ public class ShaderHandler extends AbstractState {
     }
 
     public static int createVertexShader(final ByteBuffer program) {
-        final int vs = ARBShaderObjects
-                .glCreateShaderObjectARB(ARBVertexShader.GL_VERTEX_SHADER_ARB);
+        final int vs = ARBShaderObjects.glCreateShaderObjectARB(ARBVertexShader.GL_VERTEX_SHADER_ARB);
         ARBShaderObjects.glShaderSourceARB(vs, program);
         ARBShaderObjects.glCompileShaderARB(vs);
         printLogInfo(vs);
@@ -207,7 +206,30 @@ public class ShaderHandler extends AbstractState {
         initVariables();
     }
 
-    private ByteBuffer stringToBuffer(String vsrc) {
+    public void createFromIndices(int vIndex, int fIndex) {
+        if (vIndex == -1) BadException.shouldNeverReachHere();
+        if (fIndex == -1) BadException.shouldNeverReachHere();
+        program = GL20.glCreateProgram();
+        Util.checkGLError();
+//        printLogInfo(program);
+
+        if (geometryShaderString != null) {
+            int gshader = createGeometryShader(stringToBuffer(geometryShaderString));
+            GL20.glAttachShader(program, gshader);
+            GL20.glDeleteShader(gshader);
+        }
+
+        Util.checkGLError();
+        GL20.glAttachShader(program, vIndex);
+        Util.checkGLError();
+        GL20.glAttachShader(program, fIndex);
+        Util.checkGLError();
+        GL20.glLinkProgram(program);
+        printLogInfo(program);
+        initVariables();
+    }
+
+    public static ByteBuffer stringToBuffer(String vsrc) {
         byte[] progBytes = vsrc.getBytes();
         final ByteBuffer progBuf = BufferUtils.createByteBuffer(progBytes.length);
         progBuf.put(progBytes);
@@ -243,7 +265,8 @@ public class ShaderHandler extends AbstractState {
     }
 
     public void deleteProgram() {
-        GL20.glDeleteProgram(program);
+        if (program != -1) GL20.glDeleteProgram(program);
+        else System.out.println("WARNING: already removed at " + yk.jcommon.utils.Util.stacktraceToString(new Exception()));
         program = -1;
     }
 }

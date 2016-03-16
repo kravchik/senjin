@@ -5,7 +5,7 @@ import yk.senjin.DDDUtils;
 import yk.senjin.DrawIndicesShort;
 import yk.senjin.LoadTickUnload;
 import yk.senjin.WatchReloadable;
-import yk.senjin.shaders.gshader.GShader;
+import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -25,7 +25,7 @@ public class WatchAutoNormals implements LoadTickUnload<WatchReloadable> {
         new WatchReloadable(new WatchAutoNormals());
     }
 
-    GShader<AutoV, AutoF> shader;
+    GProgram<AutoV, AutoF> shader;
     ReflectionVBO vbo;
     DrawIndicesShort indices;
 
@@ -35,7 +35,7 @@ public class WatchAutoNormals implements LoadTickUnload<WatchReloadable> {
     @Override
     public void onLoad(WatchReloadable watch) {
         System.out.println(glGetString(GL_VERSION));
-        shader = new GShader<>();
+        shader = new GProgram<>();
         shader.geometryShaderString = IO.readFile("src/main/java/yk/senjin/examples/autonormal/geo.shader");
         shader.init(new AutoV(), new AutoF());
 

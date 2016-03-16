@@ -10,7 +10,7 @@ import yk.senjin.examples.ds.DeferredDataF;
 import yk.senjin.examples.ds.PoconuvV;
 import yk.senjin.examples.ds.PoconuvVi;
 import yk.senjin.examples.ds.PosuvV;
-import yk.senjin.shaders.gshader.GShader;
+import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
@@ -30,8 +30,8 @@ import static yk.jcommon.utils.IO.readImage;
  */
 public class WatchSsao implements LoadTickUnload<WatchReloadable> {
 
-    public GShader<PosuvV, DeferredShadeSsao> ssaoProgram;
-    public GShader<PoconuvV, DeferredDataF> defDataProgram;
+    public GProgram<PosuvV, DeferredShadeSsao> ssaoProgram;
+    public GProgram<PoconuvV, DeferredDataF> defDataProgram;
 
     public ReflectionVBO vbo1;
     public SomeTexture textureJfdi;
@@ -49,8 +49,8 @@ public class WatchSsao implements LoadTickUnload<WatchReloadable> {
 
     @Override
     public void onLoad(WatchReloadable watch) {
-        defDataProgram = new GShader(new PoconuvV(), new DeferredDataF()).runtimeReload();
-        ssaoProgram = new GShader<>(new PosuvV(), new DeferredShadeSsao()).runtimeReload();
+        defDataProgram = new GProgram(new PoconuvV(), new DeferredDataF()).runtimeReload();
+        ssaoProgram = new GProgram<>(new PosuvV(), new DeferredShadeSsao()).runtimeReload();
         ssaoProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));

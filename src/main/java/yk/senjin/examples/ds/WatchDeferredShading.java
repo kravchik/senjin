@@ -6,7 +6,7 @@ import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.senjin.*;
-import yk.senjin.shaders.gshader.GShader;
+import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
 import java.nio.FloatBuffer;
@@ -27,11 +27,11 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
 
     public PosuvV hdrV;
     public DeferredShadeF hdrF;
-    public GShader hdrProgram;
+    public GProgram hdrProgram;
 
     public DeferredDataF specularF;
     public PoconuvV specularV;
-    public GShader specularProgram;
+    public GProgram specularProgram;
 
     public ReflectionVBO vbo1;
     public SomeTexture textureJfdi;
@@ -50,12 +50,12 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
     public void onLoad(WatchReloadable watch) {
         specularF = new DeferredDataF();
         specularV = new PoconuvV();
-        specularProgram = new GShader(specularV, specularF).runtimeReload();
+        specularProgram = new GProgram(specularV, specularF).runtimeReload();
 
         hdrF = new DeferredShadeF();
         hdrV = new PosuvV();
         hdrV.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
-        hdrProgram = new GShader(hdrV, hdrF).runtimeReload();
+        hdrProgram = new GProgram(hdrV, hdrF).runtimeReload();
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO(

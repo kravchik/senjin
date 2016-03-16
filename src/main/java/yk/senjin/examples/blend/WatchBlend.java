@@ -10,7 +10,7 @@ import yk.senjin.SomeTexture;
 import yk.senjin.examples.specular.SpecularF;
 import yk.senjin.examples.specular.SpecularV;
 import yk.senjin.examples.specular.SpecularVi;
-import yk.senjin.shaders.gshader.GShader;
+import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
@@ -27,7 +27,7 @@ public class WatchBlend extends Simple3DWatch {
 
     public SpecularF specularF;
     public SpecularV specularV;
-    public GShader specularProgram;
+    public GProgram specularProgram;
 
     public ReflectionVBO vbo1;
     public SomeTexture textureJfdi;
@@ -48,7 +48,7 @@ public class WatchBlend extends Simple3DWatch {
     public void firstFrame() {
         specularF = new SpecularF();
         specularV = new SpecularV();
-        specularProgram = new GShader(specularV, specularF);
+        specularProgram = new GProgram(specularV, specularF);
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new ReflectionVBO(

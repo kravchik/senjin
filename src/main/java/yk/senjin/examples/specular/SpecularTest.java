@@ -36,7 +36,7 @@ public class SpecularTest {
         StandardFSOutput frame = new StandardFSOutput();
 
         SpecularF f = new SpecularF();
-        f.lightDir = new Vec3f(0, 0, 1);
+//        f.lightDir = new Vec3f(0, 0, 1);
         f.txt = new Sampler2D();
         f.txt.texture = new SomeTexture();
         f.txt.texture.image = IO.readImage("jfdi.png");
@@ -54,7 +54,7 @@ public class SpecularTest {
         assertEquals(1 + 0.1 + 0.5, frame.gl_FragColor.y, 0.0001);
         assertEquals(1 + 0.1 + 0.3, frame.gl_FragColor.z, 0.0001);
 
-        f.lightDir = new Vec3f(1, 0, 0);
+//        f.lightDir = new Vec3f(1, 0, 0);
         vso.csLightDir = new Vec3f(1, 0, 0);
         vso.normal = new Vec3f(0, 0, 1);
         vso.csPos = new Vec3f(0, 0, 1);

@@ -9,8 +9,7 @@ import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
-import yk.jcommon.utils.FileWatcher;
-import yk.jcommon.utils.IO;
+import yk.jcommon.utils.StopWatch;
 import yk.senjin.AbstractState;
 import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.UniformVariable;
@@ -18,7 +17,6 @@ import yk.senjin.shaders.VertexAttrib;
 import yk.senjin.shaders.arraystructure.AbstractArrayStructure;
 import yk.senjin.shaders.arraystructure.VBOVertexAttrib;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
@@ -37,103 +35,106 @@ import static yk.senjin.VertexStructureState.assertType;
  * Date: 14/12/14
  * Time: 18:46
  */
-public class GShader<V extends VertexShaderParent, F extends FragmentShaderParent> extends AbstractState {
+public class GProgram<V extends VertexShaderParent, F extends FragmentShaderParent> extends AbstractState {
     public V vs;
     public F fs;
 
-    public ShaderHandler shader;
-    public ProgramGenerator pvs;
-    public ProgramGenerator pfs;
+    private ShaderHandler shader;
+
+    private ShaderGenerator oldVGen;
+    private ShaderGenerator oldFGen;
+    private GShaderNew pvs;
+    private GShaderNew pfs;
 
     private ReflectionVBO currentVBO;
     private YList<AbstractArrayStructure> currentStructure;
 
-    private FileWatcher vsWatcher;
-    private FileWatcher fsWatcher;
-    private String srcDir;
-
-    public <V extends VertexShaderParent, F extends FragmentShaderParent> GShader<V, F> runtimeReload() {
-        if (fsWatcher != null) BadException.die("already watching");
-        try {
-            fsWatcher = new FileWatcher(pfs.srcPath);
-        } catch (Exception e) {
-            System.out.println("warning: not watching for " + pfs.srcPath);
-        }
-        try {
-            vsWatcher = new FileWatcher(pvs.srcPath);
-        } catch (Exception e) {
-            System.out.println("warning: not watching for " + pvs.srcPath);
-        }
-        return (GShader<V, F>) this;
+    public <V extends VertexShaderParent, F extends FragmentShaderParent> GProgram<V, F> runtimeReload() {
+        if (pvs.singleOwner) pvs.runtimeReload();
+        if (pfs.singleOwner) pfs.runtimeReload();
+        return (GProgram<V, F>) this;
     }
 
-    public static GShader initFromSrcMainJava(ShaderParent vs, ShaderParent fs) {
-        return new GShader(vs, fs);
+    public static GProgram initFromSrcMainJava(ShaderParent vs, ShaderParent fs) {
+        return new GProgram(vs, fs);
     }
 
-    public static GShader initFromSrc(ShaderParent vs, ShaderParent fs) {
-        return new GShader("src/", vs, fs);
+    public static GProgram initFromSrc(ShaderParent vs, ShaderParent fs) {
+        return new GProgram("src/", vs, fs);
     }
 
-    public static GShader initFrom(String src, ShaderParent vs, ShaderParent fs) {
-        return new GShader(src, vs, fs);
+    public static GProgram initFrom(String src, ShaderParent vs, ShaderParent fs) {
+        return new GProgram(src, vs, fs);
     }
 
-    public GShader(ShaderParent vs, ShaderParent fs) {
+    public GProgram(ShaderParent vs, ShaderParent fs) {
         init(vs, fs);
     }
 
-    public GShader(String srcDir, ShaderParent vs, ShaderParent fs) {
+    public GProgram(String srcDir, ShaderParent vs, ShaderParent fs) {
         init(srcDir, vs, fs);
     }
 
-    public GShader() {
+    public GProgram() {
     }
 
-    public GShader<V, F> init(ShaderParent vs, ShaderParent fs) {
+    public GProgram<V, F> init(ShaderParent vs, ShaderParent fs) {
         init("src/main/java/", vs, fs);
         return this;
     }
 
-    public GShader<V, F> init(String srcDir, ShaderParent vs, ShaderParent fs) {
-        srcDir = srcDir.replace("/", File.separator);
-        this.srcDir = srcDir;
-        initImpl(srcDir, vs, fs);
-        newShader();
+    public GProgram<V, F> init(String srcDir, ShaderParent vs, ShaderParent fs) {
+        pvs = GShaderNew.createShader(srcDir, vs, "vs");
+        pfs = GShaderNew.createShader(srcDir, fs, "fs");
+        oldVGen = pvs.generator;
+        oldFGen = pfs.generator;
+        asserts();
+
+        this.vs = (V) vs;
+        this.fs = (F) fs;
+
+        shader = newShaderProgram();
         return this;
     }
 
-    private void initImpl(String srcDir, ShaderParent vs, ShaderParent fs) {
-        pvs = createProgram(srcDir, vs, "vs");
-        pfs = createProgram(srcDir, fs, "fs");
+    public GProgram<V, F> init(GShaderNew pvs, GShaderNew pfs) {
+        this.pvs = pvs;
+        this.pfs = pfs;
+        oldVGen = pvs.generator;
+        oldFGen = pfs.generator;
+        asserts();
 
-        if (geometryShaderString == null && pvs.outputClass != pfs.inputClass) {
-            throw new Error("output of VS " + pvs.outputClass.getName() + " must be same as input to FS " + pfs.inputClass.getName());
+        this.vs = (V) pvs.generator.shaderGroovy;
+        this.fs = (F) pfs.generator.shaderGroovy;
+
+        shader = newShaderProgram();
+        return this;
+    }
+
+    private void asserts() {
+        if (geometryShaderString == null && pvs.generator.outputClass != pfs.generator.inputClass) {
+            throw new Error("output of VS " + pvs.generator.outputClass.getName() + " must be same as input to FS " + pfs.generator.inputClass.getName());
         }
-        if (!StandardFSInput.class.isAssignableFrom(pvs.outputClass)) throw new Error("output of VS must extends StandardFSInput");
-        if (!StandardFSOutput.class.isAssignableFrom(pfs.outputClass)) throw new Error("output of FS must be StandardFrame class");
+        if (!StandardFSInput.class.isAssignableFrom(pvs.generator.outputClass)) throw new Error("output of VS must extends StandardFSInput");
+        if (!StandardFSOutput.class.isAssignableFrom(pfs.generator.outputClass)) throw new Error("output of FS must be StandardFrame class");
 
         Map<String, String> seenAt = hm();
-        for (VertexAttrib a : pvs.attributes) {
-//            System.out.println("checking " + a.getName());
+        for (VertexAttrib a : pvs.generator.attributes) {
             String old = seenAt.put(a.getName(), "VS input");
             if (old != null) throw new Error("name clash for " + a.getName() + " at " + old + " and " + seenAt.get(a.getName()));
         }
-        for (String a : pfs.varyingFS) {
-//            System.out.println("checking " + a);
+        for (String a : pfs.generator.varyingFS) {
             String old = seenAt.put(a, "VS output");
             if (old != null) throw new Error("name clash for " + a + " at " + old + " and " + seenAt.get(a));
         }
-        for (UniformVariable a : pvs.uniforms) {
-//            System.out.println("checking " + a.name);
+        for (UniformVariable a : pvs.generator.uniforms) {
             String old = seenAt.put(a.name, "VS uniforms");
             if (old != null) {
                 throw new Error("name clash for " + a.name + " at " + old + " and " + seenAt.get(a.name));
             }
         }
-        for (Iterator<UniformVariable> iterator = pfs.uniforms.iterator(); iterator.hasNext(); ) {
+        for (Iterator<UniformVariable> iterator = pfs.generator.uniforms.iterator(); iterator.hasNext(); ) {
             UniformVariable a = iterator.next();
-//            System.out.println("checking " + a.name);
             String old = seenAt.put(a.name, "FS uniforms");
 //            if (old != null) throw new Error("name clash for " + a.name + " at " + old + " and " + seenAt.get(a.name));
             if (old != null) {
@@ -142,46 +143,33 @@ public class GShader<V extends VertexShaderParent, F extends FragmentShaderParen
                 iterator.remove();
             }
         }
-
-        this.vs = (V) vs;
-        this.fs = (F) fs;
-
     }
 
     public String geometryShaderString;
-    private void newShader() {
-        shader = new ShaderHandler();
+    private ShaderHandler newShaderProgram() {
+        StopWatch sw = new StopWatch();
+
+
+        ShaderHandler shader = new ShaderHandler();
         if (geometryShaderString != null) shader.geometryShaderString = geometryShaderString;
 
         String res = "";
         //for (String s : pfs.getVaryingFS()) res += s;
         //pvs.setResultSrc(res + pvs.getResultSrc());
 
-        System.out.println(pvs.resultSrc);
-        System.out.println(pfs.resultSrc);
+        System.out.println(pvs.generator.resultSrc);
+        System.out.println(pfs.generator.resultSrc);
         //
-        for (UniformVariable u : pvs.uniforms) shader.addVariables(u);
-        for (VertexAttrib v : pvs.attributes) shader.addVertexAttrib(v);
+        for (UniformVariable u : pvs.generator.uniforms) shader.addVariables(u);
+        for (VertexAttrib v : pvs.generator.attributes) shader.addVertexAttrib(v);
 
-        for (UniformVariable u : pfs.uniforms) shader.addVariables(u);
+        for (UniformVariable u : pfs.generator.uniforms) shader.addVariables(u);
         //for (VertexAttrib v : pfs.getVarying()) shader.addVertexAttrib(v);
 
-        shader.createFromSrc(pvs.resultSrc, pfs.resultSrc);
-    }
+        shader.createFromIndices(pvs.shaderIndex, pfs.shaderIndex);
 
-    public static ProgramGenerator createProgram(String srcDir, ShaderParent vs, String programType) {
-        String path1 = vs.getClass().getName();
-        String resultPath = srcDir + path1.replace(".", "/") + ".groovy";
-        String src;
-        if (!new File(resultPath).exists()) {
-            resultPath = path1.replace(".", "/") + ".groovy";
-            src = IO.streamToString(vs.getClass().getResourceAsStream("/" + resultPath));
-        } else {
-            src = IO.readFile(resultPath);
-        }
-
-
-        return new ProgramGenerator(src, resultPath, vs, programType);
+        System.out.println("linked in " + sw.stop());
+        return shader;
     }
 
     private YMap<Class, YList<AbstractArrayStructure>> type2structure = hm();
@@ -189,7 +177,7 @@ public class GShader<V extends VertexShaderParent, F extends FragmentShaderParen
         YList<AbstractArrayStructure> result = type2structure.get(clazz);
         if (result == null) {
             result = al();
-            YList<Field> fields = ProgramGenerator.getFieldsForData(clazz);
+            YList<Field> fields = ShaderGenerator.getFieldsForData(clazz);
             int stride = ReflectionVBO.getSizeOfType(clazz);
             int offset = 0;
             YSet<String> hasFields = hs();
@@ -230,15 +218,16 @@ public class GShader<V extends VertexShaderParent, F extends FragmentShaderParen
 
     @Override
     public void enable() {
-        boolean changed = fsWatcher != null && fsWatcher.isChanged() || vsWatcher != null && vsWatcher.isChanged();
-        if (changed) {
-            //TODO clean up on fails!
-            GShader newShader = new GShader(srcDir, pvs.shaderGroovy, pfs.shaderGroovy);
+        if (pvs.singleOwner) pvs.tick();
+        if (pfs.singleOwner) pfs.tick();
+        if (oldVGen != pvs.generator || oldFGen != pfs.generator) {
+            //TODO asserts?
+//            asserts();
+            ShaderHandler np = newShaderProgram();
             shader.deleteProgram();
-            pvs = newShader.pvs;
-            pfs = newShader.pfs;
-            shader = newShader.shader;
-            init(srcDir, pvs.shaderGroovy, pfs.shaderGroovy);
+            shader = np;
+            oldVGen = pvs.generator;
+            oldFGen = pfs.generator;
         }
 
         shader.enable();
@@ -261,6 +250,8 @@ public class GShader<V extends VertexShaderParent, F extends FragmentShaderParen
 
     @Override
     public void release() {
+        if (pvs.singleOwner) pvs.removeShaderFromCard();
+        if (pfs.singleOwner) pfs.removeShaderFromCard();
         shader.deleteProgram();
     }
 }

@@ -46,7 +46,7 @@ public class ReflectionVBO {
         if (data == null || data.size() != vertices.size()) buffer = BufferUtils.createByteBuffer(getSizeOfType(inputType) * vertices.size());
         data = vertices;
 
-        YList<Field> fields = ProgramGenerator.getFieldsForData(inputType);
+        YList<Field> fields = ShaderGenerator.getFieldsForData(inputType);
         for (Object vertex : vertices) {
             if (vertex.getClass() != inputType) BadException.die("wrong input type: " + vertex + ", expected: " + inputType);
             for (Field field : fields) {

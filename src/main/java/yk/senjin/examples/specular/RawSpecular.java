@@ -7,7 +7,7 @@ import org.lwjgl.opengl.Util;
 import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.SomeTexture;
-import yk.senjin.shaders.gshader.GShader;
+import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.shaders.gshader.ReflectionVBO;
 
 import java.nio.ShortBuffer;
@@ -36,7 +36,7 @@ public class RawSpecular {
         //shaders
         SpecularF fragmentShader = new SpecularF();
         SpecularV vertexShader = new SpecularV();
-        GShader shaderProgram = GShader.initFromSrcMainJava(vertexShader, fragmentShader);
+        GProgram shaderProgram = GProgram.initFromSrcMainJava(vertexShader, fragmentShader);
         //texture
         SomeTexture texture = new SomeTexture(readImage("jfdi.png"));
         //data

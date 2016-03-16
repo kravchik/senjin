@@ -3,7 +3,7 @@ package yk.senjin.examples.blend;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.senjin.FrameBuffer;
 import yk.senjin.SomeTexture;
-import yk.senjin.shaders.gshader.GShader;
+import yk.senjin.shaders.gshader.GProgram;
 
 import static yk.jcommon.fastgeom.Matrix4.ortho;
 
@@ -26,7 +26,7 @@ public class Blender1 {
 
     public BlendV blendV;
     public BlendF blendF;
-    public GShader blendProgram;
+    public GProgram blendProgram;
 
     public FrameBuffer fbo1;
     public FrameBuffer fbo2;
@@ -43,7 +43,7 @@ public class Blender1 {
         blendF = new BlendF();
         blendV = new BlendV();
         blendV.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
-        blendProgram = new GShader(blendV, blendF);
+        blendProgram = new GProgram(blendV, blendF);
 
         SomeTexture renderTexture = new SomeTexture();
         renderTexture.init(size, size);
@@ -69,9 +69,9 @@ public class Blender1 {
         blendF.txt.set(fbo2.textures.car());
         blendF.direction = new Vec2f(0f, 1f/size);
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
-        blendProgram.shader.enable();
+        blendProgram.enable();
         FrameBuffer.renderFBO(w, h);
-        blendProgram.shader.disable();
+        blendProgram.disable();
         fbo2.textures.car().disable();
     }
 
@@ -84,9 +84,9 @@ public class Blender1 {
         blendF.txt.set(fbo2.textures.car());
         blendF.direction = new Vec2f(0f, 1f/size);
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
-        blendProgram.shader.enable();
+        blendProgram.enable();
         FrameBuffer.renderFBO(size, size);
-        blendProgram.shader.disable();
+        blendProgram.disable();
         fbo2.textures.car().disable();
         endRenderToFbo1();
     }
@@ -98,9 +98,9 @@ public class Blender1 {
         blendF.txt.set(fbo1.textures.car());
         blendF.direction = new Vec2f(1f/size, 0f);
 //        cameraDraw(fbo2, blendProgram, ???, ???, fbo1.texture);
-        blendProgram.shader.enable();
+        blendProgram.enable();
         FrameBuffer.renderFBO(size, size);
-        blendProgram.shader.disable();
+        blendProgram.disable();
         fbo1.textures.car().disable();
         fbo2.endRenderToFbo();
     }

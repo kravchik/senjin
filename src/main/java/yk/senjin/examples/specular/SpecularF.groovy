@@ -16,7 +16,7 @@ public class SpecularF extends FragmentShaderParent<SpecularFi, StandardFSOutput
     public float shininess = 10;
     public float shininessStrength = 20;
     public Vec3f ambient = Vec3f(0.1, 0.1, 0.1);
-    public Vec3f lightDir
+//    public Vec3f lightDir
 
     def void main(SpecularFi i, StandardFSOutput o) {
         Vec3f color = texture2D(txt, i.uv).xyz;

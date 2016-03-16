@@ -5,7 +5,7 @@ import yk.senjin.FrameBuffer;
 import yk.senjin.SomeTexture;
 import yk.senjin.examples.blend.BlendV;
 import yk.senjin.examples.blend.Blender1;
-import yk.senjin.shaders.gshader.GShader;
+import yk.senjin.shaders.gshader.GProgram;
 
 import static org.lwjgl.opengl.GL30.GL_RG32F;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
@@ -23,7 +23,7 @@ public class Blender2 {
 
     public int size = 512;
 
-    public GShader<BlendV, MonoBlenderF> blendProgram;
+    public GProgram<BlendV, MonoBlenderF> blendProgram;
 
     public FrameBuffer fbo1;
     public FrameBuffer fbo2;
@@ -37,7 +37,7 @@ public class Blender2 {
     }
 
     public void init() {
-        blendProgram = new GShader<>(new BlendV(), new MonoBlenderF()).runtimeReload();
+        blendProgram = new GProgram<>(new BlendV(), new MonoBlenderF()).runtimeReload();
         blendProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
 
         //R - value
@@ -70,9 +70,9 @@ public class Blender2 {
 //        blendF.txt.set(fbo2.textures.car());
 //        blendF.direction = new Vec2f(0f, 1f/size);
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
-        blendProgram.shader.enable();
+        blendProgram.enable();
         FrameBuffer.renderFBO(w, h);
-        blendProgram.shader.disable();
+        blendProgram.disable();
         fbo2.textures.car().disable();
     }
 
