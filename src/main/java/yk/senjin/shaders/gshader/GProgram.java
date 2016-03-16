@@ -43,8 +43,8 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
 
     private ShaderGenerator oldVGen;
     private ShaderGenerator oldFGen;
-    private GShaderNew pvs;
-    private GShaderNew pfs;
+    private GShader pvs;
+    private GShader pfs;
 
     private ReflectionVBO currentVBO;
     private YList<AbstractArrayStructure> currentStructure;
@@ -84,8 +84,8 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     }
 
     public GProgram<V, F> init(String srcDir, ShaderParent vs, ShaderParent fs) {
-        pvs = GShaderNew.createShader(srcDir, vs, "vs");
-        pfs = GShaderNew.createShader(srcDir, fs, "fs");
+        pvs = GShader.createShader(srcDir, vs, "vs");
+        pfs = GShader.createShader(srcDir, fs, "fs");
         oldVGen = pvs.generator;
         oldFGen = pfs.generator;
         asserts();
@@ -97,7 +97,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
         return this;
     }
 
-    public GProgram<V, F> init(GShaderNew pvs, GShaderNew pfs) {
+    public GProgram<V, F> init(GShader pvs, GShader pfs) {
         this.pvs = pvs;
         this.pfs = pfs;
         oldVGen = pvs.generator;
