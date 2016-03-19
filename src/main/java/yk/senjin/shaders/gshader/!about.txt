@@ -47,15 +47,14 @@ uniforms are common for both vertex and fragment, handle it somehow
   fs extends vs ?
   separate structure for uniforms ?
 
-close SimpleWatch3D if shader didn't loaded
-  or just don't spawn logs
-
 Groovy don't detects wrong assignment
     o.gl_FragColor = foo2(sum);
     void foo2(Vec4f vv) {vv.w = 1}
 
 
 //DONE
+shader can be reused by different shader programs
+-dont hang on shader with error runtime reloading
 java "common operations", because Operations.clamp - are too slow
 java reloadable classes (tick, first init, full, except watcher)
 swizzles

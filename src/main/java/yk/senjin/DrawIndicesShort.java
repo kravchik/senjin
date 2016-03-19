@@ -42,6 +42,10 @@ public class DrawIndicesShort extends AbstractState {
         indexBuffer.rewind();
     }
 
+    public int getCount() {
+        return indexBuffer.limit();
+    }
+
     public void disable() {
     }
 
