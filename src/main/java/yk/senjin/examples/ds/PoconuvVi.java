@@ -23,6 +23,8 @@ public class PoconuvVi {//TODO rename
     public Vec4f color = Vec4f.ZERO;
     public Vec3f pos = Vec3f.ZERO;
     public Vec2f uv = Vec2f.ZERO;
+    public float shininess;
+    public float nType;
 
     public PoconuvVi(Vec3f pos) {
         this.pos = pos;

@@ -9,7 +9,6 @@ import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
-import yk.jcommon.utils.StopWatch;
 import yk.senjin.AbstractState;
 import yk.senjin.shaders.ShaderHandler;
 import yk.senjin.shaders.UniformVariable;
@@ -147,7 +146,6 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
 
     public String geometryShaderString;
     private ShaderHandler newShaderProgram() {
-        StopWatch sw = new StopWatch();
 
 
         ShaderHandler shader = new ShaderHandler();
@@ -157,9 +155,6 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
         //for (String s : pfs.getVaryingFS()) res += s;
         //pvs.setResultSrc(res + pvs.getResultSrc());
 
-        System.out.println(pvs.generator.resultSrc);
-        System.out.println(pfs.generator.resultSrc);
-        //
         for (UniformVariable u : pvs.generator.uniforms) shader.addVariables(u);
         for (VertexAttrib v : pvs.generator.attributes) shader.addVertexAttrib(v);
 
@@ -168,7 +163,6 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
 
         shader.createFromIndices(pvs.shaderIndex, pfs.shaderIndex);
 
-        System.out.println("linked in " + sw.stop());
         return shader;
     }
 

@@ -554,4 +554,36 @@ public class DDDUtils {//TODO extract to another lib
         shader1.disable();
         for (int i = textures.size()-1; i >= 0; i--) textures.get(i).disable();
     }
+
+    public static Vec3f world2screen(Matrix4 mvp, int w, int h, Vec3f world) {
+        Vec4f result = mvp.multiply(world.toVec4f(1));
+        return v3((result.x / result.w / 2 + 0.5f) * w, (result.y / result.w  / 2 + 0.5f) * h, result.z / result.w / 2 + 0.5f);
+    }
+
+    public static Vec3f screen2World(Matrix4 mvp, int w, int h, Vec3f screenPos) {//https://www.opengl.org/wiki/GluProject_and_gluUnProject_code
+        float vx = (screenPos.x - 0) / w * 2f - 1f;
+        float vy = (screenPos.y - 0) / h * 2f - 1f;
+        float vz = screenPos.z * 2-1;
+        Vec4f camSpace = new Vec4f(vx, vy, vz, 1);
+        Vec4f woldSpace = mvp.invert().multiply(camSpace);
+        woldSpace.w = 1f/woldSpace.w;
+        woldSpace.x = woldSpace.x * woldSpace.w;
+        woldSpace.y = woldSpace.y * woldSpace.w;
+        woldSpace.z = woldSpace.z * woldSpace.w;
+        return woldSpace.getXyz();
+    }
+
+    public static Vec3f screen2World(Matrix4 mvp, int w, int h, int x, int y, float depth) {//https://www.opengl.org/wiki/GluProject_and_gluUnProject_code
+        float vx = ((float)x - 0f) / w * 2f - 1f;
+        float vy = ((float)y - 0f) / h * 2f - 1f;
+        float vz = depth * 2-1;
+        Vec4f camSpace = new Vec4f(vx, vy, vz, 1);
+        Vec4f woldSpace = mvp.invert().multiply(camSpace);
+        woldSpace.w = 1f/woldSpace.w;
+        woldSpace.x = woldSpace.x * woldSpace.w;
+        woldSpace.y = woldSpace.y * woldSpace.w;
+        woldSpace.z = woldSpace.z * woldSpace.w;
+        return woldSpace.getXyz();
+    }
+
 }

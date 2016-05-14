@@ -16,4 +16,6 @@ public class PoconuvFi extends StandardFSInput {//TODO rename
     public Vec3f csNormal;
     public Vec2f uv;
     public Vec4f color;
+    public float shininess;
+    public float nType;
 }

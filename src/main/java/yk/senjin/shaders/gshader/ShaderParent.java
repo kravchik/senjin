@@ -49,7 +49,7 @@ abstract public class ShaderParent {
         float r = (color & 0x00ff0000) >>> 16;
         float g = (color & 0x0000ff00) >>> 8;
         float b = color & 0x000000ff;
-        return new Vec4f(a / 255f, r / 255f, g / 255f, b / 255f);
+        return new Vec4f(r / 255f, g / 255f, b / 255f, a / 255f);
     }
 
     public static Vec2f Vec2f(double x, double y) {
@@ -69,7 +69,7 @@ abstract public class ShaderParent {
     }
 
     public static Vec4f Vec4f(double x, double y, double z, double w) {
-        return new Vec4f((float)w, (float)x, (float)y, (float)z);
+        return new Vec4f((float)x, (float)y, (float)z, (float)w);
     }
 
     public static Vec4f Vec4f(double x) {
@@ -81,7 +81,7 @@ abstract public class ShaderParent {
     }
 
     public static Vec4f Vec4f(Vec3f v, double w) {
-        return new Vec4f((float) w, v.x, v.y, v.z);
+        return new Vec4f(v.x, v.y, v.z, (float) w);
     }
 
 //gglsl auto generated text

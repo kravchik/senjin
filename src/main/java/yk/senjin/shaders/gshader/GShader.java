@@ -46,10 +46,9 @@ public class GShader {
 
         StopWatch sw = new StopWatch();
         result.generator = new ShaderGenerator(gSrc, resultPath, groovyShader, shaderType);
-        System.out.println("translated in " + sw.stop());
+        System.out.println(result.generator.resultSrc);
         sw = new StopWatch();
         if (send) result.sendShaderToCard();
-        System.out.println("sent in " + sw.stop());
         return result;
     }
 

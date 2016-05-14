@@ -56,6 +56,8 @@ public class Simple3DWatch {
 
     public SkyBox skyBox;
 
+    public Float fixedDt;
+
 //    public static void main(String[] args) throws LWJGLException {
 //        new Simple3DWatch(512, 512, true);
 //    }
@@ -78,6 +80,7 @@ public class Simple3DWatch {
         if (createThread) Threads.tick(new Threads.Tickable() {
             @Override
             public void tick(float dt) throws Exception {
+                dt = fixedDt == null ? dt : fixedDt;
                 commonTick(dt);
                 THIS.tick(dt);
                 Util.checkGLError();
@@ -162,14 +165,11 @@ public class Simple3DWatch {
 //        } else {
         perspectiveMatrix = perspective(45.0f, (float) w / h, 1, 1200.0f * 1);
 //        }
-        camModelViewMatrix = cam.lookRot.conjug().toMatrix4().multiply(Matrix4.identity().translate(cam.lookAt.mul(-1))); ;
+        camModelViewMatrix = cam.lookRot.toMatrix4Right().multiply(Matrix4.identity().translate(cam.lookAt.mul(-1))); ;
         camNormalMatrix = camModelViewMatrix.invert().transpose();
         camModelViewProjectionMatrix = perspectiveMatrix.multiply(camModelViewMatrix);
 
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluPerspective(45.0f, (float) w / h, magnifier, 1000.0f * magnifier);
-        resetModelView();
+        resetMvp();
 
         glDisable(GL_DEPTH_TEST);
         if (skyBox != null) skyBox.render(cam.lookAt);
@@ -223,7 +223,14 @@ public class Simple3DWatch {
         camYaw += yaw;
     }
 
-    public void resetModelView() {
+    public void resetMvp() {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective(45.0f, (float) w / h, magnifier, 1000.0f * magnifier);
+        resetMv();
+    }
+
+    public void resetMv() {
         glMatrixMode(GL_MODELVIEW);
 //        glLoadIdentity();
 //        DDDUtils.multMatrix(cam.lookRot.conjug());

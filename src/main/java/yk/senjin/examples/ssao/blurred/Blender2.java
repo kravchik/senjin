@@ -39,20 +39,13 @@ public class Blender2 {
     public void init() {
         blendProgram = new GProgram<>(new BlendV(), new MonoBlenderF()).runtimeReload();
         blendProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
+        fbo1 = new FrameBuffer();
+        fbo2 = new FrameBuffer();
 
         //R - value
         //G - depth
 
-        SomeTexture renderTexture = new SomeTexture();
-        renderTexture.internalformat = GL_RG32F;
-        renderTexture.init(size, size);
-        fbo1 = new FrameBuffer();
-        fbo1.initFBO(renderTexture);
-        SomeTexture renderTexture2 = new SomeTexture();
-        renderTexture2.internalformat = GL_RG32F;
-        renderTexture2.init(size, size);
-        fbo2 = new FrameBuffer();
-        fbo2.initFBO(renderTexture2);
+        //initBuffers();
 
         //http://dev.theomader.com/gaussian-kernel-calculator/
         blendProgram.fs.koeff = Blender1.KERNEL_1_5;
@@ -60,6 +53,17 @@ public class Blender2 {
 //        blendProgram.fs.koeff = new float[]{1f, 1f, 1, 1f, 1f};
         blendProgram.fs.kSize = blendProgram.fs.koeff.length;
 
+    }
+
+    public void initBuffers() {
+        SomeTexture renderTexture = new SomeTexture();
+        renderTexture.internalformat = GL_RG32F;
+        renderTexture.init(size, size);
+        fbo1.initFBO(renderTexture);
+        SomeTexture renderTexture2 = new SomeTexture();
+        renderTexture2.internalformat = GL_RG32F;
+        renderTexture2.init(size, size);
+        fbo2.initFBO(renderTexture2);
     }
 
     public void renderToScreen(int w, int h) {

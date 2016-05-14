@@ -24,6 +24,8 @@ public class FrameBuffer {
     public int depthRenderBufferID;
     public YList<SomeTexture> textures;
 
+    public int w, h;
+
     public static FrameBuffer multipleRenderTargetsF32(int count, int w, int h) {
         SomeTexture tt[] = new SomeTexture[count];
         for (int i = 0; i < count; i++) {
@@ -40,8 +42,13 @@ public class FrameBuffer {
 
     public FrameBuffer initFBO(SomeTexture... tt) {
         // init our fbo
+        if (textures != null) {
+            for (SomeTexture texture : textures) texture.release();
+        }
         this.textures = al(tt);
-        for (SomeTexture t : textures) if (t.width != textures.car().width || t.height != textures.car().height) BadException.die("all textures must be of same size");
+        w = textures.car().width;
+        h = textures.car().height;
+        for (SomeTexture t : textures) if (t.width != w || t.height != h) BadException.die("all textures must be of same size");
         framebufferID = glGenFramebuffersEXT();											// create a new framebuffer
         depthRenderBufferID = glGenRenderbuffersEXT();									// And finally a new depthbuffer
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID); 						// switch to the new framebuffer
@@ -71,11 +78,30 @@ public class FrameBuffer {
         return this;
     }
 
+    public FrameBuffer initFBO(int w, int h, int... formats) {
+        SomeTexture[] tt = new SomeTexture[formats.length];
+        this.w = w;
+        this.h = h;
+        for (int i = 0; i < formats.length; i++) {
+            SomeTexture renderTexture4 = new SomeTexture();
+            renderTexture4.internalformat = formats[i];
+            renderTexture4.init(w, h);
+            tt[i] = renderTexture4;
+        }
+        return initFBO(tt);
+    }
+
     public void beginRenderToFbo() {
+        beginRenderToFbo(true);
+    }
+
+    public void beginRenderToFbo(boolean clear) {
         glViewport (0, 0, textures.car().width, textures.car().height);									// set The Current Viewport to the fbo size
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);		// switch to rendering on our FBO
-        glClearColor (0, 0, 0, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear Screen And Depth Buffer on the fbo to red
+        if (clear) {
+            glClearColor(0, 0, 0, 0.f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
+        }
     }
 
 

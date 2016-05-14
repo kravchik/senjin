@@ -13,4 +13,6 @@ import yk.senjin.shaders.gshader.StandardFSInput;
 public class AutoGi extends StandardFSInput {
     public Vec3f csPosG;
     public Vec4f colorG;
+    public float shininess;
+    public float nType;
 }

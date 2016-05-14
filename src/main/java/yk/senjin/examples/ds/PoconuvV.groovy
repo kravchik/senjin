@@ -21,5 +21,7 @@ class PoconuvV extends VertexShaderParent<PoconuvVi, PoconuvFi> {//TODO rename
         o.csNormal = normalMatrix * i.normal
         o.uv = i.uv
         o.color = i.color
+        o.shininess = i.shininess
+        o.nType = i.nType
     }
 }

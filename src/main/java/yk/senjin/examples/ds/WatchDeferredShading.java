@@ -103,7 +103,7 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
         hdrF.txt2.set(fbo1.textures.get(1));
         hdrF.txt3.set(fbo1.textures.get(2));
 //        hdrF.csLightDir = new Vec3f(1, 1, 1);
-        hdrF.csLightDir = watch.camNormalMatrix.multiply(new Vec4f(1, 1, 1, 0)).getXyz().normalized();
+        hdrF.csLightDir = watch.camNormalMatrix.multiply(new Vec4f(1, 1, 0, 1)).getXyz().normalized();
 
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
         hdrV.modelViewProjectionMatrix = Matrix4.identity();

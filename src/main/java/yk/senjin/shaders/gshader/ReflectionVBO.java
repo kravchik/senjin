@@ -52,6 +52,7 @@ public class ReflectionVBO {
             for (Field field : fields) {
                 if (Modifier.isTransient(field.getModifiers())) continue;
                 Object value = Reflector.get(vertex, field);
+                if (value == null) throw BadException.die("null value in field " + field.getName());
                 if (value instanceof Vec3f) {
                     Vec3f vec3f = (Vec3f) value;
                     buffer.putFloat(vec3f.x);

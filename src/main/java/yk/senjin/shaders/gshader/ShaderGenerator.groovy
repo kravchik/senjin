@@ -172,15 +172,15 @@ class ShaderGenerator {
         methods.addAll(caller2callee.values().flatMap{cc -> cc}.filter{cc -> !systemMethods.contains(cc)}.map{c->findByShortDesc(c)})
 
         //takes too long, TODO fix
-//        YHashMap<String, YSet<String>> modifiersMap = hm()
-        YHashMap<String, YSet<String>> modifiersMap = GglslAnalyzer.inferInOutModifiers(methods.toArray())
-        for (MethodNode method  : methods) {
-            def asserts = GglslAnalyzer.gAsserts(method, modifiersMap)
-            if (asserts.notEmpty()) {
-                println asserts.toString("\n")
-                BadException.die(asserts.toString())
-            }
-        }
+        YHashMap<String, YSet<String>> modifiersMap = hm()
+//        YHashMap<String, YSet<String>> modifiersMap = GglslAnalyzer.inferInOutModifiers(methods.toArray())
+//        for (MethodNode method  : methods) {
+//            def asserts = GglslAnalyzer.gAsserts(method, modifiersMap)
+//            if (asserts.notEmpty()) {
+//                println asserts.toString("\n")
+//                BadException.die(asserts.toString())
+//            }
+//        }
 
         println "analyzing 3: " + sw.stop()
 
@@ -213,10 +213,15 @@ class ShaderGenerator {
 
         result
     }
-
+    public static YMap<Class, YList<Field>> CACHE = hm();
     public static YList<Field> getFieldsForData(Class inputClass) {
-        if (inputClass == StandardFSInput.class || inputClass == Object.class || inputClass == StandardVSInput.class) return al();
-        return getFieldsForData(inputClass.getSuperclass()).with(inputClass.getDeclaredFields())
+        YList<Field> result = CACHE.get(inputClass);
+        if (result == null) {
+            if (inputClass == StandardFSInput.class || inputClass == Object.class || inputClass == StandardVSInput.class) return al();
+            result = getFieldsForData(inputClass.getSuperclass()).with(inputClass.getDeclaredFields());
+            CACHE.put(inputClass, result);
+        }
+        return result;
     }
 
     private MethodNode findByShortDesc(String s) {

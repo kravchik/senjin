@@ -46,6 +46,10 @@ public class DrawIndicesShort extends AbstractState {
         return indexBuffer.limit();
     }
 
+    public int getPrimitiveType() {
+        return primitiveType;
+    }
+
     public void disable() {
     }
 

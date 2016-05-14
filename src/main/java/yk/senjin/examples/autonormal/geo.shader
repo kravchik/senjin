@@ -7,10 +7,12 @@ layout (triangle_strip, max_vertices=3) out;
 
 in vec3 csPosG_fi[3];
 in vec4 colorG_fi[3];
+in float shininessG_fi[3];
 
 out vec3 csPos_fi;
 out vec3 csNormal_fi;
 out vec4 color_fi;
+out float shininess_fi;
 
 void main()
 {
@@ -23,6 +25,7 @@ void main()
     csPos_fi = csPosG_fi[i];
     csNormal_fi = n;
     color_fi = colorG_fi[i];
+    shininess_fi = shininessG_fi[i];
     EmitVertex();
   }
 }

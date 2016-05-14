@@ -13,6 +13,8 @@ import yk.senjin.shaders.gshader.StandardVSInput;
 public class Poco extends StandardVSInput {
     public Vec3f pos;
     public Vec4f color;
+    public float shininess = 0;
+    public float nType = 0;
 
     public Poco(Vec3f pos) {
         this.pos = pos;
