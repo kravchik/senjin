@@ -49,16 +49,16 @@ public class FrameBuffer {
         w = textures.car().width;
         h = textures.car().height;
         for (SomeTexture t : textures) if (t.width != w || t.height != h) BadException.die("all textures must be of same size");
-        framebufferID = glGenFramebuffersEXT();											// create a new framebuffer
-        depthRenderBufferID = glGenRenderbuffersEXT();									// And finally a new depthbuffer
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID); 						// switch to the new framebuffer
+        framebufferID = glGenFramebuffers();											// create a new framebuffer
+        depthRenderBufferID = glGenRenderbuffers();									// And finally a new depthbuffer
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, framebufferID); 						// switch to the new framebuffer
 
         IntBuffer drawBufferParam;
         drawBufferParam = BufferUtils.createIntBuffer(tt.length);
         for (int i = 0; i < tt.length; i++) {
             drawBufferParam.put(GL_COLOR_ATTACHMENT0_EXT + i);
             glBindTexture(GL_TEXTURE_2D, tt[i].textureObjectId);
-            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, tt[i].textureObjectId, 0); // attach texture to the framebuffer
+            glFramebufferTexture2D(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + i, GL_TEXTURE_2D, tt[i].textureObjectId, 0); // attach texture to the framebuffer
         }
         drawBufferParam.rewind();
         GL20.glDrawBuffers(drawBufferParam);
@@ -66,12 +66,12 @@ public class FrameBuffer {
 
 
         // initialize depth renderbuffer
-        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthRenderBufferID);				// bind the depth renderbuffer
-        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL14.GL_DEPTH_COMPONENT32, tt[0].width, tt[0].height);	// get the data space for it
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT, depthRenderBufferID); // bind it to the renderbuffer
-        int result = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
+        glBindRenderbuffer(GL_RENDERBUFFER_EXT, depthRenderBufferID);				// bind the depth renderbuffer
+        glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL14.GL_DEPTH_COMPONENT32, tt[0].width, tt[0].height);	// get the data space for it
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT, depthRenderBufferID); // bind it to the renderbuffer
+        int result = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (result != GL_FRAMEBUFFER_COMPLETE) BadException.die("Wrong FBO status: " + result);
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);									// Swithch back to normal framebuffer rendering
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);									// Swithch back to normal framebuffer rendering
 
         Util.checkGLError();
 
@@ -97,7 +97,7 @@ public class FrameBuffer {
 
     public void beginRenderToFbo(boolean clear) {
         glViewport (0, 0, textures.car().width, textures.car().height);									// set The Current Viewport to the fbo size
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);		// switch to rendering on our FBO
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, framebufferID);		// switch to rendering on our FBO
         if (clear) {
             glClearColor(0, 0, 0, 0.f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
@@ -106,7 +106,7 @@ public class FrameBuffer {
 
 
     public void endRenderToFbo() {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);					// switch to rendering on the framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);					// switch to rendering on the framebuffer
     }
 
     public static void renderFBO(int w, int h) {

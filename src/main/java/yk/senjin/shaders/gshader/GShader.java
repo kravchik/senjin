@@ -46,7 +46,7 @@ public class GShader {
 
         StopWatch sw = new StopWatch();
         result.generator = new ShaderGenerator(gSrc, resultPath, groovyShader, shaderType);
-        System.out.println(result.generator.resultSrc);
+//        System.out.println(result.generator.resultSrc);
         sw = new StopWatch();
         if (send) result.sendShaderToCard();
         return result;

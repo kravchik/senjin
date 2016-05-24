@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL14;
 
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Created by Yuri Kravchik on  10.06.15.
@@ -28,11 +28,11 @@ public class SimpleAntiAliasing {
         this.w = w;
         this.h = h;
 
-        framebufferID = glGenFramebuffersEXT();											// create a new framebuffer
+        framebufferID = glGenFramebuffers();											// create a new framebuffer
         colorTextureID = glGenTextures();												// and a new texture used as a color buffer
-        depthRenderBufferID = glGenRenderbuffersEXT();									// And finally a new depthbuffer
+        depthRenderBufferID = glGenRenderbuffers();									// And finally a new depthbuffer
 
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID); 						// switch to the new framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, framebufferID); 						// switch to the new framebuffer
 
         // initialize color texture
         glBindTexture(GL_TEXTURE_2D, colorTextureID);									// Bind the colorbuffer texture
@@ -44,15 +44,15 @@ public class SimpleAntiAliasing {
 /////
 //        glGenerateMipmap(GL_TEXTURE_2D);
 
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D, colorTextureID, 0); // attach it to the framebuffer
+        glFramebufferTexture2D(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D, colorTextureID, 0); // attach it to the framebuffer
 
 
         // initialize depth renderbuffer
-        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthRenderBufferID);				// bind the depth renderbuffer
-        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL14.GL_DEPTH_COMPONENT24, textureW, textureH);	// get the data space for it
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT, depthRenderBufferID); // bind it to the renderbuffer
+        glBindRenderbuffer(GL_RENDERBUFFER_EXT, depthRenderBufferID);				// bind the depth renderbuffer
+        glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL14.GL_DEPTH_COMPONENT24, textureW, textureH);	// get the data space for it
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT, depthRenderBufferID); // bind it to the renderbuffer
 
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);									// Swithch back to normal framebuffer rendering
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);									// Swithch back to normal framebuffer rendering
     }
 
     public void switchToFBO() {
@@ -61,7 +61,7 @@ public class SimpleAntiAliasing {
         glViewport (0, 0, textureW, textureH);									// set The Current Viewport to the fbo size
 
         glBindTexture(GL_TEXTURE_2D, 0);								// unlink textures because if we dont it all is gonna fail
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);		// switch to rendering on our FBO
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, framebufferID);		// switch to rendering on our FBO
 
 
         glClearColor (0.0f, 0.0f, 0.0f, 0.5f);
@@ -74,7 +74,7 @@ public class SimpleAntiAliasing {
         glEnable(GL_TEXTURE_2D);										// enable texturing
         glBindTexture(GL_TEXTURE_2D, colorTextureID);
         glGenerateMipmap(GL_TEXTURE_2D);
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);					// switch to rendering on the framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);					// switch to rendering on the framebuffer
 
         glClearColor (0.0f, 0.0f, 0.0f, 0.0f);
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear Screen And Depth Buffer on the framebuffer to black
