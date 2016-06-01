@@ -45,8 +45,8 @@ public class Simple3DWatch {
     public Vec2f mouseCur;
     Quaternionf cameraOld;
     public final float magnifier = 1;
-    float camPitch = 0;
-    float camYaw = 0;
+    public float camPitch = 0;
+    public float camYaw = 0;
     public Matrix4 perspectiveMatrix;
     public Matrix4 camModelViewMatrix;
     public Matrix4 camModelViewProjectionMatrix;
