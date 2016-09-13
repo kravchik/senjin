@@ -29,6 +29,12 @@ public class ReflectionVBO {
     public ByteBuffer buffer;
     public int bufferId = glGenBuffers();
     public Class inputType;
+    public boolean dirty;
+
+    //GL_STATIC_DRAW
+    //GL_DYNAMIC_DRAW
+    //GL_STREAM_DRAW
+    public int usageType = GL_STATIC_DRAW;
 
     public ReflectionVBO() {
     }
@@ -76,7 +82,7 @@ public class ReflectionVBO {
             }
         }
         buffer.rewind();
-        upload();
+        dirty = true;
     }
 
     private static final YMap<Class, Integer> type2size = hm();
@@ -99,10 +105,12 @@ public class ReflectionVBO {
         return getSizeOfType(clazz.getSuperclass()) + result;
     }
 
-    public void upload() {
+    public ReflectionVBO upload() {
         glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, buffer, usageType);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        dirty = false;
+        return this;
     }
 
     public void release() {

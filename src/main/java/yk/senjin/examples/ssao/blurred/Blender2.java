@@ -38,7 +38,7 @@ public class Blender2 {
 
     public void init() {
         blendProgram = new GProgram<>(new BlendV(), new MonoBlenderF()).runtimeReload();
-        blendProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
+        blendProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, -1, 1, 1, -1);
         fbo1 = new FrameBuffer();
         fbo2 = new FrameBuffer();
 
@@ -48,11 +48,12 @@ public class Blender2 {
         //initBuffers();
 
         //http://dev.theomader.com/gaussian-kernel-calculator/
-        blendProgram.fs.koeff = Blender1.KERNEL_1_5;
+        blendProgram.fs.koeff = Blender1.KERNEL_3_11;
 //        blendProgram.fs.koeff = new float[]{0.1f, 0.15f, 0.2f, 0.15f, 0.1f};
 //        blendProgram.fs.koeff = new float[]{1f, 1f, 1, 1f, 1f};
         blendProgram.fs.kSize = blendProgram.fs.koeff.length;
 
+        initBuffers();
     }
 
     public void initBuffers() {
@@ -80,6 +81,8 @@ public class Blender2 {
         fbo2.textures.car().disable();
     }
 
+    public SomeTexture depthTexture;
+
     public void render21() {
         renderToFbo2();
 
@@ -87,6 +90,8 @@ public class Blender2 {
         beginRenderToFbo1();
         fbo2.textures.car().enable(0);
         blendProgram.fs.txt.set(fbo2.textures.car());
+        blendProgram.fs.depth.set(depthTexture);
+
         blendProgram.fs.direction = new Vec2f(0f, 1f/size);
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
         blendProgram.enable();
@@ -101,6 +106,8 @@ public class Blender2 {
         fbo2.beginRenderToFbo();
         fbo1.textures.car().enable(0);
         blendProgram.fs.txt.set(fbo1.textures.car());
+        blendProgram.fs.depth.set(depthTexture);
+
         blendProgram.fs.direction = new Vec2f(1f/size, 0f);
 //        cameraDraw(fbo2, blendProgram, ???, ???, fbo1.texture);
         blendProgram.enable();

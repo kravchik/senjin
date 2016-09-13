@@ -52,6 +52,7 @@ class DeferredShadeSsao extends FragmentShaderParent<UvFi, StandardFSOutput> {
         float d1 = dot(normal, normalize(ray));
 //        if (d1 > 0.1f) d1 = 1;
         return min(1f, max(0, d1));
+//        return min(1f, max(0, d1/ length(dif) / (-pos.z)/30));
 //        return min(1f, max(0, d1/(max(0.1f, abs(ray.z*4)))));
     }
 
@@ -77,6 +78,21 @@ class DeferredShadeSsao extends FragmentShaderParent<UvFi, StandardFSOutput> {
                         calcDelta(normal, pos, i.uv, Vec2f(-d, 0)) +
                         calcDelta(normal, pos, i.uv, Vec2f(0, d)) +
                         calcDelta(normal, pos, i.uv, Vec2f(0, -d)) +
+
+//                        calcDelta(normal, pos, i.uv, Vec2f(d, d2)) +
+//                        calcDelta(normal, pos, i.uv, Vec2f(-d, -d2)) +
+//                        calcDelta(normal, pos, i.uv, Vec2f(-d2, d)) +
+//                        calcDelta(normal, pos, i.uv, Vec2f(d2, -d)) +
+//
+//                        calcDelta(normal, pos, i.uv, Vec2f(d, -d2)) +
+//                        calcDelta(normal, pos, i.uv, Vec2f(-d, d2)) +
+//                        calcDelta(normal, pos, i.uv, Vec2f(d2, d)) +
+//                        calcDelta(normal, pos, i.uv, Vec2f(-d2, -d)) +
+//
+//                        calcDelta(normal, pos, i.uv, Vec2f(d/4, 0)) +
+//                        calcDelta(normal, pos, i.uv, Vec2f(-d/4, 0)) +
+//                        calcDelta(normal, pos, i.uv, Vec2f(0, d/4)) +
+//                        calcDelta(normal, pos, i.uv, Vec2f(0, -d/4)) +
 
 //                        calcDelta(normal, pos, i.uv, Vec2f(d2, 0)) +
 //                        calcDelta(normal, pos, i.uv, Vec2f(-d2, 0)) +

@@ -26,6 +26,13 @@ public class WatchReloadable extends Simple3DWatch {
         this.classes = classes;
     }
 
+    public WatchReloadable(int w, int h, LoadTickUnload<? extends Simple3DWatch> first, String path, Class... classes) {
+        super(w, h, true);
+        this.first = (LoadTickUnload<Simple3DWatch>) first;
+        this.path = path;
+        this.classes = classes;
+    }
+
     @Override
     public void firstFrame() {
         super.firstFrame();

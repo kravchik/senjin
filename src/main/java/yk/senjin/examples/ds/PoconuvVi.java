@@ -4,6 +4,8 @@ import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: yuri
@@ -17,7 +19,7 @@ import yk.jcommon.fastgeom.Vec4f;
 //coponouv
 
 //Pocontex
-public class PoconuvVi {//TODO rename
+public class PoconuvVi implements Serializable {//TODO rename
 
     public Vec3f normal = Vec3f.ZERO;
     public Vec4f color = Vec4f.ZERO;

@@ -16,8 +16,8 @@ import java.util.List;
 
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.collections.YHashMap.hm;
-import static yk.jcommon.match2.ShortNames.p;
-import static yk.jcommon.match2.ShortNames.var;
+import static yk.jcommon.match2.MatcherShortNames.p;
+import static yk.jcommon.match2.MatcherShortNames.var;
 import static yk.senjin.shaders.gshader.ShaderGenerator.isPrimitive;
 import static yk.senjin.shaders.gshader.ShaderGenerator.translateType;
 
@@ -41,9 +41,9 @@ public class Visitors {
     }
 
     public static YHashMap<String, YSet<String>> inferInOutModifiers(Object nodes) {
-        YList<Object> accessors = YArrayList.al(new ByIndex(new Var("access")));
-        YList<Object> accessors2 = accessors.with(Property.p("methodsList", new Var("access")));
-        YSet<YMap<String, Object>> method = Matcher.match(nodes, new Deeper(accessors2, var("method", p(MethodNode.class, "name", var("methodName")))));
+        YList<Object> accessors = YArrayList.al(new MatchByIndex(new MatchVar("access")));
+        YList<Object> accessors2 = accessors.with(MatchProperty.p("methodsList", new MatchVar("access")));
+        YSet<YMap<String, Object>> method = new Matcher().match(nodes, new MatchDeeper(accessors2, var("method", p(MethodNode.class, "name", var("methodName")))));
         YHashMap<String, YSet<String>> modifiers = hm();
         int oldModifiersCount = 0;
         while (true) {

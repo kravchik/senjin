@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.Util;
 import yk.jcommon.collections.YList;
+import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.utils.BadException;
 
 import java.nio.IntBuffer;
@@ -23,6 +24,7 @@ public class FrameBuffer {
     public int framebufferID;
     public int depthRenderBufferID;
     public YList<SomeTexture> textures;
+    public Vec3f backgroundColor = Vec3f.ZERO;
 
     public int w, h;
 
@@ -99,7 +101,7 @@ public class FrameBuffer {
         glViewport (0, 0, textures.car().width, textures.car().height);									// set The Current Viewport to the fbo size
         glBindFramebuffer(GL_FRAMEBUFFER_EXT, framebufferID);		// switch to rendering on our FBO
         if (clear) {
-            glClearColor(0, 0, 0, 0.f);
+            glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 0.f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
         }
     }
@@ -110,7 +112,6 @@ public class FrameBuffer {
     }
 
     public static void renderFBO(int w, int h) {
-        glClearColor (.0f, 0.0f, 0.0f, 0.f);
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear Screen And Depth Buffer on the framebuffer to black
 
         glViewport (0, 0, w, h);
@@ -130,7 +131,7 @@ public class FrameBuffer {
         glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  0f);
         glEnd();
 
-        glFlush();
+//        glFlush();
     }
 
     public void enableTextures() {

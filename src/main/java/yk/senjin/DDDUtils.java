@@ -526,31 +526,31 @@ public class DDDUtils {//TODO extract to another lib
 
     //TODO rename
     //batchDraw? shaderDraw?
-    public static void cameraDraw(FrameBuffer fbo, GProgram shader1, ReflectionVBO vbo1, DrawIndicesShort indices, SomeTexture... textures) {
+    public static void cameraDraw(FrameBuffer fbo, GProgram shader1, ReflectionVBO vbo1, AbstractState indices, SomeTexture... textures) {
         fbo.beginRenderToFbo();
         for (int i = 0; i < textures.length; i++) textures[i].enable(i);
         shader1.setInput(vbo1);
         shader1.enable();
-        indices.draw();
+        indices.enable();
         shader1.disable();
         for (int i = textures.length-1; i >= 0; i--) textures[i].disable();
         fbo.endRenderToFbo();
     }
 
-    public static void cameraDraw(GProgram shader1, ReflectionVBO vbo1, DrawIndicesShort indices, SomeTexture... textures) {
+    public static void cameraDraw(GProgram shader1, ReflectionVBO vbo1, AbstractState indices, SomeTexture... textures) {
         for (int i = 0; i < textures.length; i++) textures[i].enable(i);
         shader1.setInput(vbo1);
         shader1.enable();
-        indices.draw();
+        indices.enable();
         shader1.disable();
         for (int i = textures.length-1; i >= 0; i--) textures[i].disable();
     }
 
-    public static void cameraDraw(GProgram shader1, ReflectionVBO vbo1, DrawIndicesShort indices, List<SomeTexture> textures) {
+    public static void cameraDraw(GProgram shader1, ReflectionVBO vbo1, AbstractState indices, List<SomeTexture> textures) {
         for (int i = 0; i < textures.size(); i++) textures.get(i).enable(i);
         shader1.setInput(vbo1);
         shader1.enable();
-        indices.draw();
+        indices.enable();
         shader1.disable();
         for (int i = textures.size()-1; i >= 0; i--) textures.get(i).disable();
     }

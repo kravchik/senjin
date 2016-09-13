@@ -57,9 +57,11 @@ class DeferredShadeSsao2 extends FragmentShaderParent<UvFi, StandardFSOutput> {
 //        float len2 = length(dif);
 //        float d1 = dot(normal, normalize(ray)) /len2;
 //        float d1 = dot(normal, normalize(ray)) * (0.5f-len2)/longest;
-        float d1 = dot(normal, normalize(ray))// * (longest-rayLen)/longest;
+        Vec3f normalizedRay = normalize(ray)
+        float d1 = dot(normal, normalizedRay)// * (longest-rayLen)/longest;
 //        if (d1 > 0.1f) d1 = 1;
-        return min(1f, max(0, d1));
+//        return min(1f, max(0, d1/ length(dif) / (-pos.z)/30));
+        return pow(clamp(d1, 0, 1), 2);
 //        return min(1f, max(0, d1/(max(0.1f, abs(ray.z*4)))));
     }
 
@@ -73,21 +75,38 @@ class DeferredShadeSsao2 extends FragmentShaderParent<UvFi, StandardFSOutput> {
         float d2 = d / 2f;
 
         float d1 = 1-(
-                        calcDelta(normal, pos, i.uv, Vec2f(d, 0))/2 +
-                        calcDelta(normal, pos, i.uv, Vec2f(-d, 0))/2 +
-                        calcDelta(normal, pos, i.uv, Vec2f(0, d))/2 +
-                        calcDelta(normal, pos, i.uv, Vec2f(0, -d))/2 +
+                        calcDelta(normal, pos, i.uv, Vec2f(d, 0))   * 0.2f +
+                        calcDelta(normal, pos, i.uv, Vec2f(-d, 0))  * 0.2f +
+                        calcDelta(normal, pos, i.uv, Vec2f(0, d))   * 0.2f +
+                        calcDelta(normal, pos, i.uv, Vec2f(0, -d))  * 0.2f +
+
+
+                                calcDelta(normal, pos, i.uv, Vec2f(d, d2))   * 0.12f+
+                                calcDelta(normal, pos, i.uv, Vec2f(-d, -d2)) * 0.12f+
+                                calcDelta(normal, pos, i.uv, Vec2f(-d2, d))  * 0.12f+
+                                calcDelta(normal, pos, i.uv, Vec2f(d2, -d))  * 0.12f+
+
+                                calcDelta(normal, pos, i.uv, Vec2f(d, -d2))  * 0.12f+
+                                calcDelta(normal, pos, i.uv, Vec2f(-d, d2))  * 0.12f+
+                                calcDelta(normal, pos, i.uv, Vec2f(d2, d))   * 0.12f+
+                                calcDelta(normal, pos, i.uv, Vec2f(-d2, -d)) * 0.12f+
+
+                                calcDelta(normal, pos, i.uv, Vec2f(d/4, 0))   * 0.2f +
+                                calcDelta(normal, pos, i.uv, Vec2f(-d/4, 0))  * 0.2f +
+                                calcDelta(normal, pos, i.uv, Vec2f(0, d/4))   * 0.2f +
+                                calcDelta(normal, pos, i.uv, Vec2f(0, -d/4))  * 0.2f +
+
 
 //                        calcDelta(normal, pos, i.uv, Vec2f(d2, 0)) +
 //                        calcDelta(normal, pos, i.uv, Vec2f(-d2, 0)) +
 //                        calcDelta(normal, pos, i.uv, Vec2f(0, d2)) +
 //                        calcDelta(normal, pos, i.uv, Vec2f(0, -d2)) +
 
-                        calcDelta(normal, pos, i.uv, Vec2f(d2, d2)) +
-                        calcDelta(normal, pos, i.uv, Vec2f(-d2, d2)) +
-                        calcDelta(normal, pos, i.uv, Vec2f(-d2, -d2)) +
-                        calcDelta(normal, pos, i.uv, Vec2f(d2, -d2))
-        )/6f
+                        calcDelta(normal, pos, i.uv, Vec2f(d2, d2))   *0.3f +
+                        calcDelta(normal, pos, i.uv, Vec2f(-d2, d2))  *0.3f +
+                        calcDelta(normal, pos, i.uv, Vec2f(-d2, -d2)) *0.3f +
+                        calcDelta(normal, pos, i.uv, Vec2f(d2, -d2))  *0.3f
+        )/4f
 //        if (pos.z == 0) d1 = 0;
 
 

@@ -5,6 +5,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.opengl.Util;
 import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Quaternionf;
@@ -35,16 +36,19 @@ public class Simple3DWatch {
     public boolean drawAxis = true;
     public boolean workMouse = true;
 
+    public float zNear = 0.2f;
+    public float zFar = 500;
+
     public boolean SIMPLE_AA = false;
     SimpleAntiAliasing2 simpleAA;
 
     //TODO extract viewport
     public final Cam cam = new Cam();
+    public float fovy = 45f;
     public int w, h;
     public Vec2f mousePressedAt;
     public Vec2f mouseCur;
     Quaternionf cameraOld;
-    public final float magnifier = 1;
     public float camPitch = 0;
     public float camYaw = 0;
     public Matrix4 perspectiveMatrix;
@@ -133,15 +137,13 @@ public class Simple3DWatch {
         } else {
             mousePressedAt = null;
         }
-        cam.lookRot = Quaternionf.fromAngleAxisFast(camPitch, new Vec3f(1, 0, 0))
-                .mul(Quaternionf.fromAngleAxisFast(camYaw, new Vec3f(0, 1, 0)))
-                .normalized();
+        updateCamLook();
 
         glAlphaFunc ( GL_GREATER, 0.1f) ;
         glEnable ( GL_ALPHA_TEST ) ;
 
-        float camMoveSpeed = 30;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) camMoveSpeed /= 10;
+        float camMoveSpeed = 20;
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) camMoveSpeed /= 20;
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) cam.lookAt = cam.lookAt.add(cam.lookRot.rotateFast(new Vec3f(0, 0, -camMoveSpeed * dt)));
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) cam.lookAt = cam.lookAt.add(cam.lookRot.rotateFast(new Vec3f(0, 0, camMoveSpeed * dt)));
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) cam.lookAt = cam.lookAt.add(cam.lookRot.rotateFast(new Vec3f(-camMoveSpeed * dt, 0, 0)));
@@ -156,20 +158,15 @@ public class Simple3DWatch {
 
         glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1);
         glClear(GL_COLOR_BUFFER_BIT);
-        glClear(GL_DEPTH_BUFFER_BIT);
+        //почему-то мешает чтению буфера глубины в Renderer3
+//        glClear(GL_DEPTH_BUFFER_BIT);
         glBindTexture(GL_TEXTURE_2D, 0);
         glDepthMask(true);
 
 //        if (ortho) {
 //            perspectiveMatrix = ortho(-cam.lookAt.z / 3, cam.lookAt.z / 3, -cam.lookAt.z / 3, cam.lookAt.z / 6, 1, 1200);
 //        } else {
-        perspectiveMatrix = perspective(45.0f, (float) w / h, 1, 1200.0f * 1);
-//        }
-        camModelViewMatrix = cam.lookRot.toMatrix4Right().multiply(Matrix4.identity().translate(cam.lookAt.mul(-1))); ;
-        camNormalMatrix = camModelViewMatrix.invert().transpose();
-        camModelViewProjectionMatrix = perspectiveMatrix.multiply(camModelViewMatrix);
-
-        resetMvp();
+        recalcMatrices();
 
         glDisable(GL_DEPTH_TEST);
         if (skyBox != null) skyBox.render(cam.lookAt);
@@ -177,6 +174,23 @@ public class Simple3DWatch {
 
         if (drawAxis) drawAxis();
 
+    }
+
+    public void updateCamLook() {
+        cam.lookRot = Quaternionf.fromAngleAxisFast(camPitch, new Vec3f(1, 0, 0))
+                .mul(Quaternionf.fromAngleAxisFast(camYaw, new Vec3f(0, 1, 0)))
+                .normalized();
+    }
+
+    public void recalcMatrices() {
+        perspectiveMatrix = perspective(fovy, (float) w / h, zNear, zFar);
+//        }
+        camModelViewMatrix = cam.lookRot.toMatrix4Right().multiply(Matrix4.identity().translate(cam.lookAt.mul(-1)));
+        ;
+        camNormalMatrix = camModelViewMatrix.invert().transpose();
+        camModelViewProjectionMatrix = perspectiveMatrix.multiply(camModelViewMatrix);
+
+        resetMvp();
     }
 
     public void drawAxis() {
@@ -205,7 +219,7 @@ public class Simple3DWatch {
         DisplayMode[] modes = Display.getAvailableDisplayModes();
         Display.setDisplayMode(new DisplayMode(w, h));
 //                    Display.setDisplayMode(modes[modes.length - 1]);
-        Display.create();
+        Display.create(new PixelFormat());
         Display.makeCurrent();
         //aa
         if (SIMPLE_AA) simpleAA.initAA(w, h);
@@ -226,7 +240,7 @@ public class Simple3DWatch {
     public void resetMvp() {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(45.0f, (float) w / h, magnifier, 1000.0f * magnifier);
+        gluPerspective(fovy, (float) w / h, zNear, zFar);
         resetMv();
     }
 

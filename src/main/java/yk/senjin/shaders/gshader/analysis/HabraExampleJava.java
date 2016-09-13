@@ -6,11 +6,11 @@ import org.codehaus.groovy.ast.expr.*;
 import org.codehaus.groovy.control.CompilePhase;
 import yk.jcommon.collections.YMap;
 import yk.jcommon.fastgeom.Vec3f;
+import yk.jcommon.match2.Matcher;
 import yk.jcommon.utils.IO;
 
 import static yk.jcommon.collections.YHashMap.hm;
-import static yk.jcommon.match2.Matcher.match;
-import static yk.jcommon.match2.ShortNames.*;
+import static yk.jcommon.match2.MatcherShortNames.*;
 import static yk.senjin.shaders.gshader.analysis.GglslAnalyzer.G_BODY_ACCESSORS;
 import static yk.senjin.shaders.gshader.analysis.GglslAnalyzer.G_METHOD_ACCESSORS;
 
@@ -61,21 +61,21 @@ public class HabraExampleJava {
         Object node = new AstBuilder().buildFromString(CompilePhase.INSTRUCTION_SELECTION, src);
 
         //select method "foo"
-        for (YMap<String, Object> m : match(node, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), "foo"))) {
+        for (YMap<String, Object> m : new Matcher().match(node, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), "foo"))) {
             //getting methodNode object from select result
             Object methodNode = m.get("method");
             System.out.println("all variables are free:");
-            System.out.println(match(methodNode, G_FIELD_AS_ARG_PATTERN).toString("\n"));
+            System.out.println(new Matcher().match(methodNode, G_FIELD_AS_ARG_PATTERN).toString("\n"));
             System.out.println("\nfixed OBJ_NAME:");
-            System.out.println(match(methodNode, G_FIELD_AS_ARG_PATTERN, hm("OBJ_NAME", "vecB")).toString("\n"));
+            System.out.println(new Matcher().match(methodNode, G_FIELD_AS_ARG_PATTERN, hm("OBJ_NAME", "vecB")).toString("\n"));
             System.out.println("\nfixed ARG_INDEX:");
-            System.out.println(match(methodNode, G_FIELD_AS_ARG_PATTERN, hm("ARG_INDEX", 0)).toString("\n"));
+            System.out.println(new Matcher().match(methodNode, G_FIELD_AS_ARG_PATTERN, hm("ARG_INDEX", 0)).toString("\n"));
         }
 
         System.out.println("\nsimple array\n");
         Vec3f[] vv = new Vec3f[]{new Vec3f(0, 0, 0), new Vec3f(1, 1, 1)};
-        System.out.println(match(vv, i(p("x", var("X_VALUE")))));
-        System.out.println(match(vv, i(var("OBJ_INDEX"), p("x", var("X_VALUE")))));
+        System.out.println(new Matcher().match(vv, i(p("x", var("X_VALUE")))));
+        System.out.println(new Matcher().match(vv, i(var("OBJ_INDEX"), p("x", var("X_VALUE")))));
 
 
 

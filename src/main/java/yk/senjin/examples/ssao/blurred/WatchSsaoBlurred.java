@@ -51,7 +51,7 @@ public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
     public void onLoad(WatchReloadable watch) {
         defDataProgram = new GProgram<>(new PoconuvV(), new DeferredDataF()).runtimeReload();
         ssaoProgram = new GProgram<>(new PosuvV(), new DeferredShadeSsao2()).runtimeReload();
-        ssaoProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
+        ssaoProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, -1, 1, 1, -1);
         finalProgram = new GProgram<>(new PosuvV(), new DefShaderFinal()).runtimeReload();
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
@@ -128,7 +128,11 @@ public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
 
 
         //blending
+
+        blender.depthTexture =  dataFrame.textures.get(2);
+        blender.depthTexture.enable(2);
         blender.render21();
+        blender.depthTexture.disable();
 
 
 

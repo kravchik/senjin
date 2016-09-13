@@ -129,7 +129,7 @@ public class ShaderHandler extends AbstractState {
     }
 
     public int program;
-    private final List<UniformVariable> uniforms = new ArrayList<UniformVariable>();
+    public final List<UniformVariable> uniforms = new ArrayList<UniformVariable>();
     public final Map<String, VertexAttrib> vertexAttribs = new HashMap<String, VertexAttrib>();
 
     public void initVariables() {

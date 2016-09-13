@@ -7,15 +7,15 @@ import org.codehaus.groovy.control.CompilePhase
 import yk.jcommon.collections.YMap
 import yk.jcommon.collections.YSet
 import yk.jcommon.fastgeom.Vec3f
-import yk.jcommon.match2.ByIndex
-import yk.jcommon.match2.Deeper
-import yk.jcommon.match2.Var
+import yk.jcommon.match2.MatchByIndex
+import yk.jcommon.match2.MatchDeeper
+import yk.jcommon.match2.MatchVar
 import yk.jcommon.utils.IO
 
 import static GglslAnalyzer.G_BODY_ACCESSORS
 import static yk.jcommon.collections.YHashMap.hm
 import static yk.jcommon.match2.Matcher.match
-import static yk.jcommon.match2.ShortNames.*
+import static yk.jcommon.match2.MatcherShortNames.*
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,9 +50,9 @@ class HabraExample {
         String varName = "";
 
         Object rest = null;
-        new Var("VAR_NAME", rest);
-        new ByIndex(3, rest);
-        new Deeper(G_BODY_ACCESSORS, rest);
+        new MatchVar("VAR_NAME", rest);
+        new MatchByIndex(3, rest);
+        new MatchDeeper(G_BODY_ACCESSORS, rest);
 
 //        boolean wasWritten = match(methodNode, varWritePattern, hm("VAR_NAME", varName)).notEmpty();
 

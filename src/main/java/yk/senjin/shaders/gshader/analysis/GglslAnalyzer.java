@@ -13,10 +13,7 @@ import org.codehaus.groovy.ast.stmt.ReturnStatement;
 import org.codehaus.groovy.control.CompilePhase;
 import org.junit.Test;
 import yk.jcommon.collections.*;
-import yk.jcommon.match2.ByIndex;
-import yk.jcommon.match2.Deeper;
-import yk.jcommon.match2.Property;
-import yk.jcommon.match2.Var;
+import yk.jcommon.match2.*;
 import yk.jcommon.probe.Probe;
 import yk.jcommon.probe.State;
 import yk.jcommon.search.SSearch;
@@ -26,8 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.collections.YHashMap.hm;
 import static yk.jcommon.collections.YHashSet.hs;
-import static yk.jcommon.match2.Matcher.match;
-import static yk.jcommon.match2.ShortNames.*;
+import static yk.jcommon.match2.MatcherShortNames.*;
 import static yk.senjin.shaders.gshader.ShaderGenerator.isPrimitive;
 import static yk.senjin.shaders.gshader.ShaderGenerator.translateType;
 
@@ -130,16 +126,16 @@ public class GglslAnalyzer {
 
     public static YMap<String, YSet<String>> calcCallers(Object data) {
         YMap<String, YSet<String>> result = hm();
-        YSet<YMap<String, Object>> methods = match(data, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), var("methodName")));
+        YSet<YMap<String, Object>> methods = new Matcher().match(data, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), var("methodName")));
         for (YMap<String, Object> mp : methods) {
             Object methodCalls = stairs(deeper(G_BODY_ACCESSORS), p(MethodCallExpression.class, "getMethod"), p("getText"), var("callMethodName"));
-            for (YMap<String, Object> mcp : match(mp.get("method"), methodCalls)) {
+            for (YMap<String, Object> mcp : new Matcher().match(mp.get("method"), methodCalls)) {
                 result.put((String) mp.get("methodName"), result.getOr((String) mp.get("methodName"), hs()).with((String) mcp.get("callMethodName")));
             }
 
             //TODO statics in other class
             methodCalls = stairs(deeper(G_BODY_ACCESSORS), p(StaticMethodCallExpression.class, "getMethod"), var("callMethodName"));
-            for (YMap<String, Object> mcp : match(mp.get("method"), methodCalls)) {
+            for (YMap<String, Object> mcp : new Matcher().match(mp.get("method"), methodCalls)) {
                 result.put((String) mp.get("methodName"), result.getOr((String) mp.get("methodName"), hs()).with((String) mcp.get("callMethodName")));
             }
         }
@@ -161,9 +157,9 @@ public class GglslAnalyzer {
     // modified ?  =>   inout : in
 
     public static YHashMap<String, YSet<String>> inferInOutModifiers(Object nodes) {
-        YList<Object> accessors = YArrayList.al(new ByIndex(new Var("access")));
-        YList<Object> accessors2 = accessors.with(Property.p("methodsList", new Var("access")));
-        YSet<YMap<String, Object>> method = match(nodes, new Deeper(accessors2, var("method", p(MethodNode.class, "name", var("methodName")))));
+        YList<Object> accessors = YArrayList.al(new MatchByIndex(new MatchVar("access")));
+        YList<Object> accessors2 = accessors.with(MatchProperty.p("methodsList", new MatchVar("access")));
+        YSet<YMap<String, Object>> method = new Matcher().match(nodes, new MatchDeeper(accessors2, var("method", p(MethodNode.class, "name", var("methodName")))));
         YHashMap<String, YSet<String>> modifiers = hm();
         int oldModifiersCount = 0;
         while (true) {
@@ -183,18 +179,18 @@ public class GglslAnalyzer {
 
     public static YMap<String, YSet<String>> getArgsModifiers(MethodNode methodNode, YMap<String, YSet<String>> result) {
 
-        Object fieldWritePattern = new Deeper(G_BODY_ACCESSORS,
+        Object fieldWritePattern = new MatchDeeper(G_BODY_ACCESSORS,
                 p(BinaryExpression.class, "operation", p("text", "="),
                         "leftExpression", p(PropertyExpression.class, "objectExpression", p(VariableExpression.class, "variable", var("name")), "property", p("value", var("value")))
                 ));
 
-        YSet<YMap<String, Object>> paramMm = match(methodNode, p("parameters", i(var("paramIndex"), p("name", var("paramName")))));
+        YSet<YMap<String, Object>> paramMm = new Matcher().match(methodNode, p("parameters", i(var("paramIndex"), p("name", var("paramName")))));
         for (YMap<String, Object> paramM : paramMm) if (!isPrimitive(translateType((String) paramM.get("paramName")))) {
             String paramName = (String) paramM.get("paramName");
             String paramFullName = methodNode.getName() + ":" + paramM.get("paramIndex");
-            if (match(methodNode, fieldWritePattern, hm("name", paramName)).notEmpty()) result.put(paramFullName, result.getOr(paramFullName, hs()).with("inout"));
+            if (new Matcher().match(methodNode, fieldWritePattern, hm("name", paramName)).notEmpty()) result.put(paramFullName, result.getOr(paramFullName, hs()).with("inout"));
 
-            YSet<YMap<String, Object>> asArgMm = match(methodNode, G_AS_ARG_PATTERN, hm("name", paramName));
+            YSet<YMap<String, Object>> asArgMm = new Matcher().match(methodNode, G_AS_ARG_PATTERN, hm("name", paramName));
             for (YMap<String, Object> asArgM : asArgMm) {
                 Object callMethodName = asArgM.get("callMethodName");
                 Object asArgIndex = asArgM.get("argIndex");
@@ -240,8 +236,8 @@ public class GglslAnalyzer {
                 deeper(G_BODY_ACCESSORS),
                 p(VariableExpression.class, "variable", var("name")));
 
-        Object fieldReadPattern = new Deeper(G_BODY_ACCESSORS,
-                p("operation", p("text", "="), "rightExpression", new Deeper(G_BODY_ACCESSORS,
+        Object fieldReadPattern = new MatchDeeper(G_BODY_ACCESSORS,
+                p("operation", p("text", "="), "rightExpression", new MatchDeeper(G_BODY_ACCESSORS,
                         p("objectExpression", p("variable", var("name"))))));
 
         return null;
@@ -260,33 +256,33 @@ public class GglslAnalyzer {
                 p(ReturnStatement.class, "getExpression"),
                 p(VariableExpression.class, "variable", var("VAR_NAME")));
 
-        for (YMap<String, Object> m : match(mainClass, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), var("methodName")))) {
+        for (YMap<String, Object> m : new Matcher().match(mainClass, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), var("methodName")))) {
             Object methodName = m.get("methodName");
             String prefix = "(method " + methodName + ") ";
             for (Parameter parameter : ((MethodNode)m.get("method")).getParameters()) if (!isPrimitive(translateType(parameter.getType().getName()))) {//TODO match type
                 //can't rewrite vector (use explicit copyFrom)
-                if (match(m.get("method"), varWritePattern, hm("VAR_NAME", parameter.getName())).notEmpty()) {
+                if (new Matcher().match(m.get("method"), varWritePattern, hm("VAR_NAME", parameter.getName())).notEmpty()) {
                     errors.add(prefix + "parameter '" + parameter.getName() + " " + translateType(parameter.getType().getName()) + "' is rewritten, but it's forbidden in gglsl (use explicity copyFrom)");
                 }
                 //can't return vector (use explicit copy)
-                if (match(m.get("method"), varReturnPattern, hm("VAR_NAME", parameter.getName())).notEmpty()) {
+                if (new Matcher().match(m.get("method"), varReturnPattern, hm("VAR_NAME", parameter.getName())).notEmpty()) {
                     errors.add(prefix + "parameter '" + parameter.getName() + "' is used as return value, but it's forbidden in gglsl (use explicity copy)");
                 }
             }
 
-            YSet<YMap<String, Object>> fieldsMm = match(mainClass, stairs(i(), p(ClassNode.class, "getFields"), i(), p(FieldNode.class, "getName"), var("fieldName")));
+            YSet<YMap<String, Object>> fieldsMm = new Matcher().match(mainClass, stairs(i(), p(ClassNode.class, "getFields"), i(), p(FieldNode.class, "getName"), var("fieldName")));
             for (YMap<String, Object> fieldM : fieldsMm) {
 
                 String fieldName = (String) fieldM.get("fieldName");
 
                 //can't return uniform (use explicit copy)
-                if (match(m.get("method"), varReturnPattern, hm("VAR_NAME", fieldName)).notEmpty()) {
+                if (new Matcher().match(m.get("method"), varReturnPattern, hm("VAR_NAME", fieldName)).notEmpty()) {
                     errors.add(prefix + "field '" + fieldName + "' is used as return value, but it's forbidden in gglsl");
                 }
 
                 //uniform.x as inout-arg
                 //seems like couldn't be (because all fields are primitive)
-                for (YMap<String, Object> asArgM : match(m.get("method"), G_FIELD_AS_ARG_PATTERN, hm("OBJ_NAME", fieldName))) {
+                for (YMap<String, Object> asArgM : new Matcher().match(m.get("method"), G_FIELD_AS_ARG_PATTERN, hm("OBJ_NAME", fieldName))) {
                     String argIndexedName = asArgM.get("callMethodName") + ":" + asArgM.get("argIndex");
                     YSet<String> argQualifiers = modifiers.getOr(argIndexedName, hs());
                     if (argQualifiers.contains("inout")) {
@@ -295,7 +291,7 @@ public class GglslAnalyzer {
                 }
 
                 //uniform as inout-arg
-                for (YMap<String, Object> asArgM : match(m.get("method"), G_AS_ARG_PATTERN, hm("name", fieldName))) {
+                for (YMap<String, Object> asArgM : new Matcher().match(m.get("method"), G_AS_ARG_PATTERN, hm("name", fieldName))) {
                     String argIndexedName = asArgM.get("callMethodName") + ":" + asArgM.get("argIndex");
                     YSet<String> argQualifiers = modifiers.getOr(argIndexedName, hs());
                     if (argQualifiers.contains("inout")) {
@@ -304,12 +300,12 @@ public class GglslAnalyzer {
                 }
 
                 //uniform write
-                if (match(m.get("method"), varWritePattern, hm("VAR_NAME", fieldName)).notEmpty()) {
+                if (new Matcher().match(m.get("method"), varWritePattern, hm("VAR_NAME", fieldName)).notEmpty()) {
                     errors.add(prefix + "field '" + fieldName + "' is rewritten, but it's forbidden in gglsl");
                 }
 
                 //uniform.x write
-                if (match(m.get("method"), G_WRITE_FIELD_PATTERN, hm("OBJ_NAME", fieldName)).notEmpty()) {
+                if (new Matcher().match(m.get("method"), G_WRITE_FIELD_PATTERN, hm("OBJ_NAME", fieldName)).notEmpty()) {
                     errors.add(prefix + "field '" + fieldName + "' is modified, but it's forbidden in gglsl");
                 }
             }
@@ -317,7 +313,6 @@ public class GglslAnalyzer {
         }
         return errors;
     }
-
 }
 
 

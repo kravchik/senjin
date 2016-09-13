@@ -1,6 +1,7 @@
 package yk.senjin.shaders.gshader;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.Util;
 import yk.jcommon.collections.YList;
 import yk.jcommon.collections.YMap;
@@ -230,6 +231,31 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
             Util.checkGLError();
             for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOn();
             Util.checkGLError();
+        }
+    }
+
+    public void enable1() {
+        if (pvs.singleOwner) pvs.tick();
+        if (pfs.singleOwner) pfs.tick();
+        if (oldVGen != pvs.generator || oldFGen != pfs.generator) {
+            //TODO asserts?
+//            asserts();
+            ShaderHandler np = newShaderProgram();
+            shader.deleteProgram();
+            shader = np;
+            oldVGen = pvs.generator;
+            oldFGen = pfs.generator;
+        }
+
+        GL20.glUseProgram(shader.program);
+        ShaderHandler.currentShader = shader;
+    }
+
+    public void enable2() {
+        for (int i1 = 0; i1 < shader.uniforms.size(); i1++) shader.uniforms.get(i1).plug();
+        if (currentVBO != null) {//because we can use built in vertex attributes
+            glBindBuffer(GL_ARRAY_BUFFER, currentVBO.bufferId);
+            for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOn();
         }
     }
 

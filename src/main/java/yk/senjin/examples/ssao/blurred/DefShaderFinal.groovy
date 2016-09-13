@@ -41,6 +41,7 @@ class DefShaderFinal extends FragmentShaderParent<UvFi, StandardFSOutput> {
 //        if (pos.z > ssao.y+0.02f) o.gl_FragColor = Vec4f(1*d1, color.y * d1, color.z * d1, 1);
 //        if (d1 == 0) d1 = 1;
         o.gl_FragColor = Vec4f(color.x*d1, color.y * d1, color.z * d1, 1);
+//        o.gl_FragColor = Vec4f(color.x*d1, color.y * d1, color.z * d1, 1);
 
     }
 }
