@@ -159,7 +159,7 @@ public class Simple3DWatch {
         glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1);
         glClear(GL_COLOR_BUFFER_BIT);
         //почему-то мешает чтению буфера глубины в Renderer3
-//        glClear(GL_DEPTH_BUFFER_BIT);
+        if (doClearDepthBuffer) glClear(GL_DEPTH_BUFFER_BIT);
         glBindTexture(GL_TEXTURE_2D, 0);
         glDepthMask(true);
 
@@ -176,6 +176,8 @@ public class Simple3DWatch {
 
     }
 
+    public boolean doClearDepthBuffer = true;
+
     public void updateCamLook() {
         cam.lookRot = Quaternionf.fromAngleAxisFast(camPitch, new Vec3f(1, 0, 0))
                 .mul(Quaternionf.fromAngleAxisFast(camYaw, new Vec3f(0, 1, 0)))
@@ -184,12 +186,9 @@ public class Simple3DWatch {
 
     public void recalcMatrices() {
         perspectiveMatrix = perspective(fovy, (float) w / h, zNear, zFar);
-//        }
-        camModelViewMatrix = cam.lookRot.toMatrix4Right().multiply(Matrix4.identity().translate(cam.lookAt.mul(-1)));
-        ;
+        camModelViewMatrix = cam.lookRot.toMatrix4().multiply(Matrix4.identity().translate(cam.lookAt.mul(-1)));
         camNormalMatrix = camModelViewMatrix.invert().transpose();
         camModelViewProjectionMatrix = perspectiveMatrix.multiply(camModelViewMatrix);
-
         resetMvp();
     }
 
