@@ -11,7 +11,7 @@ import yk.jcommon.fastgeom.Vec3f;
  */
 public class Cam {
 
-    public Vec3f lookAt = Vec3f.ZERO;
+    public Vec3f lookAt = Vec3f.ZERO();
     //public Vec3f lookFrom = Vec3f.ZERO;
     public Quaternionf lookRot = new Quaternionf(1, 0, 0, 0);
 

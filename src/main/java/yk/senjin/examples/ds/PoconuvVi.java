@@ -21,9 +21,9 @@ import java.io.Serializable;
 //Pocontex
 public class PoconuvVi implements Serializable {//TODO rename
 
-    public Vec3f normal = Vec3f.ZERO;
+    public Vec3f normal = Vec3f.ZERO();
     public Vec4f color = Vec4f.ZERO;
-    public Vec3f pos = Vec3f.ZERO;
+    public Vec3f pos = Vec3f.ZERO();
     public Vec2f uv = Vec2f.ZERO;
     public float shininess;
     public float nType;

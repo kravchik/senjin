@@ -36,7 +36,7 @@ public class TreeDecor {
                 new Vec3f(xDif + size.x / 2, -size.y / 2, 0),
                 new Vec3f(xDif + size.x / 2, size.y / 2, 0),
                 new Vec3f(xDif + -size.x / 2, size.y / 2, 0));
-        Quaternionf rot = Quaternionf.fromAngleAxisFast(Rnd.instance.nextFloat() * PI, Vec3f.AXISY);
+        Quaternionf rot = Quaternionf.fromAngleAxisFast(Rnd.instance.nextFloat() * PI, Vec3f.AXISY());
         points = points.map(p -> rot.rotateFast(p));
     }
 

@@ -24,7 +24,7 @@ public class FrameBuffer {
     public int framebufferID;
     public int depthRenderBufferID;
     public YList<SomeTexture> textures;
-    public Vec3f backgroundColor = Vec3f.ZERO;
+    public Vec3f backgroundColor = Vec3f.ZERO();
 
     public int w, h;
 
