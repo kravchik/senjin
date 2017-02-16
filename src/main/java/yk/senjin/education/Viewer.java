@@ -40,7 +40,6 @@ public class Viewer extends JPanel implements MouseListener, MouseMotionListener
         JFrame frame = new JFrame("test");
         addMouseListener(this);
         setPreferredSize(new Dimension(w, h));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         for (int i = 0; i < 10; i++) {
             final JLabel label = new JLabel("");

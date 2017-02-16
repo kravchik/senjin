@@ -48,11 +48,17 @@ public class BaseEdu2D implements LoadTickUnload<Viewer> {
     public Vec2f world2screen(Vec2f pos) {
         return new Vec2f(pos.x*unitSize+axisTranslate.x, bufferHeight - (pos.y*unitSize + axisTranslate.y));
     }
+    public Vec2f screen2world(Vec2f pos) {
+        return new Vec2f((pos.x-axisTranslate.x)/unitSize, (bufferHeight - pos.y-axisTranslate.y)/unitSize);
+    }
 
     public void drawPoint(double x1, double y1) {
         fillCircle(x1, y1, 0.1);
     }
 
+    public void drawLine(Vec2f from, Vec2f to) {
+        drawLine(from.x, from.y, to.x, to.y);
+    }
     public void drawLine(double x1, double y1, double x2, double y2) {
         Vec2f from = world2screen(x1, y1);
         Vec2f to = world2screen(x2, y2);
@@ -64,6 +70,9 @@ public class BaseEdu2D implements LoadTickUnload<Viewer> {
         g.drawRect((int) from.x, (int) from.y, (int) (width * unitSize), (int) (height * unitSize));
     }
 
+    public void drawCircle(Vec2f pos, double radius) {
+        drawCircle(pos.x, pos.y, radius);
+    }
     public void drawCircle(double x, double y, double radius) {
         Vec2f from = world2screen(x-radius, y+radius);
         g.drawOval((int) from.x, (int) from.y, (int) (radius * 2 * unitSize), (int) (radius * 2 * unitSize));
@@ -150,12 +159,25 @@ public class BaseEdu2D implements LoadTickUnload<Viewer> {
         bufferHeight = watch.result.getHeight();
     }
 
+    public float mouseX;
+    public float mouseY;
+
     @Override
     public void onTick(Viewer watch, float dt) {
         clean();
         drawGrid(20);
         drawAxes(20);
         drawLegend();
+
+
+        Point mousePosition = watch.getMousePosition();
+        if (mousePosition != null) {
+            Vec2f s2w = screen2world(new Vec2f((float) mousePosition.getX(), (float) mousePosition.getY()));
+            mouseX = s2w.x;
+            mouseY = s2w.y;
+        }
+        drawString(String.format("mouse: %.2f %.2f", mouseX, mouseY), 5, 20);
+
     }
 
     @Override
