@@ -1,5 +1,6 @@
 package yk.senjin.education;
 
+import com.sun.javafx.geom.Vec3d;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.utils.Rnd;
@@ -18,7 +19,7 @@ import static yk.jcommon.utils.Util.sqr;
  */
 public class BaseEdu2D implements LoadTickUnload<Viewer> {
     private Rnd rnd = new Rnd();
-    private Vec3f currentColor = Vec3f.v3(1, 1, 1);
+    private Vec3d currentColor = new Vec3d(1, 1, 1);
     private Graphics2D g;
     private int bufferWidth;
     private int bufferHeight;
@@ -26,11 +27,11 @@ public class BaseEdu2D implements LoadTickUnload<Viewer> {
     public Vec2f axisTranslate = new Vec2f(150, 150);
     public float unitSize = 30;
 
-    public void setColor(float r, float g, float b) {
-        setColor(new Vec3f(r, g, b));
+    public void setColor(double r, double g, double b) {
+        setColor(new Vec3d(r, g, b));
     }
 
-    public void setColor(Vec3f c) {
+    public void setColor(Vec3d c) {
         currentColor = c;
         updateColor();
     }
@@ -104,7 +105,7 @@ public class BaseEdu2D implements LoadTickUnload<Viewer> {
         updateColor();
     }
 
-    public void drawString(String s, float x, float y) {
+    public void drawString(String s, double x, double y) {
         Vec2f pos = world2screen(x, y);
         g.drawString(s, pos.x, pos.y);
     }
@@ -130,11 +131,21 @@ public class BaseEdu2D implements LoadTickUnload<Viewer> {
     public void drawGrid(int r) {
         for (int x = -r*2; x <= r*2; x++) {
             for (int y = -r*2; y <= r*2; y++) {
-                float progress = clamp((sqrt(sqr(x/2f) + sqr(y/2f))) / r, 0, 1);
-                float gridColor = clamp(progress * 0.1f + 0.9f, 0, 1);
-                setColor(gridColor, gridColor, 1);
-                drawLine(x/2f, y/2f, x/2f + 0.5f, y/2f);
-                drawLine(x/2f, y/2f, x/2f, y/2f + 0.5f);
+                {
+                    double progress = Math.abs(y%2) == 0 ? 0 : 0.6f;
+                    //double progress = clamp((sqrt(sqr(x/2f) + sqr(y/2f))) / r, 0, 1);
+                    double gridColor = clamp((float) progress * 0.1f + 0.9f, 0, 1);
+                    setColor(gridColor, gridColor, 1);
+                    drawLine(x / 2f, y / 2f, x / 2f + 0.5f, y / 2f);
+                }
+
+                {
+                    double progress = Math.abs(x%2) == 0 ? 0 : 0.6f;
+                    //double progress = clamp((sqrt(sqr(x/2f) + sqr(y/2f))) / r, 0, 1);
+                    double gridColor = clamp((float) progress * 0.1f + 0.9f, 0, 1);
+                    setColor(gridColor, gridColor, 1);
+                    drawLine(x / 2f, y / 2f, x / 2f, y / 2f + 0.5f);
+                }
             }
         }
     }
@@ -145,7 +156,7 @@ public class BaseEdu2D implements LoadTickUnload<Viewer> {
         drawString("1", 0.9f, -0.5f);
         drawString("1", -0.5f, 0.85f);
         drawString("-1", -1.2f, -0.5f);
-        drawString("-1", -0.5f, -1.2f);
+        drawString("-1", -0.5f, -1.f);
         drawString("x", (bufferWidth - axisTranslate.x) / unitSize * 0.9f, -0.5f);
         drawString("y", -0.5f, (bufferHeight - axisTranslate.y) / unitSize * 0.9f);
         drawString("- x", (-axisTranslate.x/unitSize)*0.9f, -0.5f);
@@ -159,25 +170,32 @@ public class BaseEdu2D implements LoadTickUnload<Viewer> {
         bufferHeight = watch.result.getHeight();
     }
 
-    public float mouseX;
-    public float mouseY;
+    public double mouseX;
+    public double mouseY;
+
+    private Viewer watch;
 
     @Override
     public void onTick(Viewer watch, float dt) {
+        this.watch = watch;
         clean();
         drawGrid(20);
         drawAxes(20);
         drawLegend();
 
 
+        drawMouseCoords();
+
+    }
+
+    public void drawMouseCoords() {
         Point mousePosition = watch.getMousePosition();
         if (mousePosition != null) {
             Vec2f s2w = screen2world(new Vec2f((float) mousePosition.getX(), (float) mousePosition.getY()));
             mouseX = s2w.x;
             mouseY = s2w.y;
         }
-        drawString(String.format("mouse: %.2f %.2f", mouseX, mouseY), 5, 20);
-
+        drawString(String.format("mouse: x = %.2f   y = %.2f", mouseX, mouseY), 5, 20);
     }
 
     @Override
