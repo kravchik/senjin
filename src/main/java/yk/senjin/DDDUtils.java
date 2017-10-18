@@ -16,7 +16,6 @@ import java.util.List;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.util.glu.GLU.gluProject;
-import static org.lwjgl.util.glu.GLU.gluUnProject;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Vec3f.v3;
 
@@ -379,16 +378,6 @@ public class DDDUtils {//TODO extract to another lib
         glGetInteger(GL_VIEWPORT, viewport);
     }
 
-    public static Vec3f screen2World(Vec3f camera, final Vec2f p, float forZ) {
-        generateArrays();
-        tempBuffer.clear();
-        gluUnProject(p.x, p.y, 1f, modelview, projection, viewport, tempBuffer);
-        Vec3f result = new Vec3f(tempBuffer.get(0), tempBuffer.get(1), tempBuffer.get(2));
-        Vec3f result2 = camera.sub(result);
-        result = new Vec3f(forZ - result2.x * result.z / result2.z + result.x, forZ - result2.y * result.z / result2.z + result.y, forZ);
-        return result;
-    }
-
     public static Vec3f world2Screen(Vec3f worldPos) {
         gluProject(worldPos.x, worldPos.y, worldPos.z, modelview, projection, viewport, tempBuffer);
         return new Vec3f(tempBuffer.get(0), tempBuffer.get(1), tempBuffer.get(2));
@@ -561,21 +550,12 @@ public class DDDUtils {//TODO extract to another lib
     }
 
     public static Vec3f screen2World(Matrix4 mvp, int w, int h, Vec3f screenPos) {//https://www.opengl.org/wiki/GluProject_and_gluUnProject_code
-        float vx = (screenPos.x - 0) / w * 2f - 1f;
-        float vy = (screenPos.y - 0) / h * 2f - 1f;
-        float vz = screenPos.z * 2-1;
-        Vec4f camSpace = new Vec4f(vx, vy, vz, 1);
-        Vec4f woldSpace = mvp.invert().multiply(camSpace);
-        woldSpace.w = 1f/woldSpace.w;
-        woldSpace.x = woldSpace.x * woldSpace.w;
-        woldSpace.y = woldSpace.y * woldSpace.w;
-        woldSpace.z = woldSpace.z * woldSpace.w;
-        return woldSpace.getXyz();
+        return screen2World(mvp, w, h, screenPos.x, screenPos.y, screenPos.z);
     }
 
-    public static Vec3f screen2World(Matrix4 mvp, int w, int h, int x, int y, float depth) {//https://www.opengl.org/wiki/GluProject_and_gluUnProject_code
-        float vx = ((float)x - 0f) / w * 2f - 1f;
-        float vy = ((float)y - 0f) / h * 2f - 1f;
+    public static Vec3f screen2World(Matrix4 mvp, int w, int h, float x, float y, float depth) {//https://www.opengl.org/wiki/GluProject_and_gluUnProject_code
+        float vx = (x - 0f) / w * 2f - 1f;
+        float vy = (y - 0f) / h * 2f - 1f;
         float vz = depth * 2-1;
         Vec4f camSpace = new Vec4f(vx, vy, vz, 1);
         Vec4f woldSpace = mvp.invert().multiply(camSpace);
