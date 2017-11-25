@@ -26,15 +26,17 @@ IKnowOpenGL_8
 IKnowOpenGL_8 2
 
 
+25.11.17
+IKnowOpenGL_9 - FrameBuffer (pixel perfect)
+
+
 //TODO
 
 IKnowOpenGL
-  render to texture
   geometry shader
   ?compute shader
 
 
 - copyFrom is absent
-- untie file watcher on reloads
 
 
