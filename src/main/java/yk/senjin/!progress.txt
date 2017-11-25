@@ -1,12 +1,40 @@
-
-//TODO
-- copyFrom is absent
-- untie file watcher on reloads
-
 //DONE
-24.02.16
-blurred SSAO
 
 23.02.16
 SSAO
+
+24.02.16
+blurred SSAO
+
+16.11.17
+back to the roots (simple thread)
+IKnowOpenGL_1
+IKnowOpenGL_2
+IKnowOpenGL_3
+IKnowOpenGL_4
+
+17.11.17
+IKnowOpenGL_5
+IKnowOpenGL_6
+can use FS only
+better shader reloading
+can use VS only
+IKnowOpenGL_7
+Matrix4 shader constructor
+IKnowOpenGL_7 2
+IKnowOpenGL_8
+IKnowOpenGL_8 2
+
+
+//TODO
+
+IKnowOpenGL
+  render to texture
+  geometry shader
+  ?compute shader
+
+
+- copyFrom is absent
+- untie file watcher on reloads
+
 

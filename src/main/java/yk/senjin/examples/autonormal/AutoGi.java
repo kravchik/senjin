@@ -2,7 +2,7 @@ package yk.senjin.examples.autonormal;
 
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
-import yk.senjin.shaders.gshader.StandardFSInput;
+import yk.senjin.shaders.gshader.StandardFragmentData;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,7 +10,7 @@ import yk.senjin.shaders.gshader.StandardFSInput;
  * Date: 04/03/16
  * Time: 12:20
  */
-public class AutoGi extends StandardFSInput {
+public class AutoGi extends StandardFragmentData {
     public Vec3f csPosG;
     public Vec4f colorG;
     public float shininess;

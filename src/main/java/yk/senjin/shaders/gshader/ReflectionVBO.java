@@ -87,7 +87,7 @@ public class ReflectionVBO {
 
     private static final YMap<Class, Integer> type2size = hm();
     public static int getSizeOfType(Class clazz) {
-        if (clazz == StandardFSInput.class || clazz == StandardVSInput.class || clazz == Object.class) return 0;
+        if (clazz == StandardFragmentData.class || clazz == StandardVertexData.class || clazz == Object.class) return 0;
 
         Integer result = type2size.get(clazz);
         if (result == null) {

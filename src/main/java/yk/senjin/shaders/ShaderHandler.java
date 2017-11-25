@@ -207,8 +207,8 @@ public class ShaderHandler extends AbstractState {
     }
 
     public void createFromIndices(int vIndex, int fIndex) {
-        if (vIndex == -1) BadException.shouldNeverReachHere();
-        if (fIndex == -1) BadException.shouldNeverReachHere();
+        //if (vIndex == -1) BadException.shouldNeverReachHere();
+        //if (fIndex == -1) BadException.shouldNeverReachHere();
         program = GL20.glCreateProgram();
         Util.checkGLError();
 //        printLogInfo(program);
@@ -220,10 +220,14 @@ public class ShaderHandler extends AbstractState {
         }
 
         Util.checkGLError();
-        GL20.glAttachShader(program, vIndex);
-        Util.checkGLError();
-        GL20.glAttachShader(program, fIndex);
-        Util.checkGLError();
+        if (vIndex != -1) {
+            GL20.glAttachShader(program, vIndex);
+            Util.checkGLError();
+        }
+        if (fIndex != -1) {
+            GL20.glAttachShader(program, fIndex);
+            Util.checkGLError();
+        }
         GL20.glLinkProgram(program);
         printLogInfo(program);
         initVariables();

@@ -2,7 +2,7 @@ package yk.senjin.examples.blend;
 
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
-import yk.senjin.shaders.gshader.StandardVSInput;
+import yk.senjin.shaders.gshader.StandardVertexData;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,7 +10,7 @@ import yk.senjin.shaders.gshader.StandardVSInput;
  * Date: 23/10/15
  * Time: 20:46
  */
-public class BlendVi extends StandardVSInput {
+public class BlendVi extends StandardVertexData {
     public Vec3f pos;
     public Vec2f uv;
 

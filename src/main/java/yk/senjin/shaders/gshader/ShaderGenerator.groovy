@@ -86,7 +86,7 @@ class ShaderGenerator {
         if (shaderType.equals("fs") && !StandardFSOutput.class.isAssignableFrom(outputClass)) throw new Error("Fragment shader must have ${StandardFSOutput.class.getSimpleName()} output type, but it is " + outputClass)
 
 
-        if (inputClass != StandardVSInput.class) for (fn in getFieldsForData(inputClass)) {
+        if (inputClass != StandardVertexData.class) for (fn in getFieldsForData(inputClass)) {
             if (Modifier.isStatic(fn.getModifiers())) continue;
             if (Modifier.isTransient(fn.getModifiers())) continue
             if (glNames.contains(fn.name)) throw new Error("clash with gl names: " + fn.name + " in input data for " + shaderType)
@@ -105,7 +105,7 @@ class ShaderGenerator {
             } else BadException.shouldNeverReachHere()
         }
 
-        for (fn in outputClass.getDeclaredFields()) {
+        if (outputClass != StandardFragmentData.class) for (fn in outputClass.getDeclaredFields()) {
             if (Modifier.isStatic(fn.getModifiers())) continue;
             if (Modifier.isTransient(fn.getModifiers())) continue
             if (glNames.contains(fn.name)) throw new Error("clash with gl names: " + fn.name + " in output data for " + shaderType)
@@ -165,7 +165,7 @@ class ShaderGenerator {
             caller2callee.putAll(GglslAnalyzer.calcCallers(methodNode))
         }
 
-        println "analyzing 1: " + sw.stop()
+        //println "analyzing 1: " + sw.stop()
         sw = new StopWatch();
 
         YSet<MethodNode> methods = hs();
@@ -182,7 +182,7 @@ class ShaderGenerator {
 //            }
 //        }
 
-        println "analyzing 3: " + sw.stop()
+        //println "analyzing 3: " + sw.stop()
 
         for (MethodNode methodNode : methods) {
             String body = ""
@@ -217,7 +217,7 @@ class ShaderGenerator {
     public static YList<Field> getFieldsForData(Class inputClass) {
         YList<Field> result = CACHE.get(inputClass);
         if (result == null) {
-            if (inputClass == StandardFSInput.class || inputClass == Object.class || inputClass == StandardVSInput.class) return al();
+            if (inputClass == StandardFragmentData.class || inputClass == Object.class || inputClass == StandardVertexData.class) return al();
             result = getFieldsForData(inputClass.getSuperclass()).with(inputClass.getDeclaredFields());
             CACHE.put(inputClass, result);
         }
@@ -392,7 +392,7 @@ class ShaderGenerator {
     }
 
     private static String fiName(String prop) {
-        for (Field f : StandardFSInput.class.getDeclaredFields()) if (f.name.equals(prop)) return prop
+        for (Field f : StandardFragmentData.class.getDeclaredFields()) if (f.name.equals(prop)) return prop
         return prop + "_fi";
     }
 

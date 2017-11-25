@@ -2,7 +2,7 @@ package yk.senjin.examples.autonormal;
 
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
-import yk.senjin.shaders.gshader.StandardVSInput;
+import yk.senjin.shaders.gshader.StandardVertexData;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,7 +10,7 @@ import yk.senjin.shaders.gshader.StandardVSInput;
  * Date: 04/03/16
  * Time: 10:29
  */
-public class Poco extends StandardVSInput {
+public class Poco extends StandardVertexData {
     public Vec3f pos;
     public Vec4f color;
     public float shininess = 0;

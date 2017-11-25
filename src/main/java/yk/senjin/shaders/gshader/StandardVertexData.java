@@ -8,10 +8,12 @@ import yk.jcommon.fastgeom.Vec4f;
  * Date: 14/12/14
  * Time: 16:52
  */
-public class StandardVSInput {
+public class StandardVertexData {
 
+    @Deprecated //gl_Vertex is deprecated after version 120
     public Vec4f gl_Vertex;
     public Vec4f gl_Normal;
+    @Deprecated //gl_Color is deprecated after version 120
     public Vec4f gl_Color;
 
     public Vec4f gl_MultiTexCoord0;

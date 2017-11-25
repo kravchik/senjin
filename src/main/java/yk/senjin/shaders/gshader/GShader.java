@@ -3,7 +3,7 @@ package yk.senjin.shaders.gshader;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.Util;
 import yk.jcommon.utils.BadException;
-import yk.jcommon.utils.FileWatcher;
+import yk.jcommon.utils.FileWatcher2;
 import yk.jcommon.utils.IO;
 import yk.jcommon.utils.StopWatch;
 
@@ -22,7 +22,7 @@ public class GShader {
     public ShaderGenerator generator;
     public int shaderIndex = -1;
 
-    private FileWatcher fileWatcher;
+    private FileWatcher2 fileWatcher;
     private String srcDir;
 
     public static GShader createShader(String srcDir, ShaderParent groovyShader, String shaderType) {
@@ -35,6 +35,7 @@ public class GShader {
         String resultPath = srcDir + path1.replace(".", "/") + ".groovy";
         String gSrc;
         if (!new File(resultPath).exists()) {
+            System.out.println("src file not found (" + resultPath + ") getting shader src from resource");
             resultPath = path1.replace(".", "/") + ".groovy";
             gSrc = IO.streamToString(groovyShader.getClass().getResourceAsStream("/" + resultPath));
         } else {
@@ -54,17 +55,17 @@ public class GShader {
 
     public GShader runtimeReload() {
         if (fileWatcher != null) BadException.die("already watching");
-        try {
-            fileWatcher = new FileWatcher(generator.srcPath);
-        } catch (Exception e) {
-            System.out.println("warning: not watching for " + generator.srcPath);
+        fileWatcher = new FileWatcher2(generator.srcPath);
+        if (!fileWatcher.exists) {
+            System.out.println("WARNING: runtime reload is requested, but shader src is currently not exists (reloading could not be possible) " + generator.srcPath);
         }
         return this;
     }
 
     public void tick() {
-        boolean changed = fileWatcher != null && fileWatcher.isChanged();
+        boolean changed = fileWatcher != null && fileWatcher.isJustChanged();
         if (changed) {
+            System.out.println("Shader file changed: " + generator.srcPath);
             GShader newShader;
             try {
                 newShader = createShader(srcDir, generator.shaderGroovy, generator.shaderType);

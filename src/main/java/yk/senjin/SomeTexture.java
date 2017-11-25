@@ -23,6 +23,9 @@ import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
  * Time: 22:59
  */
 public class SomeTexture extends AbstractState {
+    //texture parameters: https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glTexParameter.xml
+
+
     public boolean enabled;
     public int textureGlSlot = -1;//GL_TEXTURE0, 1, ...
     public int textureSlot = -1;//0, 1, ... - map from textureGlSlot to normal numbers
@@ -38,7 +41,9 @@ public class SomeTexture extends AbstractState {
     // GL_CLAMP_TO_EDGE causes s coordinates to be clamped to the range 1 2N 1 - 1 2N , where N is the size of the texture in the direction of clamping. GL_REPEAT causes the integer part of the s coordinate to be ignored; the GL uses only the fractional part, thereby creating a repeating pattern. GL_MIRRORED_REPEAT causes the s coordinate to be set to the fractional part of the texture coordinate if the integer part of s is even; if the integer part of s is odd, then the s texture coordinate is set to 1 - frac ⁡ s , where frac ⁡ s represents the fractional part of s. Initially, GL_TEXTURE_WRAP_S is set to GL_REPEAT.    public int wrapS = GL_MIRRORED_REPEAT;
     public int wrapS = GL_MIRRORED_REPEAT;
     public int wrapT = GL_MIRRORED_REPEAT;
+    //GL_NEAREST or GL_LINEAR
     public int magFilter = GL_LINEAR;
+    //GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_LINEAR
     public int minFilter = GL_LINEAR;
 
     public int width;

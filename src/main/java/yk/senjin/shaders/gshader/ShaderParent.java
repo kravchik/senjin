@@ -84,6 +84,14 @@ abstract public class ShaderParent {
         return new Vec4f(v.x, v.y, v.z, (float) w);
     }
 
+    public static Matrix4 Matrix4(
+            double a00, double a01, double a02, double a03,
+            double a10, double a11, double a12, double a13,
+            double a20, double a21, double a22, double a23,
+            double a30, double a31, double a32, double a33) {
+        return new Matrix4();//TODO implement
+    }
+
 //gglsl auto generated text
 public static Float plus(Float arg0, Float arg1) {return (float)arg0+(float)arg1;}
 public static Vec2f plus(Vec2f arg0, Vec2f arg1) {return Vec2f.v2((float)arg0.x+(float)arg1.x, (float)arg0.y+(float)arg1.y);}
