@@ -86,6 +86,10 @@ public class SomeTexture extends AbstractState {
         setImage(image);
     }
 
+    public SomeTexture(int w, int h) {
+        init(w, h);
+    }
+
     public SomeTexture(int[] data, int w, int h) {
         this.width = w;
         this.height = h;
