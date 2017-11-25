@@ -37,6 +37,10 @@ IKnowOpenGL
   ?compute shader
 
 
+rich renderer routine
+pixel perfect gui (move here)
+3D gui
+
 - copyFrom is absent
 
 
