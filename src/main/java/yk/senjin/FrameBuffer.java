@@ -145,4 +145,14 @@ public class FrameBuffer {
     public void release() {
         for (SomeTexture t : textures) t.release();
     }
+
+    public void render(int w, int h) {
+        render(0, w, h);
+    }
+
+    public void render(int textureIndex, int w, int h) {
+        textures.get(textureIndex).enable(0);
+        renderFBO(w, h);
+        textures.car().disable();
+    }
 }
