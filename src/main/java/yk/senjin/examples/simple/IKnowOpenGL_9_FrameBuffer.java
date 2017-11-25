@@ -18,13 +18,11 @@ public class IKnowOpenGL_9_FrameBuffer extends SimpleLwjglRoutine {
 
     @Override public void onFirstPass() {
         super.onFirstPass();
-
         texture = new SomeTexture();
         texture.init(46, 46);
         texture.magFilter = GL_NEAREST;
         fb = new FrameBuffer();
         fb.initFBO(texture);
-
     }
 
     @Override public void onTick(float dt) {
