@@ -10,7 +10,7 @@ import static yk.senjin.DDDUtils.glLoadMatrix;
  * Created by Yuri Kravchik on 17.11.17.
  */
 public class IKnowOpenGL_5_PixelPerfect extends SimpleLwjglRoutine {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new IKnowOpenGL_5_PixelPerfect().main();
     }
 

@@ -11,7 +11,7 @@ import static yk.jcommon.fastgeom.Matrix4.ortho;
  * Created by Yuri Kravchik on 17.11.17.
  */
 public class IKnowOpenGL_6_FragmentShader extends SimpleLwjglRoutine {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new IKnowOpenGL_6_FragmentShader().main();
     }
 

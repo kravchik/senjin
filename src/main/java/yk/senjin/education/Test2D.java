@@ -128,5 +128,44 @@ public class Test2D extends BaseEdu2D {
         drawPoint(18, 12);
 
 
+        double cx = mouseX;
+        double cy = mouseY;
+
+        setColor(0,  0.5,  0);
+
+
+        drawCircle(cx, cy, 1);
+        drawPoint(cx, cy);
+        //вертикальная линия
+        drawLine(cx , cy - 1,  cx,  cy + 1);
+        //горизонтальная линия
+        drawLine(cx - 1,   cy ,  cx +1  ,  cy );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

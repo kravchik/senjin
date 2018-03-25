@@ -10,7 +10,7 @@ import static yk.jcommon.fastgeom.Matrix4.perspective;
  * Created by Yuri Kravchik on 16.11.17.
  */
 public class IKnowOpenGL_3_Projection extends SimpleLwjglRoutine {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new IKnowOpenGL_3_Projection().main();
     }
 

@@ -15,7 +15,7 @@ import static yk.jcommon.fastgeom.Vec3f.v3;
  * Created by Yuri Kravchik on 17.11.17.
  */
 public class IKnowOpenGL_8_VBO2 extends SimpleLwjglRoutine {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new IKnowOpenGL_8_VBO2().main();
     }
 
@@ -28,14 +28,9 @@ public class IKnowOpenGL_8_VBO2 extends SimpleLwjglRoutine {
 
     @Override public void onFirstPass() {
         super.onFirstPass();
-        fs = new Ikogl_8_Fs();
-        vs = new Ikogl_8_Vs();
-        program = GProgram.initFrom("src/main/java/", vs, fs).runtimeReload();
-
-        vbo = new ReflectionVBO(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0)));
-        vbo.upload();
+        program = GProgram.initFrom("src/main/java/", vs = new Ikogl_8_Vs(), fs = new Ikogl_8_Fs()).runtimeReload();
+        vbo = new ReflectionVBO(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0))).upload();
         indices = IndexBufferShort.simple(3, GL_TRIANGLES);
-
     }
     
     @Override public void onTick(float dt) {

@@ -482,7 +482,7 @@ public class DDDUtils {//TODO extract to another lib
         uniform(index, v.x, v.y, v.z);
     }
     public static void uniform(int index, Vec4f v) {
-        uniform(index, v.w, v.x, v.y, v.z);
+        uniform(index, v.x, v.y, v.z, v.w);
     }
     public static void uniform(int index, Vec2i v) {
         uniform(index, v.x, v.y);

@@ -35,6 +35,7 @@ public class Simple3DWatch {
     public boolean firstFrame = true;
     public boolean drawAxis = true;
     public boolean workMouse = true;
+    public boolean rotateByMouse = true;
 
     public float zNear = 0.2f;
     public float zFar = 500;
@@ -132,12 +133,11 @@ public class Simple3DWatch {
                 mousePressedAt = new Vec2f(Mouse.getX(), Mouse.getY());
                 cameraOld = cam.lookRot;
             }
-            rotateCam(-(mouseCur.y - mousePressedAt.y) * 0.004f, (mouseCur.x - mousePressedAt.x) * 0.004f);
+            if (rotateByMouse) rotateCam(-(mouseCur.y - mousePressedAt.y) * 0.004f, (mouseCur.x - mousePressedAt.x) * 0.004f);
             mousePressedAt = mouseCur;
         } else {
             mousePressedAt = null;
         }
-        updateCamLook();
 
         glAlphaFunc ( GL_GREATER, 0.1f) ;
         glEnable ( GL_ALPHA_TEST ) ;
@@ -155,6 +155,8 @@ public class Simple3DWatch {
         if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) rotateCam(dt, 0);
         if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) rotateCam(0, -dt);
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) rotateCam(0, dt);
+
+        updateCamLook();
 
         glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1);
         glClear(GL_COLOR_BUFFER_BIT);

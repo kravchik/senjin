@@ -195,7 +195,7 @@ public class BaseEdu2D implements LoadTickUnload<Viewer> {
             mouseX = s2w.x;
             mouseY = s2w.y;
         }
-        drawString(String.format("mouse: x = %.2f   y = %.2f", mouseX, mouseY), 5, 20);
+        //drawString(String.format("mouse: x = %.2f   y = %.2f", mouseX, mouseY), 5, 20);
     }
 
     @Override

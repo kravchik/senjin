@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL11.GL_NEAREST;
  * Created by Yuri Kravchik on 25.11.17.
  */
 public class IKnowOpenGL_9_FrameBuffer extends SimpleLwjglRoutine {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new IKnowOpenGL_9_FrameBuffer().main();
     }
 

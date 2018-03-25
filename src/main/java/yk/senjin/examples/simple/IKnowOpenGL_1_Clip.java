@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL11.*;
  * Created by Yuri Kravchik on 16.11.17.
  */
 public class IKnowOpenGL_1_Clip extends SimpleLwjglRoutine {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new IKnowOpenGL_1_Clip().main();
     }
 

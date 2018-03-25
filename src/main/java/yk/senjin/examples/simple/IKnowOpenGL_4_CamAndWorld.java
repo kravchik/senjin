@@ -14,7 +14,7 @@ import static yk.jcommon.utils.MyMath.PI;
  * Created by Yuri Kravchik on 16.11.17.
  */
 public class IKnowOpenGL_4_CamAndWorld extends SimpleLwjglRoutine {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new IKnowOpenGL_4_CamAndWorld().main();
     }
 

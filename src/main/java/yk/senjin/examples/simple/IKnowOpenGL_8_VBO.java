@@ -18,7 +18,7 @@ import static yk.jcommon.fastgeom.Vec3f.v3;
  * Created by Yuri Kravchik on 17.11.17.
  */
 public class IKnowOpenGL_8_VBO extends SimpleLwjglRoutine {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new IKnowOpenGL_8_VBO().main();
     }
 
@@ -50,17 +50,9 @@ public class IKnowOpenGL_8_VBO extends SimpleLwjglRoutine {
         vs.modelViewProjectionMatrix = ortho(0, w, 0, h, 0, 10);
         vs.timePassed += dt;
 
-        ReflectionVBO vbo = this.vbo;
-        program.setInput(vbo);
-
+        program.setInput(this.vbo);
         program.enable();
         glDrawRangeElements(GL_TRIANGLES, 0, indexBuffer.limit(), indexBuffer);
-
-        //glBegin(GL_TRIANGLES);
-        //    glVertexAttrib3f(program.shaderState.vertexAttribs.get("pos").getIndex(), -w, -h, -5);
-        //    glVertexAttrib3f(program.shaderState.vertexAttribs.get("pos").getIndex(), w, 0, -5);
-        //    glVertexAttrib3f(program.shaderState.vertexAttribs.get("pos").getIndex(), 0, h, -5);
-        //glEnd();
 
         program.disable();
 

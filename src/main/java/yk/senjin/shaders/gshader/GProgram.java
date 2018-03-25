@@ -46,7 +46,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     private GShader pvs;
     private GShader pfs;
 
-    private ReflectionVBO currentVBO;
+    private Vbo currentVBO;
     private YList<AbstractArrayStructure> currentStructure;
 
     public <V extends VertexShaderParent, F extends FragmentShaderParent> GProgram<V, F> runtimeReload() {
@@ -191,49 +191,50 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     private YMap<Class, YList<AbstractArrayStructure>> type2structure = hm();
     private YList<AbstractArrayStructure> getShaderSpecificStructure(Class clazz) {
         YList<AbstractArrayStructure> result = type2structure.get(clazz);
-        if (result == null) {
-            result = al();
-            YList<Field> fields = ShaderGenerator.getFieldsForData(clazz);
-            int stride = ReflectionVBO.getSizeOfType(clazz);
-            int offset = 0;
-            YSet<String> hasFields = hs();
-            for (Field field : fields) {
-                if (Modifier.isTransient(field.getModifiers())) continue;
-                hasFields.add(field.getName());
-                VertexAttrib shaderAttrib = shaderState.getVertexAttrib(field.getName());
+        if (result != null) return result;
+        result = al();
+        YList<Field> fields = ShaderGenerator.getFieldsForData(clazz);
+        int stride = ReflectionVBO.getComplexTypeSize(clazz);
+        int offset = 0;
+        YSet<String> hasFields = hs();
+        for (Field field : fields) {
+            if (Modifier.isTransient(field.getModifiers())) continue;
+            hasFields.add(field.getName());
+            VertexAttrib shaderAttrib = shaderState.getVertexAttrib(field.getName());
 
 //                if (shaderAttrib == null) throw new RuntimeException("shader has no attribute " + field.getName());
 
-                if (shaderAttrib != null) result.add(new VBOVertexAttrib(shaderAttrib.getIndex(), shaderAttrib.getSize(), shaderAttrib.getType(), shaderAttrib.isNormalized(), stride, offset));
+            if (shaderAttrib != null) result.add(new VBOVertexAttrib(shaderAttrib.getIndex(), shaderAttrib.getSize(), shaderAttrib.getType(), shaderAttrib.isNormalized(), stride, offset));
 
-                if (field.getType() == float.class) {
-                    if (shaderAttrib != null) assertType(shaderAttrib, 1, GL11.GL_FLOAT, field.getName());
-                    offset += 1 * 4;
-                } else if (field.getType() == Vec2f.class) {
-                    if (shaderAttrib != null) assertType(shaderAttrib, 2, GL11.GL_FLOAT, field.getName());
-                    offset += 2 * 4;
-                } else if (field.getType() == Vec3f.class) {
-                    if (shaderAttrib != null) assertType(shaderAttrib, 3, GL11.GL_FLOAT, field.getName());
-                    offset += 3 * 4;
-                } else if (field.getType() == Vec4f.class) {
-                    if (shaderAttrib != null) assertType(shaderAttrib, 4, GL11.GL_FLOAT, field.getName());
-                    offset += 4 * 4;
-                } else throw BadException.die("unknown VS input field type: " + field.getType());
-            }
-            for (String attrib : shaderState.vertexAttribs.keySet()) if (!hasFields.contains(attrib)) throw new Error("buffer haven't field " + attrib);
-            type2structure.put(clazz, result);
+            if (field.getType() == float.class) {
+                if (shaderAttrib != null) assertType(shaderAttrib, 1, GL11.GL_FLOAT, field.getName());
+                offset += 1 * 4;
+            } else if (field.getType() == Vec2f.class) {
+                if (shaderAttrib != null) assertType(shaderAttrib, 2, GL11.GL_FLOAT, field.getName());
+                offset += 2 * 4;
+            } else if (field.getType() == Vec3f.class) {
+                if (shaderAttrib != null) assertType(shaderAttrib, 3, GL11.GL_FLOAT, field.getName());
+                offset += 3 * 4;
+            } else if (field.getType() == Vec4f.class) {
+                if (shaderAttrib != null) assertType(shaderAttrib, 4, GL11.GL_FLOAT, field.getName());
+                offset += 4 * 4;
+            } else throw BadException.die("unknown VS input field type: " + field.getType());
         }
+        for (String attrib : shaderState.vertexAttribs.keySet()) if (!hasFields.contains(attrib)) throw new Error("buffer haven't field " + attrib);
+        type2structure.put(clazz, result);
         return result;
     }
 
-    //TODO interface
-    public void setInput(ReflectionVBO vbo) {
+    public void setInput(Vbo vbo) {
         currentVBO = vbo;
-        currentStructure = getShaderSpecificStructure(vbo.inputType);
+        setInputClass(vbo.getInputType());
     }
 
-    @Override
-    public void enable() {
+    public void setInputClass(Class c) {
+        currentStructure = getShaderSpecificStructure(c);
+    }
+
+    public void tick() {
         if (pvs != null && pvs.singleOwner) pvs.tick();
         if (pfs != null && pfs.singleOwner) pfs.tick();
         if ((pvs != null && oldVGen != pvs.generator) || (pfs != null && oldFGen != pfs.generator)) {
@@ -245,10 +246,14 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
             if (pvs != null) oldVGen = pvs.generator;
             if (pfs != null) oldFGen = pfs.generator;
         }
+    }
 
+    @Override
+    public void enable() {
+        tick();
         shaderState.enable();
         if (currentVBO != null) {//because we can use built in vertex attributes
-            glBindBuffer(GL_ARRAY_BUFFER, currentVBO.bufferId);
+            currentVBO.enable();
             Util.checkGLError();
             for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOn();
             Util.checkGLError();
@@ -275,7 +280,8 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     public void enable2() {
         for (int i1 = 0; i1 < shaderState.uniforms.size(); i1++) shaderState.uniforms.get(i1).plug();
         if (currentVBO != null) {//because we can use built in vertex attributes
-            glBindBuffer(GL_ARRAY_BUFFER, currentVBO.bufferId);
+            currentVBO.enable();
+            //glBindBuffer(GL_ARRAY_BUFFER, currentVBO.bufferId);
             for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOn();
         }
     }

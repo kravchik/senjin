@@ -10,7 +10,7 @@ import static yk.jcommon.fastgeom.Matrix4.ortho;
  * Created by Yuri Kravchik on 17.11.17.
  */
 public class IKnowOpenGL_7_VertexShader extends SimpleLwjglRoutine {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new IKnowOpenGL_7_VertexShader().main();
     }
 

@@ -130,7 +130,13 @@
         <dependency>
             <groupId>yk</groupId>
             <artifactId>jcommon</artifactId>
-            <version>0.120-SNAPSHOT</version>
+            <version>0.122-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>yk</groupId>
+            <artifactId>yincubator</artifactId>
+            <version>0.02-SNAPSHOT</version>
         </dependency>
 
         <dependency>

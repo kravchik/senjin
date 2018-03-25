@@ -19,11 +19,11 @@ public class SimpleLwjglRoutine {
     public int h = 600;
     public boolean stopRenderThread;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new SimpleLwjglRoutine().main();
     }
 
-    public void main() throws Exception {
+    public void main() {
         Threads.tick(new Threads.Tickable() {
             @Override
             public void tick(float dt) throws Exception {

@@ -24,7 +24,7 @@ import static yk.jcommon.collections.YHashMap.hm;
  * Date: 09/06/15
  * Time: 20:30
  */
-public class ReflectionVBO {
+public class ReflectionVBO implements Vbo {
     public List data;
     public ByteBuffer buffer;
     public int bufferId = glGenBuffers();
@@ -49,8 +49,13 @@ public class ReflectionVBO {
 
     public void setData(List vertices) {
         inputType = vertices.get(0).getClass();
-        if (data == null || data.size() != vertices.size()) buffer = BufferUtils.createByteBuffer(getSizeOfType(inputType) * vertices.size());
+        if (data == null || data.size() != vertices.size()) this.buffer = BufferUtils.createByteBuffer(getComplexTypeSize(inputType) * vertices.size());
         data = vertices;
+        setData(vertices, buffer, inputType);
+        dirty = true;
+    }
+
+    public static void setData(List vertices, ByteBuffer buffer, Class inputType) {
 
         YList<Field> fields = ShaderGenerator.getFieldsForData(inputType);
         for (Object vertex : vertices) {
@@ -82,27 +87,88 @@ public class ReflectionVBO {
             }
         }
         buffer.rewind();
-        dirty = true;
+    }
+
+    public static void setDataVec2f(List<Vec2f> vertices, ByteBuffer buffer) {
+        for (Vec2f value : vertices) {
+            buffer.putFloat(value.x);
+            buffer.putFloat(value.y);
+        }
+        buffer.rewind();
+    }
+
+    public static void setDataVec3f(List<Vec3f> vertices, ByteBuffer buffer) {
+        for (Vec3f value : vertices) {
+            buffer.putFloat(value.x);
+            buffer.putFloat(value.y);
+            buffer.putFloat(value.z);
+        }
+        buffer.rewind();
+    }
+
+    public static void setDataVec4f(List<Vec4f> vertices, ByteBuffer buffer) {
+        for (Vec4f value : vertices) {
+            buffer.putFloat(value.x);
+            buffer.putFloat(value.y);
+            buffer.putFloat(value.z);
+            buffer.putFloat(value.w);
+        }
+        buffer.rewind();
+    }
+
+    public static void setDataFloat(List<Float> vertices, ByteBuffer buffer) {
+        for (Float value : vertices) buffer.putFloat(value);
+        buffer.rewind();
+    }
+
+    public static void setDataInt(List<Integer> vertices, ByteBuffer buffer) {
+        for (int value : vertices) buffer.putInt(value);
+        buffer.rewind();
+    }
+
+    public static void setDataShort(List<Short> vertices, ByteBuffer buffer) {
+        for (short value : vertices) buffer.putShort(value);
+        buffer.rewind();
+    }
+
+    public static void setDataByte(List<Byte> vertices, ByteBuffer buffer) {
+        for (byte value : vertices) buffer.put(value);
+        buffer.rewind();
     }
 
     private static final YMap<Class, Integer> type2size = hm();
-    public static int getSizeOfType(Class clazz) {
+    public static int getComplexTypeSize(Class clazz) {
         if (clazz == StandardFragmentData.class || clazz == StandardVertexData.class || clazz == Object.class) return 0;
 
         Integer result = type2size.get(clazz);
         if (result == null) {
             result = 0;
-            Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) if (!Modifier.isTransient(field.getModifiers())) {
-                if (field.getType() == Vec2f.class) result += 4 * 2;
-                else if (field.getType() == Vec3f.class) result += 4 * 3;
-                else if (field.getType() == Vec4f.class) result += 4 * 4;
-                else if (field.getType() == float.class) result += 4;
-                else BadException.die("unknown type " + field.getType());
-            }
+            for (Field field : clazz.getDeclaredFields()) if (!Modifier.isTransient(field.getModifiers())) result += getTypeSize(field.getType());
             type2size.put(clazz, result);
         }
-        return getSizeOfType(clazz.getSuperclass()) + result;
+        return getComplexTypeSize(clazz.getSuperclass()) + result;
+    }
+
+    public  static int getTypeSize(Class<?> type) {
+        if (type == Vec2f.class) return 4 * 2;
+        else if (type == Vec3f.class) return 4 * 3;
+        else if (type == Vec4f.class) return 4 * 4;
+        else if (type == float.class) return 4;
+        else if (type == int.class) return 4;
+        else if (type == short.class) return 2;
+        else if (type == byte.class) return 1;
+        else throw BadException.die("unknown type " + type);
+    }
+
+    public static boolean isSimpleType(Class c) {
+        if (c == Vec2f.class) return true;
+        if (c == Vec3f.class) return true;
+        if (c == Vec4f.class) return true;
+        if (c == float.class) return true;
+        if (c == int.class) return true;
+        if (c == short.class) return true;
+        if (c == byte.class) return true;
+        return false;
     }
 
     public ReflectionVBO upload() {
@@ -115,5 +181,16 @@ public class ReflectionVBO {
 
     public void release() {
         glDeleteBuffers(bufferId);
+    }
+
+    @Override public void enable() {
+        glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+    }
+    
+    @Override public Class getInputType() {
+        return inputType;
+    }
+    @Override public void checkDirty() {
+        if (dirty) upload();
     }
 }

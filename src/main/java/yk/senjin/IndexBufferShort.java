@@ -41,11 +41,12 @@ public class IndexBufferShort extends AbstractState {
         dirty = true;
     }
 
-    public void upload() {
+    public IndexBufferShort upload() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferId);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, usageType);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         dirty = false;
+        return this;
     }
 
     public static IndexBufferShort simple(int count, int primitiveType) {
