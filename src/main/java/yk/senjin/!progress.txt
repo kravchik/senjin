@@ -26,17 +26,40 @@ IKnowOpenGL_8
 IKnowOpenGL_8 2
 
 
-25.11.17
 IKnowOpenGL_9 - FrameBuffer (pixel perfect)
 
+25.03.17
+wip import of R3
+ReflectionVBODynamic
+AVbo
+  vbo with full and partial update
+  supports simple elements
+  upload simple data
+  reuse in indices (int and short)
+upload refactorings
+upload AVbo
 
 //TODO
+
+remove ReflectionVBO
+
+FBO output - integer, or smthng not color (indices, for ex.)
+import R3
+  custom shaders/materials
+  ? shadows is custom
+    custom materials in shadows
+    ? automatic PART of custom material in shadow
+  ? post processing is custom
+  ? ds data is custom?
+  ? water
+  rename
+
+
 
 IKnowOpenGL
   geometry shader
   ?compute shader
 
-rich renderer routine
 gui
   pixel perfect gui (move here and test)
   3D gui
