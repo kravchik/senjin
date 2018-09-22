@@ -7,6 +7,8 @@ import yk.jcommon.utils.XYit;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -30,7 +32,7 @@ public class SomeTexture extends AbstractState {
     public int textureGlSlot = -1;//GL_TEXTURE0, 1, ...
     public int textureSlot = -1;//0, 1, ... - map from textureGlSlot to normal numbers
     public int textureObjectId;//assigned by system, when uploaded
-    public BufferedImage image;
+//    public BufferedImage image;
 
     public int wrapR = -1;
     //Sets the wrap parameter for texture coordinate s to either
@@ -101,7 +103,7 @@ public class SomeTexture extends AbstractState {
     }
 
     public void setImage(BufferedImage image) {
-        this.image = image;
+//        this.image = image;
         uploadData(image.getWidth(), image.getHeight(), convertToGL(image));
     }
 
@@ -111,22 +113,45 @@ public class SomeTexture extends AbstractState {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
-    public static ByteBuffer convertToGL(final BufferedImage image) {
-        if (image.getType() != 5) return convertToGLUnoptimized(image);
-        final int width = image.getWidth();
-        final int height = image.getHeight();
-        ByteBuffer data;
-        final int[] buf = new int[width * height * 3];
-        data = BufferUtils.createByteBuffer(width * height * 4);
-        image.getData().getPixels(0, 0, image.getWidth(), image.getHeight(), buf);
-        for (int i = 0; i < buf.length; i += 3) {
-            data.put((byte) buf[i]);
-            data.put((byte) buf[i + 1]);
-            data.put((byte) buf[i + 2]);
-            data.put((byte) 255);
+    static ByteBuffer convertToGL(final BufferedImage image) {
+        switch (image.getType()) {
+            case BufferedImage.TYPE_INT_ARGB: return convertToGl_TYPE_TYPE_INT_ARGB(image);
+            case BufferedImage.TYPE_3BYTE_BGR: return convertToGl_TYPE_3BYTE_BGR(image);
         }
-        data.rewind();
-        return data;
+        return convertToGLUnoptimized(image);
+    }
+
+    static ByteBuffer convertToGl_TYPE_3BYTE_BGR(BufferedImage image) {
+        ByteBuffer result = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
+        byte[] imBuffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        for (int i = 0; i < imBuffer.length; i += 3) {
+            result.put(imBuffer[i + 2]);
+            result.put(imBuffer[i + 1]);
+            result.put(imBuffer[i]);
+            result.put((byte) 0xFF);
+        }
+        result.rewind();
+        return result;
+    }
+
+    static ByteBuffer convertToGl_TYPE_TYPE_INT_ARGB(BufferedImage image) {
+        int[] imBuffer = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        ByteBuffer result = BufferUtils.createByteBuffer(imBuffer.length * 4);
+        for (int i = 0; i < imBuffer.length; i++) {
+            int cur = imBuffer[i];
+
+            byte inputA = (byte) (((cur >>> 24) & 0xFF));
+            byte inputR = (byte) (((cur >>> 16) & 0xFF));
+            byte inputG = (byte) (((cur >>> 8) & 0xFF));
+            byte inputB = (byte) (cur & 0xFF);
+
+            result.put(inputR);
+            result.put(inputG);
+            result.put(inputB);
+            result.put(inputA);
+        }
+        result.rewind();
+        return result;
     }
 
     public static ByteBuffer convertToGL(int[] ii) {
