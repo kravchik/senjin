@@ -198,6 +198,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
         int offset = 0;
         YSet<String> hasFields = hs();
         for (Field field : fields) {
+            if (Modifier.isStatic(field.getModifiers())) continue;
             if (Modifier.isTransient(field.getModifiers())) continue;
             hasFields.add(field.getName());
             VertexAttrib shaderAttrib = shaderState.getVertexAttrib(field.getName());

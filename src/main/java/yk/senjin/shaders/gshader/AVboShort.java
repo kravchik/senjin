@@ -11,7 +11,7 @@ public class AVboShort extends AVbo {
         super(short.class, elementsCount);
     }
 
-    @Override public void serializeData(ByteBuffer buffer, List data) {
-        ReflectionVBO.setDataShort(data, buffer);
+    @Override public void serializeData(ByteBuffer buffer, Object data) {
+        ReflectionVBO.setDataShort((List<Short>) data, buffer);
     }
 }

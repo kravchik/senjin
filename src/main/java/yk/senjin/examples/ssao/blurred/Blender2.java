@@ -1,5 +1,6 @@
 package yk.senjin.examples.ssao.blurred;
 
+import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.senjin.FrameBuffer;
 import yk.senjin.SomeTexture;
@@ -8,7 +9,6 @@ import yk.senjin.examples.blend.Blender1;
 import yk.senjin.shaders.gshader.GProgram;
 
 import static org.lwjgl.opengl.GL30.GL_RG32F;
-import static yk.jcommon.fastgeom.Matrix4.ortho;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,7 +38,8 @@ public class Blender2 {
 
     public void init() {
         blendProgram = new GProgram<>(new BlendV(), new MonoBlenderF()).runtimeReload();
-        blendProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, -1, 1, 1, -1);
+        blendProgram.vs.modelViewProjectionMatrix = Matrix4.identity();
+        //blendProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, -1, 1, 1, -1);
         fbo1 = new FrameBuffer();
         fbo2 = new FrameBuffer();
 

@@ -104,7 +104,9 @@ public class SomeTexture extends AbstractState {
 
     public void setImage(BufferedImage image) {
 //        this.image = image;
-        uploadData(image.getWidth(), image.getHeight(), convertToGL(image));
+        this.width = image.getWidth();
+        this.height = image.getHeight();
+        uploadData(width, height, convertToGL(image));
     }
 
     public void uploadData(int w, int h, ByteBuffer byteBuffer) {

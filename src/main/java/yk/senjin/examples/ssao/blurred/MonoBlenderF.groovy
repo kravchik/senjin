@@ -70,7 +70,7 @@ class MonoBlenderF extends FragmentShaderParent<BlendFi, StandardFSOutput> {
 //        o.gl_FragColor = center;
 
 //        if (d1 > -5) sum.x = 0;
-        o.gl_FragColor = sum;
+        o.gl_FragColor = sum
 //        o.gl_FragColor = Vec4f(sum, center.y, center.z, center.w);
 //        o.gl_FragColor = max(texture2D(txt, blendFi.vTexCoord), sum);
     }

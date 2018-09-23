@@ -23,7 +23,7 @@ abstract public class ShaderParent {
     }
 
     public static Vec4f texture2D(Sampler2D p, Vec2f uv) {
-        BufferedImage image = p.texture.image;
+        BufferedImage image = null;//p.texture.image;
         //TODO clamp, mag, filter, etc
         //now works as GL_REPEAT, mag filter GL_LINEAR, min filter - I don't know
         float fx = fract(uv.x);
@@ -41,7 +41,7 @@ abstract public class ShaderParent {
     }
 
     private static Vec4f getColor(Sampler2D p, int x, int y) {
-        BufferedImage image = p.texture.image;
+        BufferedImage image = null;//p.texture.image;
         x = (int) mod(x, image.getWidth());
         y = (int) mod(y, image.getHeight());
         int color = image.getRGB(x, y);

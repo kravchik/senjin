@@ -52,15 +52,19 @@ public class ReflectionVBO implements Vbo {
         if (data == null || data.size() != vertices.size()) this.buffer = BufferUtils.createByteBuffer(getComplexTypeSize(inputType) * vertices.size());
         data = vertices;
         setData(vertices, buffer, inputType);
+        buffer.rewind();
         dirty = true;
     }
 
     public static void setData(List vertices, ByteBuffer buffer, Class inputType) {
 
         YList<Field> fields = ShaderGenerator.getFieldsForData(inputType);
-        for (Object vertex : vertices) {
+        for (int i = 0, verticesSize = vertices.size(); i < verticesSize; i++) {
+            Object vertex = vertices.get(i);
             if (vertex.getClass() != inputType) BadException.die("wrong input type: " + vertex + ", expected: " + inputType);
-            for (Field field : fields) {
+            for (int i1 = 0, fieldsSize = fields.size(); i1 < fieldsSize; i1++) {
+                Field field = fields.get(i1);
+                if (Modifier.isStatic(field.getModifiers())) continue;
                 if (Modifier.isTransient(field.getModifiers())) continue;
                 Object value = Reflector.get(vertex, field);
                 if (value == null) throw BadException.die("null value in field " + field.getName());
@@ -86,54 +90,81 @@ public class ReflectionVBO implements Vbo {
                 }
             }
         }
-        buffer.rewind();
     }
 
     public static void setDataVec2f(List<Vec2f> vertices, ByteBuffer buffer) {
-        for (Vec2f value : vertices) {
+        for (int i = 0, verticesSize = vertices.size(); i < verticesSize; i++) {
+            Vec2f value = vertices.get(i);
             buffer.putFloat(value.x);
             buffer.putFloat(value.y);
         }
-        buffer.rewind();
     }
 
     public static void setDataVec3f(List<Vec3f> vertices, ByteBuffer buffer) {
-        for (Vec3f value : vertices) {
+        for (int i = 0, verticesSize = vertices.size(); i < verticesSize; i++) {
+            Vec3f value = vertices.get(i);
             buffer.putFloat(value.x);
             buffer.putFloat(value.y);
             buffer.putFloat(value.z);
         }
-        buffer.rewind();
     }
 
     public static void setDataVec4f(List<Vec4f> vertices, ByteBuffer buffer) {
-        for (Vec4f value : vertices) {
+        for (int i = 0, verticesSize = vertices.size(); i < verticesSize; i++) {
+            Vec4f value = vertices.get(i);
             buffer.putFloat(value.x);
             buffer.putFloat(value.y);
             buffer.putFloat(value.z);
             buffer.putFloat(value.w);
         }
-        buffer.rewind();
     }
 
-    public static void setDataFloat(List<Float> vertices, ByteBuffer buffer) {
-        for (Float value : vertices) buffer.putFloat(value);
-        buffer.rewind();
+    public static void setDataFloat(List<Float> data, ByteBuffer buffer) {
+        for (int i = 0, verticesSize = data.size(); i < verticesSize; i++) {
+            buffer.putFloat(data.get(i));
+        }
     }
 
-    public static void setDataInt(List<Integer> vertices, ByteBuffer buffer) {
-        for (int value : vertices) buffer.putInt(value);
-        buffer.rewind();
+    public static void setDataFloat(float[] data, ByteBuffer buffer) {
+        for (int i = 0, verticesSize = data.length; i < verticesSize; i++) {
+            buffer.putFloat(data[i]);
+        }
     }
 
-    public static void setDataShort(List<Short> vertices, ByteBuffer buffer) {
-        for (short value : vertices) buffer.putShort(value);
-        buffer.rewind();
+    public static void setDataInt(List<Integer> data, ByteBuffer buffer) {
+        for (int i = 0, verticesSize = data.size(); i < verticesSize; i++) {
+            buffer.putInt(data.get(i));
+        }
     }
 
-    public static void setDataByte(List<Byte> vertices, ByteBuffer buffer) {
-        for (byte value : vertices) buffer.put(value);
-        buffer.rewind();
+    public static void setDataInt(int[] data, ByteBuffer buffer) {
+        for (int i = 0, verticesSize = data.length; i < verticesSize; i++) {
+            buffer.putInt(data[i]);
+        }
+    }
+
+    public static void setDataShort(List<Short> data, ByteBuffer buffer) {
+        for (int i = 0, verticesSize = data.size(); i < verticesSize; i++) {
+            buffer.putShort(data.get(i));
+        }
+    }
+
+    public static void setDataShort(short[] data, ByteBuffer buffer) {
+        for (int i = 0, verticesSize = data.length; i < verticesSize; i++) {
+            buffer.putShort(data[i]);
+        }
+    }
+
+    public static void setDataByte(List<Byte> data, ByteBuffer buffer) {
+        for (int i = 0, verticesSize = data.size(); i < verticesSize; i++) {
+            buffer.put(data.get(i));
+        }
+    }
+
+    public static void setDataByte(byte[] data, ByteBuffer buffer) {
+        for (int i = 0, verticesSize = data.length; i < verticesSize; i++) {
+            buffer.put(data[i]);
+        }
     }
 
     private static final YMap<Class, Integer> type2size = hm();
@@ -143,7 +174,7 @@ public class ReflectionVBO implements Vbo {
         Integer result = type2size.get(clazz);
         if (result == null) {
             result = 0;
-            for (Field field : clazz.getDeclaredFields()) if (!Modifier.isTransient(field.getModifiers())) result += getTypeSize(field.getType());
+            for (Field field : clazz.getDeclaredFields()) if (!Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers())) result += getTypeSize(field.getType());
             type2size.put(clazz, result);
         }
         return getComplexTypeSize(clazz.getSuperclass()) + result;
@@ -186,7 +217,10 @@ public class ReflectionVBO implements Vbo {
     @Override public void enable() {
         glBindBuffer(GL_ARRAY_BUFFER, bufferId);
     }
-    
+    @Override public void disable() {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
     @Override public Class getInputType() {
         return inputType;
     }
