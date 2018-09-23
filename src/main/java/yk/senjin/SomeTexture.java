@@ -17,6 +17,7 @@ import static org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL14.GL_MIRRORED_REPEAT;
+import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -65,6 +66,10 @@ public class SomeTexture extends AbstractState {
     public int pixelDataType = GL_UNSIGNED_BYTE;
 
     public SomeTexture() {
+        IntBuffer texNames;
+        texNames = BufferUtils.createIntBuffer(1);
+        GL11.glGenTextures(texNames);
+        textureObjectId = texNames.get(0);
     }
 
     public SomeTexture init(int w, int h) {
@@ -74,9 +79,9 @@ public class SomeTexture extends AbstractState {
         texNames = BufferUtils.createIntBuffer(1);
         GL11.glGenTextures(texNames);
         textureObjectId = texNames.get(0);
-        GL11.glBindTexture(GL_TEXTURE_2D, textureObjectId);
-        GL11.glTexImage2D(GL_TEXTURE_2D, 0, internalformat, width, height, 0, pixelDataFormat, pixelDataType, (java.nio.ByteBuffer)null);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, textureObjectId);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalformat, width, height, 0, pixelDataFormat, pixelDataType, (java.nio.ByteBuffer)null);
+        glBindTexture(GL11.GL_TEXTURE_2D, 0);
         return this;
     }
 
@@ -107,12 +112,22 @@ public class SomeTexture extends AbstractState {
         this.width = image.getWidth();
         this.height = image.getHeight();
         uploadData(width, height, convertToGL(image));
+
+        if (minFilter == GL_NEAREST_MIPMAP_NEAREST
+          || minFilter == GL_LINEAR_MIPMAP_NEAREST
+          || minFilter == GL_NEAREST_MIPMAP_LINEAR
+          || minFilter == GL_LINEAR_MIPMAP_LINEAR) {
+            enable(0);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            disable();
+        }
+
     }
 
     public void uploadData(int w, int h, ByteBuffer byteBuffer) {
-        GL11.glBindTexture(GL_TEXTURE_2D, textureObjectId);
-        GL11.glTexImage2D(GL_TEXTURE_2D, 0, internalformat, w, h, 0, pixelDataFormat, pixelDataType, byteBuffer);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, textureObjectId);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalformat, w, h, 0, pixelDataFormat, pixelDataType, byteBuffer);
+        glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
     static ByteBuffer convertToGL(final BufferedImage image) {
