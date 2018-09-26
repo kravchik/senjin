@@ -2,7 +2,7 @@ package yk.senjin.shaders.uniforms;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.util.vector.Matrix3f;
+import yk.jcommon.fastgeom.Matrix3;
 
 import java.nio.FloatBuffer;
 
@@ -21,10 +21,10 @@ public class UniformMatrix3 extends UniformVariable {
 
     @Override
     public void setValue(Object o) {
-        set((Matrix3f) o);
+        set((Matrix3) o);
     }
 
-    public void set(Matrix3f m) {
+    public void set(Matrix3 m) {
         m.store(matrixBuffer);
         matrixBuffer.rewind();
     }

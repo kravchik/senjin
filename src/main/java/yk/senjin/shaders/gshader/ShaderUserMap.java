@@ -11,8 +11,8 @@ import static yk.jcommon.collections.YHashMap.hm;
 public class ShaderUserMap<V extends VertexShaderParent, F extends FragmentShaderParent> extends ShaderUser<V, F> {
     public YMap<String, Object> shaderParams = hm();
 
-    public ShaderUserMap(GProgram<V, F> program, Vbo vertexClass) {
-        super(program, vertexClass);
+    public ShaderUserMap(GProgram<V, F> program, Class inputType) {
+        super(program, inputType);
     }
 
     @Override

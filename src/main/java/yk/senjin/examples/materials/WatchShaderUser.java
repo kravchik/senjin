@@ -32,8 +32,8 @@ public class WatchShaderUser extends SimpleLwjglRoutine {
         GProgram program = GProgram.initFrom("src/main/java/", new Ikogl_8_Vs(), new Ikogl_8_Fs()).runtimeReload();
         vbo = new ReflectionVBO(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0))).upload();
 
-        user1 = new ShaderUserMap(program, vbo);
-        user2 = new ShaderUserMap(program, vbo);
+        user1 = new ShaderUserMap(program, vbo.inputType);
+        user2 = new ShaderUserMap(program, vbo.inputType);
 
         indices = IndexBufferShort.simple(3, GL_TRIANGLES);
 
@@ -46,6 +46,7 @@ public class WatchShaderUser extends SimpleLwjglRoutine {
         glClear(GL_COLOR_BUFFER_BIT);
         timePassed += dt;
 
+        vbo.enable();
         user1.shaderParams.put("timePassed", timePassed);
         user1.shaderParams.put("modelViewProjectionMatrix", ortho(0, w, 0, h, 0, 10));
         user1.uniformsChanged = true;
@@ -62,6 +63,7 @@ public class WatchShaderUser extends SimpleLwjglRoutine {
         indices.enable();
         user2.disable();
 
+        vbo.disable();
     }
 
 

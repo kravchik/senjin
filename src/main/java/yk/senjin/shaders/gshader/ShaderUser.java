@@ -14,8 +14,6 @@ abstract public class ShaderUser<V extends VertexShaderParent, F extends Fragmen
     private ShaderHandler oldShaderHandler;
     private GProgram<V, F> program;
 
-    private Vbo vbo;
-
     YList<Sampler2D> samplers;
     protected YList<UniformVariable> uniforms;
     private YList<AbstractArrayStructure> currentStructure;
@@ -25,10 +23,10 @@ abstract public class ShaderUser<V extends VertexShaderParent, F extends Fragmen
 
     //TODO init uniforms
 
-    public ShaderUser(GProgram<V, F> program, Vbo vbo) {
+    public ShaderUser(GProgram<V, F> program, Class inputType) {
         this.program = program;
-        currentStructure = program.getShaderSpecificStructure(vbo.getInputType());
-        this.vbo = vbo;
+        currentStructure = program.getShaderSpecificStructure(inputType);
+        //this.vbo = vbo;
         initUniformsCopy();
     }
 
@@ -60,7 +58,7 @@ abstract public class ShaderUser<V extends VertexShaderParent, F extends Fragmen
         checkChanges();
 
         //vbo (should be before array structure)
-        vbo.enable();
+        //vbo.enable();
         //textures
         for (int i = 0; i < samplers.size(); i++) samplers.get(i).value.enable(i);
         //program
@@ -88,7 +86,7 @@ abstract public class ShaderUser<V extends VertexShaderParent, F extends Fragmen
         //textures
         for (int i = 0; i < samplers.size(); i++) samplers.get(i).value.disable();
         //vbo
-        vbo.disable();
+        //vbo.disable();
     }
 
 
