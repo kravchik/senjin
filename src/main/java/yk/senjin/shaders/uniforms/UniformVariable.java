@@ -1,6 +1,8 @@
-package yk.senjin.shaders;
+package yk.senjin.shaders.uniforms;
 
 import org.lwjgl.opengl.GL20;
+import yk.jcommon.utils.BadException;
+import yk.senjin.shaders.ShaderHandler;
 
 /**
  * Created by: Yuri Kravchik Date: 2 11 2007 Time: 16:10:19
@@ -27,6 +29,14 @@ abstract public class UniformVariable {
     public String name;
 
     public int index;
+
+    public UniformVariable(String name) {
+        this.name = name;
+    }
+
+    public void setValue(Object o) {
+        BadException.notImplemented();
+    }
 
     public void initForProgram(final int program) {
         index = GL20.glGetUniformLocation(program, ShaderHandler.getBufferedString(name));

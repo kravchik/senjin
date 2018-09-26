@@ -1,5 +1,6 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.shaders.uniforms;
 
+import yk.jcommon.fastgeom.Vec2f;
 import yk.senjin.DDDUtils;
 
 /**
@@ -8,9 +9,9 @@ import yk.senjin.DDDUtils;
  * Date: 21/10/15
  * Time: 12:45
  */
-public class UniformRefFloat extends UniformRef<Float> {
+public class UniformRefVec2f extends UniformRef<Vec2f> {
 
-    public UniformRefFloat(String name, Object src, String fieldName) {
+    public UniformRefVec2f(String name, Object src, String fieldName) {
         super(name, src, fieldName);
     }
 

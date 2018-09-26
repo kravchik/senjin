@@ -1,7 +1,7 @@
 package yk.senjin.examples.ds
 
 import yk.senjin.shaders.gshader.FragmentShaderParent
-import yk.senjin.shaders.gshader.Sampler2D
+import yk.senjin.shaders.uniforms.Sampler2D
 
 /**
  * Created with IntelliJ IDEA.

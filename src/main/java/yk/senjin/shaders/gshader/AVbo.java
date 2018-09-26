@@ -24,7 +24,7 @@ import static yk.jcommon.collections.YArrayList.al;
 //TODO discard old and make new (to avoid stalls when continuous full updates are performed)
 public class AVbo implements Vbo {//TODO remove implements
     public final Class inputType;
-    public final int elementsCount;
+    protected int elementsCount;
     public final boolean simpleTyped;
     public final int elementSize;
     public final int bufferId = glGenBuffers();
@@ -37,6 +37,17 @@ public class AVbo implements Vbo {//TODO remove implements
     private YList<Change> changes;
     private boolean bufferInited;
 
+    public byte[] debugBuffer;
+
+    public int getElementsCount() {
+        return elementsCount;
+    }
+
+    public void setElementsCount(ByteBuffer data, int elementsCount) {
+        this.elementsCount = elementsCount;
+        addChange(data);
+    }
+
     public AVbo(Class inputType, int elementsCount) {
         this.inputType = inputType;
         this.elementsCount = elementsCount;
@@ -46,6 +57,7 @@ public class AVbo implements Vbo {//TODO remove implements
 
     public void addChange(List data) {
         //if (data.size() != elementsCount) BadException.die("expected full size data here"); //we can supply NOT full data
+        changes = null;//we don't need previous changes as a whole data is updated
         addChange(data, 0).wholeData = true;
     }
 
@@ -53,8 +65,7 @@ public class AVbo implements Vbo {//TODO remove implements
         Change change = new Change();
         change.data = buffer;
         change.wholeData = true;
-        if (changes == null) changes = al();
-        changes.add(change);
+        changes = al(change);//we don't need previous changes as a whole data is updated
         dirty = true;
         return change;
     }
@@ -138,12 +149,19 @@ public class AVbo implements Vbo {//TODO remove implements
         if (!bufferInited) initBuffer();
         glBindBuffer(GL_ARRAY_BUFFER, bufferId);
         for (Change change : changes) {
+            //if (!change.data.hasRemaining()) BadException.die("empty buffer in changes, elements count: " + elementsCount);
             if (change.wholeData) {
                 //orphan old content, so driver can continue render from it while we are writing into the new buffer (or into old one if it is not occupied)
                 //https://www.khronos.org/opengl/wiki/Vertex_Specification_Best_Practices
                 glBufferData(GL_ARRAY_BUFFER, (long)elementSize * elementsCount, usage);
+                if (debugBuffer != null) debugBuffer = new byte[elementSize * elementsCount];
             }
             glBufferSubData(GL_ARRAY_BUFFER, change.changeFrom, change.data);
+            if (debugBuffer != null) {
+                int i = change.changeFrom;
+                while (change.data.hasRemaining()) debugBuffer[i++] = change.data.get();
+                change.data.rewind();
+            }
         }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         dirty = false;

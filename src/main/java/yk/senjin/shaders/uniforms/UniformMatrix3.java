@@ -1,4 +1,4 @@
-package yk.senjin.shaders;
+package yk.senjin.shaders.uniforms;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
@@ -16,7 +16,12 @@ public class UniformMatrix3 extends UniformVariable {
     public FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(3*3);
 
     public UniformMatrix3(String name) {
-        this.name = name;
+        super(name);
+    }
+
+    @Override
+    public void setValue(Object o) {
+        set((Matrix3f) o);
     }
 
     public void set(Matrix3f m) {

@@ -4,8 +4,8 @@ import yk.jcommon.fastgeom.Vec3f
 import yk.jcommon.fastgeom.Vec4f
 import yk.senjin.examples.ds.UvFi
 import yk.senjin.shaders.gshader.FragmentShaderParent
-import yk.senjin.shaders.gshader.Sampler2D
 import yk.senjin.shaders.gshader.StandardFSOutput
+import yk.senjin.shaders.uniforms.Sampler2D
 
 /**
  * Created with IntelliJ IDEA.

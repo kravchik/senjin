@@ -1,8 +1,7 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.shaders.uniforms;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
-import yk.jcommon.fastgeom.Matrix3;
 import yk.jcommon.fastgeom.Matrix4;
 
 import java.nio.FloatBuffer;
@@ -13,14 +12,14 @@ import java.nio.FloatBuffer;
  * Date: 21/10/15
  * Time: 12:45
  */
-public class UniformRefMatrix3 extends UniformRef<Matrix3> {
-    public FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(3 * 3);
+public class UniformRefMatrix4 extends UniformRef<Matrix4> {
+    public FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(4 * 4);
 
-    public UniformRefMatrix3(String name, Object src, String fieldName) {
+    public UniformRefMatrix4(String name, Object src, String fieldName) {
         super(name, src, fieldName);
     }
 
-    public void set(Matrix3 m) {
+    public void set(Matrix4 m) {
         m.store(matrixBuffer);
         matrixBuffer.rewind();
     }
@@ -28,6 +27,6 @@ public class UniformRefMatrix3 extends UniformRef<Matrix3> {
     @Override
     public void plug() {
         set(getValue());
-        GL20.glUniformMatrix3(index, false, matrixBuffer);
+        GL20.glUniformMatrix4(index, false, matrixBuffer);
     }
 }

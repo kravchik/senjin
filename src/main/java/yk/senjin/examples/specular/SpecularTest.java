@@ -5,8 +5,8 @@ import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.SomeTexture;
-import yk.senjin.shaders.gshader.Sampler2D;
 import yk.senjin.shaders.gshader.StandardFSOutput;
+import yk.senjin.shaders.uniforms.Sampler2D;
 
 import static org.junit.Assert.assertEquals;
 import static yk.jcommon.fastgeom.Matrix4.perspective;
@@ -37,7 +37,7 @@ public class SpecularTest {
         SpecularF f = new SpecularF();
 //        f.lightDir = new Vec3f(0, 0, 1);
         f.txt = new Sampler2D();
-        f.txt.texture = new SomeTexture();
+        f.txt.value = new SomeTexture();
 //        f.txt.texture.image = IO.readImage("jfdi.png");
 
         SpecularFi vso = new SpecularFi();

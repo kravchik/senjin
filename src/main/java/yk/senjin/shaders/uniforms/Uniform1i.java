@@ -1,4 +1,4 @@
-package yk.senjin.shaders;
+package yk.senjin.shaders.uniforms;
 
 import org.lwjgl.opengl.GL20;
 
@@ -7,11 +7,20 @@ import org.lwjgl.opengl.GL20;
  * 15:30:43
  */
 public class Uniform1i extends UniformVariable {
-    private final int value;
+    public int value;
+
+    public Uniform1i(String name) {
+        super(name);
+    }
 
     public Uniform1i(final String name, final int value) {
-        this.name = name;
+        super(name);
         this.value = value;
+    }
+
+    @Override
+    public void setValue(Object o) {
+        value = (int) o;
     }
 
     @Override

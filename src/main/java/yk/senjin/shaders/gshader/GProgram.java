@@ -12,10 +12,10 @@ import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
 import yk.senjin.AbstractState;
 import yk.senjin.shaders.ShaderHandler;
-import yk.senjin.shaders.UniformVariable;
 import yk.senjin.shaders.VertexAttrib;
 import yk.senjin.shaders.arraystructure.AbstractArrayStructure;
 import yk.senjin.shaders.arraystructure.VBOVertexAttrib;
+import yk.senjin.shaders.uniforms.UniformVariable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -46,6 +46,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     private GShader pvs;
     private GShader pfs;
 
+    //TODO get rid of both in favor of ShaderUser
     private Vbo currentVBO;
     private YList<AbstractArrayStructure> currentStructure;
 
@@ -189,7 +190,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     }
 
     private YMap<Class, YList<AbstractArrayStructure>> type2structure = hm();
-    private YList<AbstractArrayStructure> getShaderSpecificStructure(Class clazz) {
+    public YList<AbstractArrayStructure> getShaderSpecificStructure(Class clazz) {
         YList<AbstractArrayStructure> result = type2structure.get(clazz);
         if (result != null) return result;
         result = al();

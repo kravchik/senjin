@@ -130,7 +130,7 @@ public class SomeTexture extends AbstractState {
         glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
-    static ByteBuffer convertToGL(final BufferedImage image) {
+    public static ByteBuffer convertToGL(final BufferedImage image) {
         switch (image.getType()) {
             case BufferedImage.TYPE_INT_ARGB: return convertToGl_TYPE_TYPE_INT_ARGB(image);
             case BufferedImage.TYPE_3BYTE_BGR: return convertToGl_TYPE_3BYTE_BGR(image);
@@ -138,7 +138,7 @@ public class SomeTexture extends AbstractState {
         return convertToGLUnoptimized(image);
     }
 
-    static ByteBuffer convertToGl_TYPE_3BYTE_BGR(BufferedImage image) {
+    public static ByteBuffer convertToGl_TYPE_3BYTE_BGR(BufferedImage image) {
         ByteBuffer result = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
         byte[] imBuffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         for (int i = 0; i < imBuffer.length; i += 3) {
@@ -151,7 +151,7 @@ public class SomeTexture extends AbstractState {
         return result;
     }
 
-    static ByteBuffer convertToGl_TYPE_TYPE_INT_ARGB(BufferedImage image) {
+    public static ByteBuffer convertToGl_TYPE_TYPE_INT_ARGB(BufferedImage image) {
         int[] imBuffer = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
         ByteBuffer result = BufferUtils.createByteBuffer(imBuffer.length * 4);
         for (int i = 0; i < imBuffer.length; i++) {

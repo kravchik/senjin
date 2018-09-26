@@ -1,6 +1,7 @@
 package yk.senjin.shaders.gshader;
 
 import yk.jcommon.fastgeom.*;
+import yk.senjin.shaders.uniforms.Sampler2D;
 
 import java.awt.image.BufferedImage;
 

@@ -1,23 +1,27 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.shaders.uniforms;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import yk.jcommon.fastgeom.Matrix4;
-import yk.senjin.DDDUtils;
 
 import java.nio.FloatBuffer;
 
 /**
  * Created with IntelliJ IDEA.
  * User: yuri
- * Date: 21/10/15
- * Time: 12:45
+ * Date: 06/01/15
+ * Time: 13:33
  */
-public class UniformRefMatrix4 extends UniformRef<Matrix4> {
+public class UniformMatrix4 extends UniformVariable {
     public FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(4 * 4);
 
-    public UniformRefMatrix4(String name, Object src, String fieldName) {
-        super(name, src, fieldName);
+    public UniformMatrix4(String name) {
+        super(name);
+    }
+
+    @Override
+    public void setValue(Object o) {
+        set((Matrix4) o);
     }
 
     public void set(Matrix4 m) {
@@ -27,7 +31,6 @@ public class UniformRefMatrix4 extends UniformRef<Matrix4> {
 
     @Override
     public void plug() {
-        set(getValue());
         GL20.glUniformMatrix4(index, false, matrixBuffer);
     }
 }

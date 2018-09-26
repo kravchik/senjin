@@ -6,6 +6,9 @@ import org.lwjgl.opengl.GL20;
  * Created by: Yuri Kravchik Date: 2/11/2007 Time: 10:18:06
  */
 public class VBOVertexAttrib extends StrideOffset {
+    /**
+     * Index of the attribute from the point of view of the shader
+     */
     protected int index;
     /**
      * Specifies the number of components per attribute and must be 1, 2, 3, or

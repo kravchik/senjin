@@ -13,9 +13,9 @@ import yk.jcommon.utils.BadException
 import yk.jcommon.utils.Reflector
 import yk.jcommon.utils.StopWatch
 import yk.jcommon.utils.Tab
-import yk.senjin.shaders.UniformVariable
 import yk.senjin.shaders.VertexAttrib
 import yk.senjin.shaders.gshader.analysis.GglslAnalyzer
+import yk.senjin.shaders.uniforms.*
 
 import java.lang.reflect.Field
 import java.lang.reflect.Method

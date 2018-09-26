@@ -2,8 +2,8 @@ package yk.senjin.examples.ds
 
 import yk.jcommon.fastgeom.Vec3f
 import yk.senjin.shaders.gshader.FragmentShaderParent
-import yk.senjin.shaders.gshader.Sampler2D
 import yk.senjin.shaders.gshader.StandardFSOutput
+import yk.senjin.shaders.uniforms.Sampler2D
 
 /**
  * Created with IntelliJ IDEA.

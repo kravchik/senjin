@@ -3,12 +3,12 @@
  * @author Yuri Kravchik
  * Created 17.05.2008
  */
-package yk.senjin.shaders;
-
-import java.nio.FloatBuffer;
+package yk.senjin.shaders.uniforms;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
+
+import java.nio.FloatBuffer;
 
 /**
  * Uniform1Af
@@ -19,12 +19,12 @@ public class Uniform1Af extends UniformVariable {
     private final FloatBuffer values;
 
     public Uniform1Af(final String name, final Float... values) {
+        super(name);
         this.values = BufferUtils.createFloatBuffer(values.length);
         for (final Float i : values) {
             this.values.put(i);
         }
         this.values.rewind();
-        this.name = name;
     }
 
     @Override

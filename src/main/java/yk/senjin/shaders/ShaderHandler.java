@@ -4,16 +4,14 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import yk.jcommon.utils.BadException;
 import yk.senjin.AbstractState;
+import yk.senjin.shaders.uniforms.UniformVariable;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -22,6 +20,11 @@ import static org.lwjgl.opengl.GL20.*;
  */
 public class ShaderHandler extends AbstractState {
     public static ShaderHandler currentShader;
+
+    public int program;
+    public final List<UniformVariable> uniforms = new ArrayList<>();
+    public final Map<String, VertexAttrib> vertexAttribs = new HashMap<>();
+    public String geometryShaderString;
 
     public ShaderHandler() {
     }
@@ -128,10 +131,6 @@ public class ShaderHandler extends AbstractState {
         return GL20.glGetUniformLocation(program, attributeName);
     }
 
-    public int program;
-    public final List<UniformVariable> uniforms = new ArrayList<UniformVariable>();
-    public final Map<String, VertexAttrib> vertexAttribs = new HashMap<String, VertexAttrib>();
-
     public void initVariables() {
         for (final UniformVariable u4f : uniforms) {
             u4f.initForProgram(program);
@@ -142,9 +141,7 @@ public class ShaderHandler extends AbstractState {
     }
 
     public void addVariables(final UniformVariable... variables) {
-        for (final UniformVariable v : variables) {
-            uniforms.add(v);
-        }
+        Collections.addAll(uniforms, variables);
     }
 
     public void addVertexAttrib(final VertexAttrib attrib) {
@@ -156,7 +153,6 @@ public class ShaderHandler extends AbstractState {
     }
 
 
-    public String geometryShaderString;
     public void createProgram(final String[] vss, final String[] fss) {
         program = GL20.glCreateProgram();
         for (final String s : vss) {

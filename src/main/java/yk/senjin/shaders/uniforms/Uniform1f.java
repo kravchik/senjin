@@ -3,7 +3,7 @@
  * @author Yuri Kravchik
  * Created 16.05.2008
  */
-package yk.senjin.shaders;
+package yk.senjin.shaders.uniforms;
 
 import org.lwjgl.opengl.GL20;
 
@@ -15,9 +15,18 @@ import org.lwjgl.opengl.GL20;
 public class Uniform1f extends UniformVariable {
     public float value;
 
+    public Uniform1f(final String name) {
+        super(name);
+    }
+
     public Uniform1f(final String name, final float value) {
-        this.name = name;
+        super(name);
         this.value = value;
+    }
+
+    @Override
+    public void setValue(Object o) {
+        value = (float) o;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.shaders.uniforms;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;

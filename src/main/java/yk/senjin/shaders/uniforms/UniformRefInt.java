@@ -1,9 +1,6 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.shaders.uniforms;
 
-import yk.jcommon.fastgeom.Vec2f;
-import yk.jcommon.utils.Reflector;
 import yk.senjin.DDDUtils;
-import yk.senjin.shaders.UniformVariable;
 
 /**
  * Created with IntelliJ IDEA.
