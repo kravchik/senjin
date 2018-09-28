@@ -1,4 +1,4 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.vbo;
 
 import org.lwjgl.BufferUtils;
 import yk.jcommon.collections.YList;
@@ -8,6 +8,9 @@ import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.Reflector;
+import yk.senjin.shaders.gshader.ShaderGenerator;
+import yk.senjin.shaders.gshader.StandardFragmentData;
+import yk.senjin.shaders.gshader.StandardVertexData;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -23,6 +26,7 @@ import static yk.jcommon.collections.YHashMap.hm;
  * User: yuri
  * Date: 09/06/15
  * Time: 20:30
+ * //TODO get rid
  */
 public class ReflectionVBO implements Vbo {
     public List data;

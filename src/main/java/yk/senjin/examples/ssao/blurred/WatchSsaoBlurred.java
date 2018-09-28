@@ -9,7 +9,7 @@ import yk.senjin.examples.ds.PoconuvV;
 import yk.senjin.examples.ds.PoconuvVi;
 import yk.senjin.examples.ds.PosuvV;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.shaders.gshader.ReflectionVBO;
+import yk.senjin.vbo.ReflectionVBO;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_QUADS;

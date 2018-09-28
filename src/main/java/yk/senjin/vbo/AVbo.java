@@ -1,4 +1,4 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.vbo;
 
 import org.lwjgl.BufferUtils;
 import yk.jcommon.collections.YList;
@@ -58,10 +58,23 @@ public class AVbo implements Vbo {//TODO remove implements
      * <br>
      * <li>Loses all previous changes.
      */
-    public void setNewSize(ByteBuffer data) {
+    public void reloadResize(ByteBuffer data) {
         int capacity = data.capacity();
         if (capacity % elementSize != 0) BadException.die("wrong buffer size " + capacity + " for element size " + elementSize);
         this.elementsCount = capacity / elementSize;
+        reload(data);
+    }
+
+    /**
+     * Sets new size with new data.
+     * <br>
+     * <li>Loses all previous changes.
+     */
+    public void reloadRecount(ByteBuffer data, int newCount) {
+        int capacity = data.capacity();
+        if (capacity % elementSize != 0) BadException.die("wrong buffer size " + capacity + " for element size " + elementSize);
+        if (newCount * elementSize < capacity) BadException.die("wrong buffer size " + capacity + " for elements count " + newCount);
+        this.elementsCount = newCount;
         reload(data);
     }
 
@@ -71,7 +84,7 @@ public class AVbo implements Vbo {//TODO remove implements
      * <li>Loses current buffer contents as it can be recreated.
      * <li>Loses all previous changes.
      */
-    public void setNewItemsCount(int count) {
+    public void setCount(int count) {
         this.elementsCount = count;
         Change change = new Change();
         change.recreate = true;

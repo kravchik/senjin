@@ -220,7 +220,8 @@ public class Simple3DWatch {
         DisplayMode[] modes = Display.getAvailableDisplayModes();
         Display.setDisplayMode(new DisplayMode(w, h));
 //                    Display.setDisplayMode(modes[modes.length - 1]);
-        Display.create(new PixelFormat());
+        PixelFormat pixel_format = new PixelFormat(8, 8, 8, 4);
+        Display.create(pixel_format);
         Display.makeCurrent();
         //aa
         if (SIMPLE_AA) simpleAA.initAA(w, h);

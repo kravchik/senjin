@@ -7,7 +7,7 @@ import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.*;
 import yk.senjin.examples.ds.PoconuvVi;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.shaders.gshader.Vbo;
+import yk.senjin.vbo.Vbo;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

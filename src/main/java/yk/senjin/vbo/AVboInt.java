@@ -1,4 +1,4 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.vbo;
 
 /**
  * Created by Yuri Kravchik on 25.03.18.

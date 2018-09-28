@@ -16,6 +16,8 @@ import yk.senjin.shaders.VertexAttrib;
 import yk.senjin.shaders.arraystructure.AbstractArrayStructure;
 import yk.senjin.shaders.arraystructure.VBOVertexAttrib;
 import yk.senjin.shaders.uniforms.UniformVariable;
+import yk.senjin.vbo.ReflectionVBO;
+import yk.senjin.vbo.Vbo;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -27,7 +29,6 @@ import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.collections.YHashMap.hm;
 import static yk.jcommon.collections.YHashSet.hs;
-import static yk.senjin.VertexStructureState.assertType;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,6 +50,11 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     //TODO get rid of both in favor of ShaderUser
     private Vbo currentVBO;
     private YList<AbstractArrayStructure> currentStructure;
+
+    public static void assertType(VertexAttrib shaderAttrib, int size, int type, String name) {
+        if (shaderAttrib.getSize() != size) throw new Error("wrong type for " + name);
+        if (shaderAttrib.getType() != type) throw new Error("wrong type for " + name);
+    }
 
     public <V extends VertexShaderParent, F extends FragmentShaderParent> GProgram<V, F> runtimeReload() {
         if (pvs != null && pvs.singleOwner) pvs.runtimeReload();

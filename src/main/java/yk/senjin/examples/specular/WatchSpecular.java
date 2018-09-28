@@ -7,7 +7,7 @@ import yk.senjin.DrawIndicesShort;
 import yk.senjin.Simple3DWatch;
 import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.shaders.gshader.ReflectionVBO;
+import yk.senjin.vbo.ReflectionVBO;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static yk.jcommon.collections.YArrayList.al;

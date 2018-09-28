@@ -89,7 +89,7 @@
                 <configuration>
                     <!--because we want start main(..) and tests with ctrl+shift+F10 (in IDEA)
                     and don't want to put any additional class paths-->
-                    <nativesTargetDir>${project.basedir}</nativesTargetDir>
+                    <nativesTargetDir>${project.basedir}/native-libs</nativesTargetDir>
                     <separateDirs>false</separateDirs>
                 </configuration>
             </plugin>
@@ -137,12 +137,6 @@
             <groupId>yk</groupId>
             <artifactId>yincubator</artifactId>
             <version>0.02-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slick2d</groupId>
-            <artifactId>slick2d-core</artifactId>
-            <version>1.0.0</version>
         </dependency>
 
         <dependency>

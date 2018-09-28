@@ -1,9 +1,10 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.vbo;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.Util;
 import yk.jcommon.collections.YList;
 
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static yk.jcommon.collections.YArrayList.al;
@@ -11,7 +12,7 @@ import static yk.jcommon.collections.YArrayList.al;
 /**
  * Created by Yuri Kravchik on 25.03.18.
  */
-public class AVboShortIndices extends AVboShort {
+public class AVboIntIndices extends AVboInt {
     /**
      * Specifies what kind of primitives to render. Symbolic constants
      * GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_TRIANGLE_STRIP,
@@ -20,12 +21,11 @@ public class AVboShortIndices extends AVboShort {
      */
     private final int primitiveType;
 
-    public AVboShortIndices(int primitiveType, int elementsCount) {
+    public AVboIntIndices(int primitiveType, int elementsCount) {
         super(elementsCount);
         this.primitiveType = primitiveType;
         bufferType = GL_ELEMENT_ARRAY_BUFFER;
     }
-
 
     public void enable() {
         enable(elementsCount);
@@ -35,16 +35,19 @@ public class AVboShortIndices extends AVboShort {
         enabled = true;
         glBindBuffer(bufferType, bufferId);
         checkDirty();
-        GL11.glDrawElements(primitiveType, count, GL_UNSIGNED_SHORT, 0);
+        GL11.glDrawElements(primitiveType, count, GL_UNSIGNED_INT, 0);//TODO signed?
         enabled = false;
 //        GL12.glDrawRangeElements(primitiveType, 0, indexBuffer.limit(), indexBuffer);
     }
 
+    //TODO int[]
     public static AVboShortIndices simple(int count, int primitiveType) {
         AVboShortIndices result = new AVboShortIndices(primitiveType, count);
-        YList<Short> list = al();
-        for (int i = 0; i < count; i++) list.add((short) i);
+        YList<Integer> list = al();
+        for (int i = 0; i < count; i++) list.add(i);
         result.reload(list);
+        Util.checkGLError();
         return result;
     }
+
 }

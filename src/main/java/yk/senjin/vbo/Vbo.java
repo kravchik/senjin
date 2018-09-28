@@ -1,4 +1,4 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.vbo;
 
 import yk.senjin.State;
 

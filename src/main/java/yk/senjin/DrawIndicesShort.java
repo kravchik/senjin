@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Created by: Yuri Kravchik Date: 31/10/2007 Time: 18:17:39
+ * TODO get rid
  */
 public class DrawIndicesShort extends AbstractState {
     private ShortBuffer indexBuffer;

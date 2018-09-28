@@ -4,9 +4,9 @@ import yk.jcommon.utils.MyMath;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Fs;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vd;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vs;
-import yk.senjin.shaders.gshader.AVbo;
-import yk.senjin.shaders.gshader.AVboShortIndices;
 import yk.senjin.shaders.gshader.GProgram;
+import yk.senjin.vbo.AVbo;
+import yk.senjin.vbo.AVboShortIndices;
 
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.collections.YArrayList.al;

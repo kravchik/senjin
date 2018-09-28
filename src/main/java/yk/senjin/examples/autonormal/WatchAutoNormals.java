@@ -6,7 +6,7 @@ import yk.senjin.DrawIndicesShort;
 import yk.senjin.LoadTickUnload;
 import yk.senjin.WatchReloadable;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.shaders.gshader.ReflectionVBO;
+import yk.senjin.vbo.ReflectionVBO;
 
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.collections.YArrayList.al;

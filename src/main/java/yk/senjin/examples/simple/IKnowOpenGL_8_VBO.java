@@ -5,7 +5,7 @@ import yk.senjin.examples.simple.stuff.Ikogl_8_Fs;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vd;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vs;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.shaders.gshader.ReflectionVBO;
+import yk.senjin.vbo.ReflectionVBO;
 
 import java.nio.ShortBuffer;
 

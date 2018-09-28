@@ -1,4 +1,4 @@
-package yk.senjin.shaders.gshader;
+package yk.senjin.vbo;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,13 +37,13 @@ public class AVboTest {
         System.out.println(allocate.remaining());
 
         AVbo avbo = new AVbo(byte.class, 0);
-        avbo.setNewSize(BufferUtils.createByteBuffer(0));
+        avbo.reloadResize(BufferUtils.createByteBuffer(0));
         avbo.enable();
 
-        avbo.setNewSize(BufferUtils.createByteBuffer(3));
+        avbo.reloadResize(BufferUtils.createByteBuffer(3));
         avbo.enable();
 
-        avbo.setNewItemsCount(0);
+        avbo.setCount(0);
         avbo.enable();
 
         try {
@@ -52,7 +52,7 @@ public class AVboTest {
         } catch (BadException ignore) { }
         avbo.enable();
 
-        avbo.setNewItemsCount(1);
+        avbo.setCount(1);
         avbo.addChange(al((byte) 5), 0);
         avbo.enable();
 

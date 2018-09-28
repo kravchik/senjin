@@ -8,7 +8,7 @@ import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.shaders.gshader.ReflectionVBO;
+import yk.senjin.vbo.ReflectionVBO;
 
 import java.nio.ShortBuffer;
 
