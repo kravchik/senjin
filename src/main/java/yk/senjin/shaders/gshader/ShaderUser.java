@@ -17,6 +17,7 @@ abstract public class ShaderUser<V extends VertexShaderParent, F extends Fragmen
     YList<Sampler2D> samplers;
     protected YList<UniformVariable> uniforms;
     private YList<AbstractArrayStructure> currentStructure;
+    private Class inputType;
 
     public boolean uniformsChanged;
     abstract public void updateUniforms();
@@ -26,8 +27,13 @@ abstract public class ShaderUser<V extends VertexShaderParent, F extends Fragmen
     public ShaderUser(GProgram<V, F> program, Class inputType) {
         this.program = program;
         currentStructure = program.getShaderSpecificStructure(inputType);
+        this.inputType = inputType;
         //this.vbo = vbo;
         initUniformsCopy();
+    }
+
+    public Class getInputType() {
+        return inputType;
     }
 
     private void initUniformsCopy() {

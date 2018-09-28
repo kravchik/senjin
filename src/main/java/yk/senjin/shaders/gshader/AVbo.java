@@ -15,16 +15,19 @@ import static yk.jcommon.collections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 25.03.18.
- * must be able to upload partially changed data
  */
 
 //TODO use instead ReflectionVBO
 //TODO use instead IndexBufferShort
 //TODO local ByteBuffer cache for continuous update
-//TODO discard old and make new (to avoid stalls when continuous full updates are performed)
 public class AVbo implements Vbo {//TODO remove implements
     public final Class inputType;
+    //GL_ARRAY_BUFFER
+    //GL_ELEMENT_ARRAY_BUFFER
+    //...
+    protected int bufferType = GL_ARRAY_BUFFER;
     protected int elementsCount;
+    protected boolean enabled;
     public final boolean simpleTyped;
     public final int elementSize;
     public final int bufferId = glGenBuffers();
@@ -43,11 +46,6 @@ public class AVbo implements Vbo {//TODO remove implements
         return elementsCount;
     }
 
-    public void setElementsCount(ByteBuffer data, int elementsCount) {
-        this.elementsCount = elementsCount;
-        addChange(data);
-    }
-
     public AVbo(Class inputType, int elementsCount) {
         this.inputType = inputType;
         this.elementsCount = elementsCount;
@@ -55,43 +53,104 @@ public class AVbo implements Vbo {//TODO remove implements
         elementSize = simpleTyped ? ReflectionVBO.getTypeSize(inputType) : ReflectionVBO.getComplexTypeSize(inputType);
     }
 
-    public void addChange(List data) {
-        //if (data.size() != elementsCount) BadException.die("expected full size data here"); //we can supply NOT full data
-        changes = null;//we don't need previous changes as a whole data is updated
-        addChange(data, 0).wholeData = true;
+    /**
+     * Sets new size with new data.
+     * <br>
+     * <li>Loses all previous changes.
+     */
+    public void setNewSize(ByteBuffer data) {
+        int capacity = data.capacity();
+        if (capacity % elementSize != 0) BadException.die("wrong buffer size " + capacity + " for element size " + elementSize);
+        this.elementsCount = capacity / elementSize;
+        reload(data);
     }
 
-    public Change addChange(ByteBuffer buffer) {
+    /**
+     * Sets new size.
+     * <br>
+     * <li>Loses current buffer contents as it can be recreated.
+     * <li>Loses all previous changes.
+     */
+    public void setNewItemsCount(int count) {
+        this.elementsCount = count;
+        Change change = new Change();
+        change.recreate = true;
+        changes = al(change);//we don't need previous changes as a whole data is updated
+        dirty = true;
+    }
+
+    /**
+     * Whole upload but without size change
+     * <br>
+     * <li>Streaming, fast way to reload (<a href=https://www.khronos.org/opengl/wiki/Buffer_Object_Streaming>orphaning</a>)
+     * <li>NOT changes size
+     * <li>Loses rest of the buffer as it can be recreated.
+     * <li>Loses all previous changes.
+     */
+    public Change reload(ByteBuffer buffer) {
+        if (buffer.capacity() > elementSize * elementsCount) BadException.die("too large buffer (" + buffer.capacity() + ") should be <= " + elementSize * elementsCount);
         Change change = new Change();
         change.data = buffer;
-        change.wholeData = true;
+        change.recreate = true;
         changes = al(change);//we don't need previous changes as a whole data is updated
         dirty = true;
         return change;
     }
 
+    /**
+     * Sets some data at the start of the buffer.
+     * <br>
+     * <li>Streaming, fast way to reload (<a href=https://www.khronos.org/opengl/wiki/Buffer_Object_Streaming>orphaning</a>)
+     * <li>NOT changes size
+     * <li>Loses rest of the buffer as it can be recreated.
+     * <li>Loses all previous changes.
+     */
+    public void reload(List data) {
+        //if (data.size() != elementsCount) BadException.die("expected full size data here"); //we can supply NOT full data
+        changes = null;//we don't need previous changes as a whole data is updated anyway
+        addChange(data, 0).recreate = true;
+    }
+
+    /**
+     * Upload at position without size change.
+     * <br>
+     * <li>NOT streaming, could cause delay as has to wait until buffer is not occupied
+     * <li>NOT loses buffer's content in other parts.
+     * <li>ADDS changes, previous changes will be called before this.
+     */
     public Change addChange(ByteBuffer buffer, int position) {
+        if (position + buffer.capacity() > elementSize * elementsCount) BadException.die("out of bounds (" + position + " + " + buffer.capacity()
+                + ") should be <= " + elementSize * elementsCount);
         Change change = new Change();
         change.data = buffer;
-        change.changeFrom = position;
+        change.position = position;
         if (changes == null) changes = al();
         changes.add(change);
         dirty = true;
         return change;
     }
 
-    public Change addChange(int[] data, int position) {
-        assertSize(position, data.length);
-        if (inputType != int.class) BadException.die("buffer type differs from supplied data type: " + inputType + " " + int.class);
-        ByteBuffer bb = BufferUtils.createByteBuffer(elementSize * data.length);
-        ReflectionVBO.setDataInt(data, bb);
-        bb.rewind();
-        return addChange(bb, elementSize * position);
-    }
-    
+    //public Change addChange(int[] data, int position) {
+    //    assertSize(position, data.length);
+    //    if (inputType != int.class) BadException.die("buffer type differs from supplied data type: " + inputType + " " + int.class);
+    //    ByteBuffer bb = BufferUtils.createByteBuffer(elementSize * data.length);
+    //    ReflectionVBO.setDataInt(data, bb);
+    //    bb.rewind();
+    //    return addChange(bb, elementSize * position);
+    //}
+
+    /**
+     * Upload at position without size change.
+     * <br>
+     * <li>NOT streaming, could cause delay as has to wait until buffer is not occupied
+     * <li>NOT loses buffer's content in other parts.
+     * <li>ADDS changes, previous changes will be called before this.
+     */
     public Change addChange(List data, int position) {
         Class<?> aClass = data.get(0).getClass();
-        assertSize(position, data.size());
+        int elementsCount1 = data.size();
+        if (position + elementsCount1 > this.elementsCount)
+            BadException.die("not matching size. Max: " + this.elementsCount + " position: " + position + " data.size(): " + elementsCount1);
         if (simpleTyped) {
             if (aClass == Short.class && inputType != short.class
                 || aClass == Byte.class && inputType != byte.class
@@ -109,18 +168,10 @@ public class AVbo implements Vbo {//TODO remove implements
         return addChange(bb, elementSize * position);
     }
 
-    private void assertSize(int position, int elementsCount) {
-        if (position + elementsCount > this.elementsCount)
-            BadException.die("not matching size. Max: " + this.elementsCount + " position: " + position + " data.size(): " + elementsCount);
-    }
-
     //override this to add type-aware serialization
     public void serializeData(ByteBuffer buffer, Object data) {
         if (simpleTyped) {
             if (inputType == float.class) ReflectionVBO.setDataFloat((float[])data, buffer);
-            //else if (inputType == byte.class) ReflectionVBO.setDataByte((byte[])data, buffer);
-            //else if (inputType == short.class) ReflectionVBO.setDataShort((short[])data, buffer);
-            //else if (inputType == int.class) ReflectionVBO.setDataInt((int[])data, buffer);
             else if (inputType == Vec2f.class) ReflectionVBO.setDataVec2f((List)data, buffer);
             else if (inputType == Vec3f.class) ReflectionVBO.setDataVec3f((List)data, buffer);
             else if (inputType == Vec4f.class) ReflectionVBO.setDataVec4f((List)data, buffer);
@@ -134,46 +185,46 @@ public class AVbo implements Vbo {//TODO remove implements
         }
     }
 
-    private AVbo initBuffer() {
-        if (bufferInited) BadException.shouldNeverReachHere();
-
-        glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-        glBufferData(GL_ARRAY_BUFFER, (long)elementSize * elementsCount, usage);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        bufferInited = true;
-        return this;
-    }
-    
-    private void partialUpload() {
+    private void flush() {
         if (changes == null) BadException.shouldNeverReachHere();
-        if (!bufferInited) initBuffer();
-        glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+        if (!enabled) glBindBuffer(bufferType, bufferId);
+
+        if (!changes.get(0).recreate && !bufferInited) {
+            glBufferData(bufferType, (long)elementSize * elementsCount, usage);
+            bufferInited = true;
+        }
+
         for (Change change : changes) {
-            //if (!change.data.hasRemaining()) BadException.die("empty buffer in changes, elements count: " + elementsCount);
-            if (change.wholeData) {
+            if (change.recreate) {
                 //orphan old content, so driver can continue render from it while we are writing into the new buffer (or into old one if it is not occupied)
-                //https://www.khronos.org/opengl/wiki/Vertex_Specification_Best_Practices
-                glBufferData(GL_ARRAY_BUFFER, (long)elementSize * elementsCount, usage);
+                //https://www.khronos.org/opengl/wiki/Buffer_Object_Streaming
+                glBufferData(bufferType, (long)elementSize * elementsCount, usage);
+                bufferInited = true;
                 if (debugBuffer != null) debugBuffer = new byte[elementSize * elementsCount];
             }
-            glBufferSubData(GL_ARRAY_BUFFER, change.changeFrom, change.data);
-            if (debugBuffer != null) {
-                int i = change.changeFrom;
-                while (change.data.hasRemaining()) debugBuffer[i++] = change.data.get();
-                change.data.rewind();
+            if (elementsCount > 0 && change.data != null) {
+                glBufferSubData(bufferType, change.position, change.data);
+                if (debugBuffer != null) {
+                    int i = change.position;
+                    while (change.data.hasRemaining()) debugBuffer[i++] = change.data.get();
+                    change.data.rewind();
+                }
             }
         }
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        if (!enabled) glBindBuffer(bufferType, 0);
         dirty = false;
         changes = null;
     }
 
     @Override public void enable() {
+        enabled = true;
+        glBindBuffer(bufferType, bufferId);
+        if(elementSize == 0) BadException.die("shouldn't enable empty buffers check dirty before this call");
         checkDirty();
-        glBindBuffer(GL_ARRAY_BUFFER, bufferId);
     }
     @Override public void disable() {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(bufferType, 0);
+        enabled = false;
     }
     @Override public void release() {
         glDeleteBuffers(bufferId);
@@ -184,13 +235,16 @@ public class AVbo implements Vbo {//TODO remove implements
     }
 
     @Override public void checkDirty() {
-        if (dirty) partialUpload();
+        if (dirty) flush();
     }
 
     public static class Change {
-        int changeFrom;
+        int position;
+        /**
+         * If null, then seems like we just want to resize (recreate should be true, changeFrom should be 0)
+         */
         ByteBuffer data;
-        boolean wholeData;
+        boolean recreate;
     }
 
 }

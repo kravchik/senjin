@@ -23,6 +23,7 @@ public class AVboShortIndices extends AVboShort {
     public AVboShortIndices(int primitiveType, int elementsCount) {
         super(elementsCount);
         this.primitiveType = primitiveType;
+        bufferType = GL_ELEMENT_ARRAY_BUFFER;
     }
 
 
@@ -31,9 +32,11 @@ public class AVboShortIndices extends AVboShort {
     }
 
     public void enable(int count) {//call it if your buffer larger than you want to draw
+        enabled = true;
+        glBindBuffer(bufferType, bufferId);
         checkDirty();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferId);
-        GL11.glDrawElements(primitiveType, count * elementSize, GL_UNSIGNED_SHORT, 0);//TODO signed?
+        GL11.glDrawElements(primitiveType, count, GL_UNSIGNED_SHORT, 0);
+        enabled = false;
 //        GL12.glDrawRangeElements(primitiveType, 0, indexBuffer.limit(), indexBuffer);
     }
 
@@ -41,7 +44,7 @@ public class AVboShortIndices extends AVboShort {
         AVboShortIndices result = new AVboShortIndices(primitiveType, count);
         YList<Short> list = al();
         for (int i = 0; i < count; i++) list.add((short) i);
-        result.addChange(list);
+        result.reload(list);
         return result;
     }
 }

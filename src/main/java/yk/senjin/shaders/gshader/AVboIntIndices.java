@@ -24,6 +24,7 @@ public class AVboIntIndices extends AVboInt {
     public AVboIntIndices(int primitiveType, int elementsCount) {
         super(elementsCount);
         this.primitiveType = primitiveType;
+        bufferType = GL_ELEMENT_ARRAY_BUFFER;
     }
 
     public void enable() {
@@ -31,9 +32,11 @@ public class AVboIntIndices extends AVboInt {
     }
 
     public void enable(int count) {//call it if your buffer larger than you want to draw
+        enabled = true;
+        glBindBuffer(bufferType, bufferId);
         checkDirty();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferId);
         GL11.glDrawElements(primitiveType, count, GL_UNSIGNED_INT, 0);//TODO signed?
+        enabled = false;
 //        GL12.glDrawRangeElements(primitiveType, 0, indexBuffer.limit(), indexBuffer);
     }
 
@@ -42,7 +45,7 @@ public class AVboIntIndices extends AVboInt {
         AVboShortIndices result = new AVboShortIndices(primitiveType, count);
         YList<Integer> list = al();
         for (int i = 0; i < count; i++) list.add(i);
-        result.addChange(list);
+        result.reload(list);
         Util.checkGLError();
         return result;
     }
