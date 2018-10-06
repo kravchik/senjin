@@ -10,6 +10,26 @@ Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-
 
 Recent updates:
 
+10.18
++ AVbo, AVboTyped, AVbo indices
++ ARGB conversion and other SomeTexture improvements
++ ShaderUser 
+* Numerous cleanups
+* got rid of ReflectionVBO
+* got rid of IndexBufferShort
+
+
+12.17
++ edu mouse API
++ I Know OpenGL series of tutorials
++ VS and FS can be used separately
++ IndexBufferInt
+
+12.16
+* Geometry shader POC
++ Shininess example
++ IndexBufferShort
+
 02.16
 + SSAO
 * better buffers
