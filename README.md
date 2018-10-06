@@ -47,11 +47,7 @@ Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-
 
 <repositories>
     <repository>
-        <id>yk.senjin</id>
-        <url>https://github.com/kravchik/mvn-repo/raw/master</url>
-    </repository>
-    <repository>
-        <id>yk.extmodule</id>
+        <id>yk</id>
         <url>https://github.com/kravchik/mvn-repo/raw/master</url>
     </repository>
 </repositories>
