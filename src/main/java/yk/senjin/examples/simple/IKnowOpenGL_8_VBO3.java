@@ -5,8 +5,8 @@ import yk.senjin.examples.simple.stuff.Ikogl_8_Fs;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vd;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vs;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.AVbo;
 import yk.senjin.vbo.AVboShortIndices;
+import yk.senjin.vbo.AVboTyped;
 
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.collections.YArrayList.al;
@@ -25,14 +25,14 @@ public class IKnowOpenGL_8_VBO3 extends SimpleLwjglRoutine {
     public Ikogl_8_Fs fs;
     public GProgram program;
 
-    AVbo vbo;
+    AVboTyped vbo;
     AVboShortIndices indices;
     float time;
 
     @Override public void onFirstPass() {
         super.onFirstPass();
         program = GProgram.initFrom("src/main/java/", vs = new Ikogl_8_Vs(), fs = new Ikogl_8_Fs()).runtimeReload();
-        vbo = new AVbo(Ikogl_8_Vd.class, 3);
+        vbo = new AVboTyped(Ikogl_8_Vd.class, 3);
         vbo.reload(al(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0))));
         indices = AVboShortIndices.simple(3, GL_TRIANGLES);
     }

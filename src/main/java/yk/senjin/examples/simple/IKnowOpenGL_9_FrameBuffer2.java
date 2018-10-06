@@ -1,13 +1,13 @@
 package yk.senjin.examples.simple;
 
 import yk.senjin.FrameBuffer;
-import yk.senjin.IndexBufferShort;
 import yk.senjin.SomeTexture;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Fs;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vd;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vs;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.ReflectionVBO;
+import yk.senjin.vbo.AVboShortIndices;
+import yk.senjin.vbo.AVboTyped;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
@@ -26,8 +26,8 @@ public class IKnowOpenGL_9_FrameBuffer2 extends SimpleLwjglRoutine {
     public Ikogl_8_Fs fs;
     public GProgram program;
 
-    ReflectionVBO vbo;
-    IndexBufferShort indices;
+    AVboTyped vbo;
+    AVboShortIndices indices;
 
     SomeTexture texture;
     FrameBuffer fb;
@@ -35,8 +35,8 @@ public class IKnowOpenGL_9_FrameBuffer2 extends SimpleLwjglRoutine {
     @Override public void onFirstPass() {
         super.onFirstPass();
         program = GProgram.initFrom("src/main/java/", vs = new Ikogl_8_Vs(), fs = new Ikogl_8_Fs()).runtimeReload();
-        vbo = new ReflectionVBO(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0))).upload();
-        indices = IndexBufferShort.simple(3, GL_TRIANGLES);
+        vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0)));
+        indices = AVboShortIndices.simple(3, GL_TRIANGLES);
 
         texture = new SomeTexture(20, 20);
         texture.magFilter = GL_NEAREST;

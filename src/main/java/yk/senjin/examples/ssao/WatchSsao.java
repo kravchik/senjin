@@ -11,7 +11,7 @@ import yk.senjin.examples.ds.PoconuvV;
 import yk.senjin.examples.ds.PoconuvVi;
 import yk.senjin.examples.ds.PosuvV;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.ReflectionVBO;
+import yk.senjin.vbo.AVboTyped;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
@@ -33,7 +33,7 @@ public class WatchSsao implements LoadTickUnload<WatchReloadable> {
     public GProgram<PosuvV, DeferredShadeSsao> ssaoProgram;
     public GProgram<PoconuvV, DeferredDataF> defDataProgram;
 
-    public ReflectionVBO vbo1;
+    public AVboTyped vbo1;
     public SomeTexture textureJfdi;
     public DrawIndicesShort indices;
     public FrameBuffer fbo1;
@@ -60,8 +60,8 @@ public class WatchSsao implements LoadTickUnload<WatchReloadable> {
         for (int i = 0; i < 10; i++) {
             all.addAll(makeCube(rnd.nextVec3f().mul(5), v3(1, 1, 1), rnd.nextVec3f().mul(0.5f).add(0.5f).toVec4f(1)));
         }
-        vbo1 = new ReflectionVBO(all);
-        vbo1.upload();
+        vbo1 = new AVboTyped(PoconuvV.class, all.size());
+        vbo1.addChange(all, 0);
         indices = DrawIndicesShort.simple(all.size(), GL_QUADS);
 
 

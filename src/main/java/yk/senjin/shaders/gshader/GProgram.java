@@ -16,8 +16,9 @@ import yk.senjin.shaders.VertexAttrib;
 import yk.senjin.shaders.arraystructure.AbstractArrayStructure;
 import yk.senjin.shaders.arraystructure.VBOVertexAttrib;
 import yk.senjin.shaders.uniforms.UniformVariable;
-import yk.senjin.vbo.ReflectionVBO;
-import yk.senjin.vbo.Vbo;
+import yk.senjin.vbo.AVbo;
+import yk.senjin.vbo.AVboTyped;
+import yk.senjin.vbo.TypeUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -48,7 +49,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     private GShader pfs;
 
     //TODO get rid of both in favor of ShaderUser
-    private Vbo currentVBO;
+    private AVbo currentVBO;
     private YList<AbstractArrayStructure> currentStructure;
 
     public static void assertType(VertexAttrib shaderAttrib, int size, int type, String name) {
@@ -201,7 +202,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
         if (result != null) return result;
         result = al();
         YList<Field> fields = ShaderGenerator.getFieldsForData(clazz);
-        int stride = ReflectionVBO.getComplexTypeSize(clazz);
+        int stride = TypeUtils.getComplexTypeSize(clazz);
         int offset = 0;
         YSet<String> hasFields = hs();
         for (Field field : fields) {
@@ -233,7 +234,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
         return result;
     }
 
-    public void setInput(Vbo vbo) {
+    public void setInput(AVboTyped vbo) {
         currentVBO = vbo;
         setInputClass(vbo.getInputType());
     }

@@ -34,7 +34,7 @@ import static yk.jcommon.collections.YHashSet.hs
  * Date: 14/12/14
  * Time: 17:10
  */
-class ShaderGenerator {
+class ShaderGenerator {//TODO Java
     public final ShaderParent shaderGroovy
     public final String srcPath
     public final String gSrc

@@ -17,7 +17,7 @@ import static yk.senjin.shaders.ShaderHandler.*;
  * Date: 16/03/16
  * Time: 09:57
  */
-public class GShader {
+public class GShader {//TODO get rid
     public boolean singleOwner = true;
     public ShaderGenerator generator;
     public int shaderIndex = -1;

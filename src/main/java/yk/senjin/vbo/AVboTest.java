@@ -36,7 +36,7 @@ public class AVboTest {
         System.out.println(allocate.capacity());
         System.out.println(allocate.remaining());
 
-        AVbo avbo = new AVbo(byte.class, 0);
+        AVboTyped avbo = new AVboTyped(byte.class, 0);
         avbo.reloadResize(BufferUtils.createByteBuffer(0));
         avbo.enable();
 

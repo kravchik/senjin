@@ -1,11 +1,11 @@
 package yk.senjin.examples.simple;
 
-import yk.senjin.IndexBufferShort;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Fs;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vd;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vs;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.ReflectionVBO;
+import yk.senjin.vbo.AVboShortIndices;
+import yk.senjin.vbo.AVboTyped;
 
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
@@ -23,14 +23,14 @@ public class IKnowOpenGL_8_VBO2 extends SimpleLwjglRoutine {
     public Ikogl_8_Fs fs;
     public GProgram program;
 
-    ReflectionVBO vbo;
-    IndexBufferShort indices;
+    AVboTyped vbo;
+    AVboShortIndices indices;
 
     @Override public void onFirstPass() {
         super.onFirstPass();
         program = GProgram.initFrom("src/main/java/", vs = new Ikogl_8_Vs(), fs = new Ikogl_8_Fs()).runtimeReload();
-        vbo = new ReflectionVBO(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0))).upload();
-        indices = IndexBufferShort.simple(3, GL_TRIANGLES);
+        vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0)));
+        indices = AVboShortIndices.simple(3, GL_TRIANGLES);
     }
     
     @Override public void onTick(float dt) {

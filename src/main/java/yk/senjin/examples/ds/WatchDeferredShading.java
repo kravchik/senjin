@@ -7,7 +7,7 @@ import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.senjin.*;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.ReflectionVBO;
+import yk.senjin.vbo.AVboTyped;
 
 import java.nio.FloatBuffer;
 
@@ -33,7 +33,7 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
     public PoconuvV specularV;
     public GProgram specularProgram;
 
-    public ReflectionVBO vbo1;
+    public AVboTyped vbo1;
     public SomeTexture textureJfdi;
     public DrawIndicesShort indices;
     public FrameBuffer fbo1;
@@ -58,12 +58,11 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
         hdrProgram = new GProgram(hdrV, hdrF).runtimeReload();
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
-        vbo1 = new ReflectionVBO(
+        vbo1 = new AVboTyped(
                 new PoconuvVi(new Vec3f(0, 0, 0),  new Vec3f(-1, -1, 1).normalized(), new Vec2f(0, 1)),
                 new PoconuvVi(new Vec3f(10, 0, 0), new Vec3f( 1, -1, 1).normalized(), new Vec2f(1, 1)),
                 new PoconuvVi(new Vec3f(10, 10, 0),new Vec3f( 1,  1, 1).normalized(), new Vec2f(1, 0)),
                 new PoconuvVi(new Vec3f(0, 10, 0), new Vec3f(-1,  1, 1).normalized(), new Vec2f(0, 0)));
-        vbo1.upload();
         indices = new DrawIndicesShort(GL_TRIANGLES, al(0, 1, 2, 0, 2, 3));
 
         fboSize = 1024;

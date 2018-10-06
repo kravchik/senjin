@@ -5,7 +5,7 @@ import yk.senjin.examples.simple.stuff.Ikogl_8_Fs;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vd;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vs;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.ReflectionVBO;
+import yk.senjin.vbo.AVboTyped;
 
 import java.nio.ShortBuffer;
 
@@ -26,7 +26,7 @@ public class IKnowOpenGL_8_VBO extends SimpleLwjglRoutine {
     public Ikogl_8_Fs fs;
     public GProgram program;
 
-    ReflectionVBO vbo;
+    AVboTyped vbo;
     ShortBuffer indexBuffer;
 
     @Override public void onFirstPass() {
@@ -35,8 +35,7 @@ public class IKnowOpenGL_8_VBO extends SimpleLwjglRoutine {
         vs = new Ikogl_8_Vs();
         program = GProgram.initFrom("src/main/java/", vs, fs).runtimeReload();
 
-        vbo = new ReflectionVBO(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0)));
-        vbo.upload();
+        vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0)));
         indexBuffer = BufferUtils.createShortBuffer(3);
         indexBuffer.put(new short[]{0, 1, 2});
         indexBuffer.rewind();

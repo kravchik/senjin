@@ -1,6 +1,5 @@
 package yk.senjin.vbo;
 
-import org.lwjgl.BufferUtils;
 import yk.jcommon.collections.YList;
 import yk.jcommon.collections.YMap;
 import yk.jcommon.fastgeom.Vec2f;
@@ -17,48 +16,13 @@ import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL15.*;
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.collections.YHashMap.hm;
 
 /**
- * Created with IntelliJ IDEA.
- * User: yuri
- * Date: 09/06/15
- * Time: 20:30
- * //TODO get rid
+ * Created by Yuri Kravchik on 02.10.18.
  */
-public class ReflectionVBO implements Vbo {
-    public List data;
-    public ByteBuffer buffer;
-    public int bufferId = glGenBuffers();
-    public Class inputType;
-    public boolean dirty;
-
-    //GL_STATIC_DRAW
-    //GL_DYNAMIC_DRAW
-    //GL_STREAM_DRAW
-    public int usageType = GL_STATIC_DRAW;
-
-    public ReflectionVBO() {
-    }
-
-    public ReflectionVBO(Object... data) {
-        setData(al(data));
-    }
-
-    public ReflectionVBO(List data) {
-        setData(data);
-    }
-
-    public void setData(List vertices) {
-        inputType = vertices.get(0).getClass();
-        if (data == null || data.size() != vertices.size()) this.buffer = BufferUtils.createByteBuffer(getComplexTypeSize(inputType) * vertices.size());
-        data = vertices;
-        setData(vertices, buffer, inputType);
-        buffer.rewind();
-        dirty = true;
-    }
+public class TypeUtils {
+    private static final YMap<Class, Integer> type2size = hm();
 
     public static void setData(List vertices, ByteBuffer buffer, Class inputType) {
 
@@ -171,7 +135,6 @@ public class ReflectionVBO implements Vbo {
         }
     }
 
-    private static final YMap<Class, Integer> type2size = hm();
     public static int getComplexTypeSize(Class clazz) {
         if (clazz == StandardFragmentData.class || clazz == StandardVertexData.class || clazz == Object.class) return 0;
 
@@ -204,31 +167,5 @@ public class ReflectionVBO implements Vbo {
         if (c == short.class) return true;
         if (c == byte.class) return true;
         return false;
-    }
-
-    public ReflectionVBO upload() {
-        glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-        glBufferData(GL_ARRAY_BUFFER, buffer, usageType);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        dirty = false;
-        return this;
-    }
-
-    public void release() {
-        glDeleteBuffers(bufferId);
-    }
-
-    @Override public void enable() {
-        glBindBuffer(GL_ARRAY_BUFFER, bufferId);
-    }
-    @Override public void disable() {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
-    @Override public Class getInputType() {
-        return inputType;
-    }
-    @Override public void checkDirty() {
-        if (dirty) upload();
     }
 }

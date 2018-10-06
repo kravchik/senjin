@@ -4,14 +4,14 @@ import org.lwjgl.LWJGLException;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.DDDUtils;
-import yk.senjin.IndexBufferShort;
 import yk.senjin.Simple3DWatch;
 import yk.senjin.SomeTexture;
 import yk.senjin.examples.specular.SpecularF;
 import yk.senjin.examples.specular.SpecularV;
 import yk.senjin.examples.specular.SpecularVi;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.ReflectionVBO;
+import yk.senjin.vbo.AVboShortIndices;
+import yk.senjin.vbo.AVboTyped;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static yk.jcommon.collections.YArrayList.al;
@@ -29,9 +29,9 @@ public class WatchBlend extends Simple3DWatch {
     public SpecularV specularV;
     public GProgram specularProgram;
 
-    public ReflectionVBO vbo1;
+    public AVboTyped vbo1;
     public SomeTexture textureJfdi;
-    public IndexBufferShort indices;
+    public AVboShortIndices indices;
 
     public Blender1 blender;
 
@@ -51,13 +51,12 @@ public class WatchBlend extends Simple3DWatch {
         specularProgram = new GProgram(specularV, specularF);
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
-        vbo1 = new ReflectionVBO(
+        vbo1 = new AVboTyped(
                 new SpecularVi(new Vec3f(0, 0, 0),  new Vec3f(-1, -1, 1).normalized(), new Vec2f(0, 0)),
                 new SpecularVi(new Vec3f(10, 0, 0), new Vec3f( 1, -1, 1).normalized(), new Vec2f(1, 0)),
                 new SpecularVi(new Vec3f(10, 10, 0),new Vec3f( 1,  1, 1).normalized(), new Vec2f(1, 1)),
                 new SpecularVi(new Vec3f(0, 10, 0), new Vec3f(-1,  1, 1).normalized(), new Vec2f(0, 1)));
-        vbo1.upload();
-        indices = new IndexBufferShort(GL_TRIANGLES, al(0, 1, 2, 0, 2, 3));
+        indices = new AVboShortIndices(GL_TRIANGLES, al(0, 1, 2, 0, 2, 3));
 
         blender = new Blender1();
         blender.init();

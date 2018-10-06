@@ -7,7 +7,7 @@ import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.*;
 import yk.senjin.examples.ds.PoconuvVi;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.Vbo;
+import yk.senjin.vbo.AVboTyped;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -515,7 +515,7 @@ public class DDDUtils {//TODO extract to another lib
 
     //TODO rename
     //batchDraw? shaderDraw?
-    public static void cameraDraw(FrameBuffer fbo, GProgram shader1, Vbo vbo1, State indices, SomeTexture... textures) {
+    public static void cameraDraw(FrameBuffer fbo, GProgram shader1, AVboTyped vbo1, State indices, SomeTexture... textures) {
         fbo.beginRenderToFbo();
         for (int i = 0; i < textures.length; i++) textures[i].enable(i);
         shader1.setInput(vbo1);
@@ -526,7 +526,7 @@ public class DDDUtils {//TODO extract to another lib
         fbo.endRenderToFbo();
     }
 
-    public static void cameraDraw(GProgram shader1, Vbo vbo1, State indices, SomeTexture... textures) {
+    public static void cameraDraw(GProgram shader1, AVboTyped vbo1, State indices, SomeTexture... textures) {
         for (int i = 0; i < textures.length; i++) textures[i].enable(i);
         shader1.setInput(vbo1);
         shader1.enable();
@@ -535,7 +535,7 @@ public class DDDUtils {//TODO extract to another lib
         for (int i = textures.length-1; i >= 0; i--) textures[i].disable();
     }
 
-    public static void cameraDraw(GProgram shader1, Vbo vbo1, State indices, List<SomeTexture> textures) {
+    public static void cameraDraw(GProgram shader1, AVboTyped vbo1, State indices, List<SomeTexture> textures) {
         for (int i = 0; i < textures.size(); i++) textures.get(i).enable(i);
         shader1.setInput(vbo1);
         shader1.enable();

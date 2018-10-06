@@ -1,8 +1,12 @@
 package yk.senjin.vbo;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.Util;
 import yk.jcommon.collections.YList;
+
+import java.nio.ByteBuffer;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
@@ -27,6 +31,16 @@ public class AVboIntIndices extends AVboInt {
         bufferType = GL_ELEMENT_ARRAY_BUFFER;
     }
 
+    public AVboIntIndices(int primitiveType, List<Number> indices) {
+        super(indices.size());
+        this.primitiveType = primitiveType;
+        bufferType = GL_ELEMENT_ARRAY_BUFFER;
+        ByteBuffer bb = BufferUtils.createByteBuffer(elementSize * indices.size());
+        for (int i = 0, verticesSize = indices.size(); i < verticesSize; i++) bb.putInt(indices.get(i).intValue());
+        bb.rewind();
+        addChange(bb, 0).recreate = true;
+    }
+
     public void enable() {
         enable(elementsCount);
     }
@@ -37,7 +51,6 @@ public class AVboIntIndices extends AVboInt {
         checkDirty();
         GL11.glDrawElements(primitiveType, count, GL_UNSIGNED_INT, 0);//TODO signed?
         enabled = false;
-//        GL12.glDrawRangeElements(primitiveType, 0, indexBuffer.limit(), indexBuffer);
     }
 
     //TODO int[]

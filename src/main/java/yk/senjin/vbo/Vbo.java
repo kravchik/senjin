@@ -7,6 +7,5 @@ import yk.senjin.State;
  */
 public interface Vbo extends State {
     void enable();
-    Class getInputType();
     void checkDirty();
 }

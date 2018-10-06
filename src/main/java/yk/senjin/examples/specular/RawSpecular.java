@@ -8,7 +8,7 @@ import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.ReflectionVBO;
+import yk.senjin.vbo.AVboTyped;
 
 import java.nio.ShortBuffer;
 
@@ -40,12 +40,11 @@ public class RawSpecular {
         //texture
         SomeTexture texture = new SomeTexture(readImage("jfdi.png"));
         //data
-        ReflectionVBO vbo1 = new ReflectionVBO(
+        AVboTyped vbo1 = new AVboTyped(
                 new SpecularVi(v3(-5, -5, 0), v3(-1,-1, 1).normalized(), v2(0, 1)),
                 new SpecularVi(v3( 5, -5, 0), v3( 1,-1, 1).normalized(), v2(1, 1)),
                 new SpecularVi(v3( 5,  5, 0), v3( 1, 1, 1).normalized(), v2(1, 0)),
                 new SpecularVi(v3(-5,  5, 0), v3(-1, 1, 1).normalized(), v2(0, 0)));
-        vbo1.upload();
 
         ShortBuffer indexBuffer = BufferUtils.createShortBuffer(6);
         indexBuffer.put(new short[]{0, 2, 1, 0, 3, 2});

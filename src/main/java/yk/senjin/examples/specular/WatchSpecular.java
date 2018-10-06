@@ -7,7 +7,7 @@ import yk.senjin.DrawIndicesShort;
 import yk.senjin.Simple3DWatch;
 import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.GProgram;
-import yk.senjin.vbo.ReflectionVBO;
+import yk.senjin.vbo.AVboTyped;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static yk.jcommon.collections.YArrayList.al;
@@ -31,7 +31,7 @@ public class WatchSpecular extends Simple3DWatch {
 
     public SpecularV vs;
     public GProgram shader1;
-    public ReflectionVBO vbo1;
+    public AVboTyped vbo1;
     public SomeTexture texture;
     public DrawIndicesShort indices;
     public SpecularF fs;
@@ -42,7 +42,7 @@ public class WatchSpecular extends Simple3DWatch {
         vs = new SpecularV();
         shader1 = GProgram.initFromSrcMainJava(vs, fs).runtimeReload();
         texture = new SomeTexture(readImage("jfdi.png"));
-        vbo1 = new ReflectionVBO(
+        vbo1 = new AVboTyped(
                 new SpecularVi(new Vec3f(0, 0, 0),  new Vec3f(-1, -1, 1).normalized(), new Vec2f(0, 1)),
                 new SpecularVi(new Vec3f(10, 0, 0), new Vec3f( 1, -1, 1).normalized(), new Vec2f(1, 1)),
                 new SpecularVi(new Vec3f(10, 10, 0),new Vec3f( 1,  1, 1).normalized(), new Vec2f(1, 0)),
@@ -58,7 +58,6 @@ public class WatchSpecular extends Simple3DWatch {
         fs.shininess = 100;
 
         vs.lightDir = new Vec3f(1, 1, 1).normalized();
-        vbo1.upload();
         texture.enable(0);
 
         fs.txt.set(texture);

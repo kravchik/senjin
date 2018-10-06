@@ -1,7 +1,11 @@
 package yk.senjin.vbo;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import yk.jcommon.collections.YList;
+
+import java.nio.ByteBuffer;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
@@ -24,6 +28,16 @@ public class AVboShortIndices extends AVboShort {
         super(elementsCount);
         this.primitiveType = primitiveType;
         bufferType = GL_ELEMENT_ARRAY_BUFFER;
+    }
+
+    public AVboShortIndices(int primitiveType, List<Number> indices) {
+        super(indices.size());
+        this.primitiveType = primitiveType;
+        bufferType = GL_ELEMENT_ARRAY_BUFFER;
+        ByteBuffer bb = BufferUtils.createByteBuffer(elementSize * indices.size());
+        for (int i = 0, verticesSize = indices.size(); i < verticesSize; i++) bb.putShort(indices.get(i).shortValue());
+        bb.rewind();
+        addChange(bb, 0).recreate = true;
     }
 
 
