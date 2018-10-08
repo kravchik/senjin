@@ -8,16 +8,8 @@ Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-
 
 ### Simple examples:
 
-Texture
-```java
-    SomeTexture texture = new SomeTexture(image);
-    texture.enable(1);
-    ...
-    texture.disable();
-```
-
-Vertex shader
-```java
+Vertex shader (groovy)
+```groovy
 class AuiVS extends VertexShaderParent<Input, AuiFS.Input> {
     static class Input extends StandardVertexData {
         public Vec3f pos;
@@ -33,8 +25,8 @@ class AuiVS extends VertexShaderParent<Input, AuiFS.Input> {
 }
 ```
 
-Fragment shader
-```java
+Fragment shader (groovy)
+```groovy
 class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
     static class Input extends StandardFragmentData {
         public Vec4f color;
@@ -46,6 +38,15 @@ class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
     }
 }
 ```
+Texture
+```java
+    SomeTexture texture = new SomeTexture(image);
+    texture.enable(1);
+    ...
+    texture.disable();
+```
+
+AVbo
 
 Shader rendering
 
