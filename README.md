@@ -16,8 +16,35 @@ Texture
     texture.disable();
 ```
 
-Shader
+Vertex shader
 ```
+class AuiVS extends VertexShaderParent<Input, AuiFS.Input> {
+    static class Input extends StandardVertexData {
+        public Vec3f pos;
+        public Vec4f color;
+    }
+
+    public Matrix4 modelViewProjectionMatrix;
+
+    void main(Input i, AuiFS.Input o) {
+        o.gl_Position = modelViewProjectionMatrix * Vec4f(i.pos, 1)
+        o.color = i.color
+    }
+}
+```
+
+Fragment shader
+```
+class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
+    static class Input extends StandardFragmentData {
+        public Vec4f color;
+    }
+
+    @Override
+    void main(Input i, StandardFSOutput o) {
+        o.gl_FragColor = i.color;
+    }
+}
 ```
 
 
