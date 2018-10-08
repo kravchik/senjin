@@ -6,6 +6,9 @@
 
 Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-testing, refactorings and full IDE support.
 
+The whole engine is built, actually, as a big library. For example, in your project, you can use only the texture element or only VBO. They work fine together but not bound. Even shader - can be used alone.
+There is also examples of each element usage, each one no more than a few dozens of lines ([src/main/java/yk/senjin/examples/simple](https://github.com/kravchik/senjin/tree/master/src/main/java/yk/senjin/examples/simple)).
+
 ### Simple examples:
 
 *Vertex shader (groovy)*
@@ -41,7 +44,7 @@ class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
     }
 }
 ```
-*Texture*
+*Texture (can be used separately from shader and other systems)*
 ```java
     SomeTexture texture = new SomeTexture(image);
     texture.enable(1);
@@ -49,7 +52,7 @@ class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
     texture.disable();
 ```
 
-*AVbo*
+*VBO (Vertex Buffer Object) and Indices  (can be used separately from shader and other systems)*
 ```java
         vbo = new AVboTyped(
                 new Ikogl_8_Vd(v3(-w, -h, 0)), 
@@ -66,7 +69,11 @@ class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
 ```
 
 *Shader rendering*
+```
+```
 
+### Note on debugging and unit testing
+** TODO **
 
 ### Recent updates:
 
