@@ -41,7 +41,7 @@ class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
     }
 }
 ```
-Texture
+*Texture*
 ```java
     SomeTexture texture = new SomeTexture(image);
     texture.enable(1);
@@ -49,9 +49,23 @@ Texture
     texture.disable();
 ```
 
-AVbo
+*AVbo*
+```java
+        vbo = new AVboTyped(
+                new Ikogl_8_Vd(v3(-w, -h, 0)), 
+                new Ikogl_8_Vd(v3( w,  0, 0)), 
+                new Ikogl_8_Vd(v3( 0,  h, 0)));
+        indices = AVboShortIndices.simple(3, GL_TRIANGLES);
 
-Shader rendering
+        ...
+        vbo.enable();
+        indices.enable();
+        ...
+        vbo.disable();
+
+```
+
+*Shader rendering*
 
 
 ### Recent updates:
