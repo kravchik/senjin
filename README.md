@@ -11,16 +11,18 @@ Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-
 Vertex shader (groovy)
 ```groovy
 class AuiVS extends VertexShaderParent<Input, AuiFS.Input> {
-    static class Input extends StandardVertexData {
-        public Vec3f pos;
-        public Vec4f color;
-    }
 
     public Matrix4 modelViewProjectionMatrix;
 
+    @Override
     void main(Input i, AuiFS.Input o) {
         o.gl_Position = modelViewProjectionMatrix * Vec4f(i.pos, 1)
         o.color = i.color
+    }
+
+    static class Input extends StandardVertexData {
+        public Vec3f pos;
+        public Vec4f color;
     }
 }
 ```
@@ -28,13 +30,14 @@ class AuiVS extends VertexShaderParent<Input, AuiFS.Input> {
 Fragment shader (groovy)
 ```groovy
 class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
-    static class Input extends StandardFragmentData {
-        public Vec4f color;
-    }
 
     @Override
     void main(Input i, StandardFSOutput o) {
         o.gl_FragColor = i.color;
+    }
+
+    static class Input extends StandardFragmentData {
+        public Vec4f color;
     }
 }
 ```
