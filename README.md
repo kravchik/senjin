@@ -17,7 +17,7 @@ Texture
 ```
 
 Vertex shader
-```
+```java
 class AuiVS extends VertexShaderParent<Input, AuiFS.Input> {
     static class Input extends StandardVertexData {
         public Vec3f pos;
@@ -34,7 +34,7 @@ class AuiVS extends VertexShaderParent<Input, AuiFS.Input> {
 ```
 
 Fragment shader
-```
+```java
 class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
     static class Input extends StandardFragmentData {
         public Vec4f color;
@@ -47,7 +47,7 @@ class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
 }
 ```
 
-
+Shader rendering
 
 
 ### Recent updates:
