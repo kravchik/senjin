@@ -6,8 +6,19 @@
 
 Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-testing, refactorings and full IDE support.
 
-[Read more at Habrahabr.ru](http://habrahabr.ru/post/269591/)
+### Simple examples:
 
+Texture
+```java
+    SomeTexture texture = new SomeTexture(image);
+    texture.enable(1);
+    ...
+    texture.disable();
+```
+
+Shader
+```
+```
 
 
 
@@ -29,6 +40,7 @@ Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-
 + VS and FS can be used separately
 + IndexBufferInt
 
+[Read more at Habrahabr.ru](http://habrahabr.ru/post/269591/)
 
 ### mvn artifact
 ```xml
