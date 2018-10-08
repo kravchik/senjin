@@ -8,7 +8,7 @@ Write glsl shaders on Groovy and Java with debugging, syntax highlighting, unit-
 
 ### Simple examples:
 
-Vertex shader (groovy)
+*Vertex shader (groovy)*
 ```groovy
 class AuiVS extends VertexShaderParent<Input, AuiFS.Input> {
 
@@ -27,7 +27,7 @@ class AuiVS extends VertexShaderParent<Input, AuiFS.Input> {
 }
 ```
 
-Fragment shader (groovy)
+*Fragment shader (groovy)*
 ```groovy
 class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
 
