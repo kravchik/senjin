@@ -7,7 +7,7 @@ import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.Reflector;
-import yk.senjin.shaders.gshader.ShaderGenerator;
+import yk.senjin.shaders.gshader.ShaderTranslator;
 import yk.senjin.shaders.gshader.StandardFragmentData;
 import yk.senjin.shaders.gshader.StandardVertexData;
 
@@ -26,7 +26,7 @@ public class TypeUtils {
 
     public static void setData(List vertices, ByteBuffer buffer, Class inputType) {
 
-        YList<Field> fields = ShaderGenerator.getFieldsForData(inputType);
+        YList<Field> fields = ShaderTranslator.getFieldsForData(inputType);
         for (int i = 0, verticesSize = vertices.size(); i < verticesSize; i++) {
             Object vertex = vertices.get(i);
             if (vertex.getClass() != inputType) BadException.die("wrong input type: " + vertex + ", expected: " + inputType);

@@ -5,7 +5,6 @@ import org.lwjgl.opengl.Util;
 import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.FileWatcher2;
 import yk.jcommon.utils.IO;
-import yk.jcommon.utils.StopWatch;
 
 import java.io.File;
 
@@ -17,47 +16,53 @@ import static yk.senjin.shaders.ShaderHandler.*;
  * Date: 16/03/16
  * Time: 09:57
  */
-public class GShader {//TODO get rid
+public class GShader {
     public boolean singleOwner = true;
-    public ShaderGenerator generator;
+    public ShaderTranslator oldGenerator;
+    public ShaderTranslator generator;
     public int shaderIndex = -1;
 
     private FileWatcher2 fileWatcher;
-    private String srcDir;
+    private String gSrc;
 
-    public static GShader createShader(String srcDir, ShaderParent groovyShader, String shaderType) {
-        return createShader(srcDir, groovyShader, shaderType, true);
+    private final String srcDir;
+    private String srcPath;
+    private final String shaderType;
+    private final ShaderParent groovyShader;
+
+    public String inputSuffix;
+    public String outputSuffix;
+
+    public GShader(String srcDir, ShaderParent groovyShader, String shaderType) {
+        this.srcDir = srcDir.replace("/", File.separator);
+        this.shaderType = shaderType;
+        this.groovyShader = groovyShader;
+        loadSrc(groovyShader, this.srcDir);
     }
 
-    public static GShader createShader(String srcDir, ShaderParent groovyShader, String shaderType, boolean send) {
-        srcDir = srcDir.replace("/", File.separator);
-        String path1 = groovyShader.getClass().getName();
-        String resultPath = srcDir + path1.replace(".", "/") + ".groovy";
-        String gSrc;
-        if (!new File(resultPath).exists()) {
-            System.out.println("src file not found (" + resultPath + ") getting shader src from resource");
-            resultPath = path1.replace(".", "/") + ".groovy";
-            gSrc = IO.streamToString(groovyShader.getClass().getResourceAsStream("/" + resultPath));
+    public void translate() {
+        generator = new ShaderTranslator(gSrc, srcPath, groovyShader, shaderType, inputSuffix, outputSuffix);
+        oldGenerator = generator;
+        sendShaderToCard();
+    }
+
+    private void loadSrc(ShaderParent groovyShader, String path) {
+        String fileName = groovyShader.getClass().getName();
+        srcPath = path + fileName.replace(".", "/") + ".groovy";
+        if (!new File(this.srcPath).exists()) {
+            System.out.println("src file not found (" + this.srcPath + ") getting shader src from resource");
+            this.srcPath = fileName.replace(".", "/") + ".groovy";
+            gSrc = IO.streamToString(groovyShader.getClass().getResourceAsStream("/" + this.srcPath));
         } else {
-            gSrc = IO.readFile(resultPath);
+            gSrc = IO.readFile(this.srcPath);
         }
-
-        GShader result = new GShader();
-        result.srcDir = srcDir;
-
-        StopWatch sw = new StopWatch();
-        result.generator = new ShaderGenerator(gSrc, resultPath, groovyShader, shaderType);
-//        System.out.println(result.generator.resultSrc);
-        sw = new StopWatch();
-        if (send) result.sendShaderToCard();
-        return result;
     }
 
     public GShader runtimeReload() {
         if (fileWatcher != null) BadException.die("already watching");
-        fileWatcher = new FileWatcher2(generator.srcPath);
+        fileWatcher = new FileWatcher2(srcPath);
         if (!fileWatcher.exists) {
-            System.out.println("WARNING: runtime reload is requested, but shader src is currently not exists (reloading could not be possible) " + generator.srcPath);
+            System.out.println("WARNING: runtime reload is enabled, but shader src is currently not exists (reloading could not be possible) " + srcPath);
         }
         return this;
     }
@@ -65,13 +70,19 @@ public class GShader {//TODO get rid
     public void tick() {
         boolean changed = fileWatcher != null && fileWatcher.isJustChanged();
         if (changed) {
-            System.out.println("Shader file changed: " + generator.srcPath);
+            System.out.println("Shader file changed: " + srcPath);
             GShader newShader;
             try {
-                newShader = createShader(srcDir, generator.shaderGroovy, generator.shaderType);
-                newShader.sendShaderToCard();
+                newShader = new GShader(srcDir, generator.shaderGroovy, generator.shaderType);
+                newShader.inputSuffix = this.inputSuffix;
+                newShader.outputSuffix = this.outputSuffix;
+                newShader.translate();
             } catch (Exception e) {
-                System.out.println("error while shader reloading");
+                if (e.getMessage().contains("Error parsing")) {
+                    System.out.println("Error parsing shader, not reloaded");
+                } else {
+                    e.printStackTrace();
+                }
                 return;
             }
             generator = newShader.generator;
@@ -84,14 +95,19 @@ public class GShader {//TODO get rid
 
     /**<br><br><b>Don't forget to remove shader after programs compilation*/
     public void sendShaderToCard() {
+        //System.out.println("Sending: ");
+        //System.out.println(generator.resultSrc);
+
         if (generator.shaderType.equals("vs")) shaderIndex = createVertexShader(stringToBuffer(generator.resultSrc));
         else if (generator.shaderType.equals("fs")) shaderIndex = createFragmentShader(stringToBuffer(generator.resultSrc));
+        else if (generator.shaderType.equals("gs")) shaderIndex = createGeometryShader(stringToBuffer(generator.resultSrc));
         else BadException.die("unknown shader type: " + generator.shaderType);
 //        printLogInfo(shaderIndex);
         Util.checkGLError();
     }
 
     public void removeShaderFromCard() {
+        if (shaderIndex == -1) throw BadException.shouldNeverReachHere();
         GL20.glDeleteShader(shaderIndex);
         shaderIndex = -1;
         Util.checkGLError();

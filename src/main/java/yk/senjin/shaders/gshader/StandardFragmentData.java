@@ -12,10 +12,13 @@ public class StandardFragmentData {
 
     public Vec4f gl_Position;
     public Vec4f gl_FragCoord;
-    @Deprecated //gl_FrontColor is deprecated after version 120
-    public Vec4f gl_FrontColor;
-    //for reading in fragment shader only
-    public Vec4f gl_Color;
     public boolean gl_FrontFacing;
+
+    @Deprecated //gl_FrontColor, gl_Color is deprecated after version 120, use your own varying
+    public Vec4f gl_FrontColor;
+    public Vec4f gl_BackColor;
+    //for reading in FS, calculated based on gl_FrontColor, gl_BackColor, gl_FrontFacing
+    //TODO understand, is writing it in VS, overrides its default calculation?
+    public Vec4f gl_Color;
 
 }

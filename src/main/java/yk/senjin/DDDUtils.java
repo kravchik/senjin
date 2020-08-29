@@ -526,12 +526,12 @@ public class DDDUtils {//TODO extract to another lib
         fbo.endRenderToFbo();
     }
 
-    public static void cameraDraw(GProgram shader1, AVboTyped vbo1, State indices, SomeTexture... textures) {
+    public static void cameraDraw(GProgram program, AVboTyped vbo, State indices, SomeTexture... textures) {
         for (int i = 0; i < textures.length; i++) textures[i].enable(i);
-        shader1.setInput(vbo1);
-        shader1.enable();
+        program.setInput(vbo);
+        program.enable();
         indices.enable();
-        shader1.disable();
+        program.disable();
         for (int i = textures.length-1; i >= 0; i--) textures[i].disable();
     }
 

@@ -3,13 +3,16 @@ package yk.senjin.shaders.arraystructure;
 import org.lwjgl.opengl.GL20;
 
 /**
+ * Describes vertex data inside VBO buffer for the specific shader (index - is shader specific)
+ *
  * Created by: Yuri Kravchik Date: 2/11/2007 Time: 10:18:06
  */
 public class VBOVertexAttrib extends StrideOffset {
     /**
-     * Index of the attribute from the point of view of the shader
+     * Index of this attribute inside a specific shader (SHADER SPECIFIC DATA!)
      */
     protected int index;
+    
     /**
      * Specifies the number of components per attribute and must be 1, 2, 3, or
      * 4.

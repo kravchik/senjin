@@ -1,7 +1,10 @@
 package yk.senjin.shaders;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.ARBShaderObjects;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.Util;
 import yk.jcommon.utils.BadException;
 import yk.senjin.AbstractState;
 import yk.senjin.shaders.uniforms.UniformVariable;
@@ -13,7 +16,8 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL20.glCreateShader;
+import static yk.jcommon.utils.BadException.shouldNeverReachHere;
 
 /**
  * Created by: Yuri Kravchik Date: 2/11/2007 Time: 11:29:31
@@ -21,7 +25,8 @@ import static org.lwjgl.opengl.GL20.*;
 public class ShaderHandler extends AbstractState {
     public static ShaderHandler currentShader;
 
-    public int program;
+    private boolean isLinked;
+    public int program = -1;
     public final List<UniformVariable> uniforms = new ArrayList<>();
     public final Map<String, VertexAttrib> vertexAttribs = new HashMap<>();
     public String geometryShaderString;
@@ -94,29 +99,24 @@ public class ShaderHandler extends AbstractState {
         Util.checkGLError();
     }
 
-    public static int createFragmentShader(final ByteBuffer program) {
-        final int fs = glCreateShader(GL20.GL_FRAGMENT_SHADER);
-        GL20.glShaderSource(fs, program);
-        GL20.glCompileShader(fs);
-        printLogInfo(fs);
-        return fs;
+    private static int createShader(ByteBuffer src, int shaderType) {
+        final int shaderIndex = glCreateShader(shaderType);
+        GL20.glShaderSource(shaderIndex, src);
+        GL20.glCompileShader(shaderIndex);
+        printLogInfo(shaderIndex);
+        return shaderIndex;
     }
 
-    public static int createVertexShader(final ByteBuffer program) {
-        final int vs = ARBShaderObjects.glCreateShaderObjectARB(ARBVertexShader.GL_VERTEX_SHADER_ARB);
-        ARBShaderObjects.glShaderSourceARB(vs, program);
-        ARBShaderObjects.glCompileShaderARB(vs);
-        printLogInfo(vs);
-        return vs;
+    public static int createFragmentShader(final ByteBuffer src) {
+        return createShader(src, GL20.GL_FRAGMENT_SHADER);
     }
 
-    public static int createGeometryShader(final ByteBuffer program) {
-        int vs = glCreateShader(ARBGeometryShader4.GL_GEOMETRY_SHADER_ARB);
-        if (vs == 0) BadException.die("0");
-        glShaderSource(vs, program);
-        glCompileShader(vs);
-        printLogInfo(vs);
-        return vs;
+    public static int createVertexShader(final ByteBuffer src) {
+        return createShader(src, GL20.GL_VERTEX_SHADER);
+    }
+
+    public static int createGeometryShader(final ByteBuffer src) {
+        return createShader(src, GL32.GL_GEOMETRY_SHADER);
     }
 
     public static ByteBuffer getBufferedString(final String s) {
@@ -202,31 +202,27 @@ public class ShaderHandler extends AbstractState {
         initVariables();
     }
 
-    public void createFromIndices(int vIndex, int fIndex) {
-        //if (vIndex == -1) BadException.shouldNeverReachHere();
-        //if (fIndex == -1) BadException.shouldNeverReachHere();
+    public void createProgram() {
+        if (isLinked) throw shouldNeverReachHere();
+        if (program != -1) throw shouldNeverReachHere();
         program = GL20.glCreateProgram();
         Util.checkGLError();
-//        printLogInfo(program);
+    }
 
-        if (geometryShaderString != null) {
-            int gshader = createGeometryShader(stringToBuffer(geometryShaderString));
-            GL20.glAttachShader(program, gshader);
-            GL20.glDeleteShader(gshader);
-        }
-
+    public void attachShader(int index) {
+        if (isLinked) throw shouldNeverReachHere();
+        if (program == -1) throw shouldNeverReachHere();
+        GL20.glAttachShader(program, index);
         Util.checkGLError();
-        if (vIndex != -1) {
-            GL20.glAttachShader(program, vIndex);
-            Util.checkGLError();
-        }
-        if (fIndex != -1) {
-            GL20.glAttachShader(program, fIndex);
-            Util.checkGLError();
-        }
+    }
+
+    public void linkProgram() {
+        if (isLinked) throw shouldNeverReachHere();
+        if (program == -1) throw shouldNeverReachHere();
         GL20.glLinkProgram(program);
         printLogInfo(program);
         initVariables();
+        isLinked = true;
     }
 
     public static ByteBuffer stringToBuffer(String vsrc) {

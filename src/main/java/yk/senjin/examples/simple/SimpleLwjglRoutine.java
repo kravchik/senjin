@@ -6,15 +6,14 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.opengl.Util;
-import yk.jcommon.utils.Threads;
 
 import static org.lwjgl.opengl.GL11.*;
+import static yk.jcommon.utils.Threads.sleep;
 
 /**
  * Created by Yuri Kravchik on 16.11.17.
  */
 public class SimpleLwjglRoutine {
-    private boolean firstPass = true;
     public int w = 600;
     public int h = 600;
     public boolean stopRenderThread;
@@ -24,19 +23,24 @@ public class SimpleLwjglRoutine {
     }
 
     public void main() {
-        Threads.tick(new Threads.Tickable() {
-            @Override
-            public void tick(float dt) throws Exception {
-                if (firstPass) onFirstPass();
-                firstPass = false;
-                onTick(dt);
-                exit = stopRenderThread;
+        new Thread(() -> {
+            onFirstPass();
+            long lastTick = System.currentTimeMillis();
+            while (!stopRenderThread) {
+                long curTime = System.currentTimeMillis();
+                try {
+                    onTick((curTime - lastTick) / 1000f);
+                    lastTick = curTime;
+                    sleep(10);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }, 1);
+        }).start();
     }
 
     public void onFirstPass() {
-        //create at first pass, must be thread local
+        //create at first pass, must be thread local!
         try {
             Display.setDisplayMode(new DisplayMode(w, h));
             Display.create(new PixelFormat());

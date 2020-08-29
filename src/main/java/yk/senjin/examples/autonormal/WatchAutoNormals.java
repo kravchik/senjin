@@ -1,7 +1,5 @@
 package yk.senjin.examples.autonormal;
 
-import yk.jcommon.utils.IO;
-import yk.senjin.DDDUtils;
 import yk.senjin.DrawIndicesShort;
 import yk.senjin.LoadTickUnload;
 import yk.senjin.WatchReloadable;
@@ -25,19 +23,18 @@ public class WatchAutoNormals implements LoadTickUnload<WatchReloadable> {
         new WatchReloadable(new WatchAutoNormals());
     }
 
-    GProgram<AutoV, AutoF> shader;
+    GProgram<AutoV, AutoF> shader = new GProgram<>();
     AVboTyped vbo;
     DrawIndicesShort indices;
-
-
-
 
     @Override
     public void onLoad(WatchReloadable watch) {
         System.out.println(glGetString(GL_VERSION));
-        shader = new GProgram<>();
-        shader.geometryShaderString = IO.readFile("src/main/java/yk/senjin/examples/autonormal/geo.shader");
-        shader.init(new AutoV(), new AutoF());
+
+        shader.addShader(new AutoV());
+        shader.addShader(new AutoG());
+        shader.addShader(new AutoF());
+        shader.link();
 
         vbo = new AVboTyped(al(
                 new Poco(v3(0, 0, 0),  v4(0, 0, 0, 0)),
@@ -55,7 +52,10 @@ public class WatchAutoNormals implements LoadTickUnload<WatchReloadable> {
         shader.vs.modelViewProjectionMatrix = watch.camModelViewProjectionMatrix;
         shader.vs.modelViewMatrix = watch.camModelViewMatrix;
         shader.vs.normalMatrix = watch.camNormalMatrix.get33();
-        DDDUtils.cameraDraw(shader, vbo, indices);
+        shader.setInput(vbo);
+        shader.enable();
+        indices.enable();
+        shader.disable();
     }
 
     @Override

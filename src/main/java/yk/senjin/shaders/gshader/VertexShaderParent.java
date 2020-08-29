@@ -6,6 +6,6 @@ package yk.senjin.shaders.gshader;
  * Date: 22/10/15
  * Time: 21:11
  */
-abstract public class VertexShaderParent<I, O> extends ShaderParent {
+abstract public class VertexShaderParent<I, O extends StandardFragmentData> extends ShaderParent {
     abstract public void main(I i, O o);
 }

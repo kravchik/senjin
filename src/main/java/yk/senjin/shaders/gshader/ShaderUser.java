@@ -4,14 +4,14 @@ import org.lwjgl.opengl.GL20;
 import yk.jcommon.collections.YList;
 import yk.jcommon.utils.BadException;
 import yk.senjin.AbstractState;
-import yk.senjin.shaders.ShaderHandler;
+import yk.senjin.shaders.ShaderHandler2;
 import yk.senjin.shaders.arraystructure.AbstractArrayStructure;
 import yk.senjin.shaders.uniforms.*;
 
 import static yk.jcommon.collections.YArrayList.al;
 
 abstract public class ShaderUser<V extends VertexShaderParent, F extends FragmentShaderParent> extends AbstractState {
-    private ShaderHandler oldShaderHandler;
+    private ShaderHandler2 oldShaderHandler;
     private GProgram<V, F> program;
 
     YList<Sampler2D> samplers;
@@ -26,7 +26,7 @@ abstract public class ShaderUser<V extends VertexShaderParent, F extends Fragmen
 
     public ShaderUser(GProgram<V, F> program, Class inputType) {
         this.program = program;
-        currentStructure = program.getShaderSpecificStructure(inputType);
+        currentStructure = program.getShaderSpecificStructure(inputType, null);
         this.inputType = inputType;
         //this.vbo = vbo;
         initUniformsCopy();

@@ -18,8 +18,8 @@ import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.collections.YHashMap.hm;
 import static yk.jcommon.match2.MatcherShortNames.p;
 import static yk.jcommon.match2.MatcherShortNames.var;
-import static yk.senjin.shaders.gshader.ShaderGenerator.isPrimitive;
-import static yk.senjin.shaders.gshader.ShaderGenerator.translateType;
+import static yk.senjin.shaders.gshader.ShaderTranslator.isPrimitive;
+import static yk.senjin.shaders.gshader.ShaderTranslator.translateType;
 
 /**
  * Created with IntelliJ IDEA.

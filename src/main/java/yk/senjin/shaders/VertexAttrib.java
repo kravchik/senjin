@@ -8,13 +8,13 @@ package yk.senjin.shaders;
 import org.lwjgl.opengl.GL20;
 
 /**
- * VertexAttrib
+ * VertexAttrib - describes vertex data inside shader (index (more like an ID), type, size, name)s
  *
  * @author Yuri Kravchik Created 16.05.2008
  */
 public class VertexAttrib {
     /**
-     * Specifies the index of the generic vertex attribute to be modified.
+     * Specifies the index of this data in this shader
      */
     private int index;
     /**
