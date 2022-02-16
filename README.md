@@ -77,6 +77,9 @@ class AuiFS extends FragmentShaderParent<Input, StandardFSOutput> {
 *Shader rendering*
 ```
 ```
+               
+### no lwjgl64 in java.library.path
+In order for native libs to become visible, you should either include native_libs directory in your IDE as a native library dependency, or define -Dorg.lwjgl.librarypath, or define -Djava.library.path.
 
 ### Note on debugging and unit testing
 ** TODO **
