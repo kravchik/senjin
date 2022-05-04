@@ -28,7 +28,6 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 public class SomeTexture extends AbstractState {
     //texture parameters: https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glTexParameter.xml
 
-
     public boolean enabled;
     public int textureGlSlot = -1;//GL_TEXTURE0, 1, ...
     public int textureSlot = -1;//0, 1, ... - map from textureGlSlot to normal numbers
@@ -130,12 +129,13 @@ public class SomeTexture extends AbstractState {
         glBindTexture(GL11.GL_TEXTURE_2D, 0);
     }
 
+    //TODO test which method is faster and recommend it
     public static ByteBuffer convertToGL(final BufferedImage image) {
         switch (image.getType()) {
             case BufferedImage.TYPE_INT_ARGB: return convertToGl_TYPE_TYPE_INT_ARGB(image);
             case BufferedImage.TYPE_3BYTE_BGR: return convertToGl_TYPE_3BYTE_BGR(image);
         }
-        return convertToGLUnoptimized(image);
+        throw BadException.die("Unsupported image.getType(): " + image.getType() + ", use convertToGLUnoptimized(image) or convert image offline");
     }
 
     public static ByteBuffer convertToGl_TYPE_3BYTE_BGR(BufferedImage image) {
@@ -151,6 +151,7 @@ public class SomeTexture extends AbstractState {
         return result;
     }
 
+    //TODO test if byte[] imBuffer will be faster
     public static ByteBuffer convertToGl_TYPE_TYPE_INT_ARGB(BufferedImage image) {
         int[] imBuffer = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
         ByteBuffer result = BufferUtils.createByteBuffer(imBuffer.length * 4);

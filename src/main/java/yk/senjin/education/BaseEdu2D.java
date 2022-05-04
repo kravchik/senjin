@@ -20,7 +20,7 @@ import static yk.jcommon.utils.Util.sqr;
 public class BaseEdu2D implements LoadTickUnload<Viewer> {
     private Rnd rnd = new Rnd();
     private Vec3d currentColor = new Vec3d(1, 1, 1);
-    private Graphics2D g;
+    public Graphics2D g;
     private int bufferWidth;
     private int bufferHeight;
 

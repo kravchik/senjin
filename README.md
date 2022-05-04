@@ -86,6 +86,9 @@ In order for native libs to become visible, you should either include native_lib
 
 ## Recent updates:
 
+0.15
+* removed some GProgram redundant init methods
+
 10.18
 + AVbo, AVboTyped, AVbo indices
 + ARGB conversion and other SomeTexture improvements

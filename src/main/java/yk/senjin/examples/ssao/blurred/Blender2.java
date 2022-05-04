@@ -37,7 +37,7 @@ public class Blender2 {
     }
 
     public void init() {
-        blendProgram = new GProgram<>(new BlendV(), new MonoBlenderF()).runtimeReload();
+        blendProgram = new GProgram<>(new BlendV(), new MonoBlenderF()).link().runtimeReload();
         blendProgram.vs.modelViewProjectionMatrix = Matrix4.identity();
         //blendProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, -1, 1, 1, -1);
         fbo1 = new FrameBuffer();

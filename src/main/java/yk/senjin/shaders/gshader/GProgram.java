@@ -77,25 +77,15 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     }
 
     public GProgram(ShaderParent vs, ShaderParent fs) {
-        init(vs, fs);
+        this(SRC_MAIN_JAVA, vs, fs);
     }
 
     public GProgram(String srcDir, ShaderParent vs, ShaderParent fs) {
-        init(srcDir, vs, fs);
+        pvs = new GShader(srcDir, this.vs = (V) vs, "vs");
+        pfs = new GShader(srcDir, this.fs = (F) fs, "fs");
     }
 
     public GProgram() {
-    }
-
-    public GProgram<V, F> init(ShaderParent vs, ShaderParent fs) {
-        init(SRC_MAIN_JAVA, vs, fs);
-        return this;
-    }
-
-    public GProgram<V, F> init(String srcDir, ShaderParent vs, ShaderParent fs) {
-        pvs = new GShader(srcDir, this.vs = (V) vs, "vs");
-        pfs = new GShader(srcDir, this.fs = (F) fs, "fs");
-        return this;
     }
 
     public GProgram<V, F> addFragmentShader(FragmentShaderParent fs) {
@@ -138,6 +128,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
     }
 
     public GProgram<V, F> link() {
+        if (shaderState != null) throw new RuntimeException("Can't link already linked");
         String suffix = "";
         if (pvs != null) {
             pvs.inputSuffix = suffix;
@@ -160,18 +151,6 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
         if (pfs != null) pfs.translate();
 
         asserts();
-        shaderState = newShaderProgram();
-        return this;
-    }
-
-    public GProgram<V, F> init(GShader pvs, GShader pfs) {
-        this.pvs = pvs;
-        this.pfs = pfs;
-        asserts();
-
-        this.vs = (V) pvs.generator.shaderGroovy;
-        this.fs = (F) pfs.generator.shaderGroovy;
-
         shaderState = newShaderProgram();
         return this;
     }

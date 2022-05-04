@@ -49,10 +49,10 @@ public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
 
     @Override
     public void onLoad(WatchReloadable watch) {
-        defDataProgram = new GProgram<>(new PoconuvV(), new DeferredDataF()).runtimeReload();
-        ssaoProgram = new GProgram<>(new PosuvV(), new DeferredShadeSsao2()).runtimeReload();
+        defDataProgram = new GProgram<>(new PoconuvV(), new DeferredDataF()).link().runtimeReload();
+        ssaoProgram = new GProgram<>(new PosuvV(), new DeferredShadeSsao2()).link().runtimeReload();
         ssaoProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, -1, 1, 1, -1);
-        finalProgram = new GProgram<>(new PosuvV(), new DefShaderFinal()).runtimeReload();
+        finalProgram = new GProgram<>(new PosuvV(), new DefShaderFinal()).link().runtimeReload();
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
 

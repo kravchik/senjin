@@ -55,15 +55,15 @@ public class Orderer {
                 List<YList<String>> result = al();
                 YSet<String> candidates = all.keySet().filter(m -> !node.state.contains(m)
                         && all.containsKey(m)
-                        && !node.state.any(added -> caller2callee.getOr(m, hs()).contains(added))
-                        && (m.equals(start) || node.state.any(ordered -> caller2callee.containsKey(ordered) && caller2callee.get(ordered).contains(m))));
+                        && !node.state.isAny(added -> caller2callee.getOr(m, hs()).contains(added))
+                        && (m.equals(start) || node.state.isAny(ordered -> caller2callee.containsKey(ordered) && caller2callee.get(ordered).contains(m))));
                 result.addAll(candidates.map(c -> node.state.with(c)));
                 return result;
             }
 
             @Override
             public boolean isSolution(Node<YList<String>> node) {
-                for (YSet<String> callee : caller2callee.values()) if (callee.any(c -> all.containsKey(c) && !node.state.contains(c))) return false;
+                for (YSet<String> callee : caller2callee.values()) if (callee.isAny(c -> all.containsKey(c) && !node.state.contains(c))) return false;
                 return true;
             }
         };
