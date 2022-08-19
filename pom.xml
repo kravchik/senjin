@@ -143,16 +143,17 @@
             <version>4.13.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>yk</groupId>
-            <artifactId>jcommon</artifactId>
-            <version>0.123</version>
-        </dependency>
+<!--        included via yincubator-->
+<!--        <dependency>-->
+<!--            <groupId>yk</groupId>-->
+<!--            <artifactId>jcommon</artifactId>-->
+<!--            <version>0.124-SNAPSHOT</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>yk</groupId>
             <artifactId>yincubator</artifactId>
-            <version>0.03</version>
+            <version>0.04-SNAPSHOT</version>
         </dependency>
 
         <dependency>

@@ -140,6 +140,8 @@ public class ShaderTranslator {
         if (outputClass != StandardFragmentData.class) for (Field fn : outputClass.getDeclaredFields()) {
             if (Modifier.isStatic(fn.getModifiers())) continue;
             if (Modifier.isTransient(fn.getModifiers())) continue;
+            if (fn.getName().equals("gl_FragColor")) continue;
+            if (fn.getName().equals("gl_FragDepth")) continue;
             if (glNames.contains(fn.getName())) throw new Error("clash with gl names: " + fn.getName() + " in output data for " + shaderType);
             String type = translateType(fn.getType().getName());
             //if ("fs".equals(shaderType)) {

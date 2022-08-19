@@ -77,7 +77,7 @@ public class Blender2 {
 //        blendF.direction = new Vec2f(0f, 1f/size);
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
         blendProgram.enable();
-        FrameBuffer.renderFBO(w, h);
+        FrameBuffer.renderTexture0(w, h);
         blendProgram.disable();
         fbo2.textures.car().disable();
     }
@@ -96,7 +96,7 @@ public class Blender2 {
         blendProgram.fs.direction = new Vec2f(0f, 1f/size);
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
         blendProgram.enable();
-        FrameBuffer.renderFBO(size, size);
+        FrameBuffer.renderTexture0(size, size);
         blendProgram.disable();
         fbo2.textures.car().disable();
         endRenderToFbo1();
@@ -112,7 +112,7 @@ public class Blender2 {
         blendProgram.fs.direction = new Vec2f(1f/size, 0f);
 //        cameraDraw(fbo2, blendProgram, ???, ???, fbo1.texture);
         blendProgram.enable();
-        FrameBuffer.renderFBO(size, size);
+        FrameBuffer.renderTexture0(size, size);
         blendProgram.disable();
         fbo1.textures.car().disable();
         fbo2.endRenderToFbo();

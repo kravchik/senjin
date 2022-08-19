@@ -60,8 +60,9 @@ public class AVboTyped extends AVbo {
     public void reloadRecount(ByteBuffer data, int newCount) {
         int capacity = data.capacity();
         if (capacity % elementSize != 0) BadException.die("wrong buffer size " + capacity + " for element size " + elementSize);
-        if (newCount * elementSize < capacity) BadException.die("wrong buffer size " + capacity + " for elements count " + newCount);
-        size = newCount * elementSize;
+        int newSize = newCount * elementSize;
+        if (newSize < capacity) BadException.die("wrong provided buffer size " + capacity + " for new size " + newSize);
+        size = newSize;
         this.elementsCount = newCount;
         reload(data);
     }

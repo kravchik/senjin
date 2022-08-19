@@ -2,7 +2,6 @@ package yk.senjin.shaders.gshader;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.Util;
 import yk.jcommon.collections.YList;
 import yk.jcommon.collections.YMap;
 import yk.jcommon.collections.YSet;
@@ -276,9 +275,7 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
         shaderState.enable();
         if (currentVBO != null) {//because we can use built in vertex attributes
             currentVBO.enable();
-            Util.checkGLError();
             for (int i = 0; i < currentStructure.size(); i++) currentStructure.get(i).turnOn();
-            Util.checkGLError();
         }
     }
 

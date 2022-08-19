@@ -79,6 +79,7 @@ public class SomeTexture extends AbstractState {
         GL11.glGenTextures(texNames);
         textureObjectId = texNames.get(0);
         glBindTexture(GL_TEXTURE_2D, textureObjectId);
+        //null means reserve texture memory, but texels are undefined
         glTexImage2D(GL_TEXTURE_2D, 0, internalformat, width, height, 0, pixelDataFormat, pixelDataType, (java.nio.ByteBuffer)null);
         glBindTexture(GL11.GL_TEXTURE_2D, 0);
         return this;
@@ -134,6 +135,7 @@ public class SomeTexture extends AbstractState {
         switch (image.getType()) {
             case BufferedImage.TYPE_INT_ARGB: return convertToGl_TYPE_TYPE_INT_ARGB(image);
             case BufferedImage.TYPE_3BYTE_BGR: return convertToGl_TYPE_3BYTE_BGR(image);
+            case BufferedImage.TYPE_4BYTE_ABGR: return convertToGl_TYPE_4BYTE_ABGR(image);
         }
         throw BadException.die("Unsupported image.getType(): " + image.getType() + ", use convertToGLUnoptimized(image) or convert image offline");
     }
@@ -146,6 +148,19 @@ public class SomeTexture extends AbstractState {
             result.put(imBuffer[i + 1]);
             result.put(imBuffer[i]);
             result.put((byte) 0xFF);
+        }
+        result.rewind();
+        return result;
+    }
+
+    public static ByteBuffer convertToGl_TYPE_4BYTE_ABGR(BufferedImage image) {
+        ByteBuffer result = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
+        byte[] imBuffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        for (int i = 0; i < imBuffer.length; i += 4) {
+            result.put(imBuffer[i + 3]);
+            result.put(imBuffer[i + 2]);
+            result.put(imBuffer[i + 1]);
+            result.put(imBuffer[i]);
         }
         result.rewind();
         return result;
@@ -231,9 +246,7 @@ public class SomeTexture extends AbstractState {
 
     @Override
     public void release() {
-        IntBuffer ib = BufferUtils.createIntBuffer(1);
-        ib.put(0, textureObjectId);
-        glDeleteTextures(ib);
+        glDeleteTextures(textureObjectId);
     }
 
     public void setSlot(int slot) {

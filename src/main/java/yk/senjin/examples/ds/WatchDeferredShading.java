@@ -50,12 +50,12 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
     public void onLoad(WatchReloadable watch) {
         specularF = new DeferredDataF();
         specularV = new PoconuvV();
-        specularProgram = new GProgram(specularV, specularF).runtimeReload();
+        specularProgram = new GProgram(specularV, specularF).link().runtimeReload();
 
         hdrF = new DeferredShadeF();
         hdrV = new PosuvV();
         hdrV.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
-        hdrProgram = new GProgram(hdrV, hdrF).runtimeReload();
+        hdrProgram = new GProgram(hdrV, hdrF).link().runtimeReload();
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new AVboTyped(
@@ -107,7 +107,7 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
         hdrV.modelViewProjectionMatrix = Matrix4.identity();
         hdrProgram.enable();
-        FrameBuffer.renderFBO(watch.w, watch.h);
+        FrameBuffer.renderTexture0(watch.w, watch.h);
         hdrProgram.disable();
         fbo1.textures.get(2).disable();
         fbo1.textures.get(1).disable();

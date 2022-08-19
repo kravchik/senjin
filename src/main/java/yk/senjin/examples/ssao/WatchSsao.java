@@ -128,7 +128,7 @@ public class WatchSsao implements LoadTickUnload<WatchReloadable> {
 
         ssaoProgram.vs.modelViewProjectionMatrix = Matrix4.identity();
         ssaoProgram.enable();
-        FrameBuffer.renderFBO(watch.w, watch.h);
+        FrameBuffer.renderTexture0(watch.w, watch.h);
         ssaoProgram.disable();
         fbo1.textures.get(2).disable();
         fbo1.textures.get(1).disable();

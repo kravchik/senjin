@@ -114,7 +114,7 @@ public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
         ssaoProgram.vs.modelViewProjectionMatrix = Matrix4.identity();
 
         ssaoProgram.enable();
-        FrameBuffer.renderFBO(blender.size, blender.size);
+        FrameBuffer.renderTexture0(blender.size, blender.size);
         ssaoProgram.disable();
 
         dataFrame.textures.get(2).disable();
@@ -159,7 +159,7 @@ public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
         finalProgram.vs.modelViewProjectionMatrix = Matrix4.identity();
 
         finalProgram.enable();
-        FrameBuffer.renderFBO(watch.w, watch.h);
+        FrameBuffer.renderTexture0(watch.w, watch.h);
         finalProgram.disable();
 
         blender.fbo1.textures.car().disable();

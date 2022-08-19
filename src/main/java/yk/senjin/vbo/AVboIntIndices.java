@@ -41,6 +41,16 @@ public class AVboIntIndices extends AVboInt {
         addChange(bb, 0).recreate = true;
     }
 
+    public AVboIntIndices(int primitiveType, int[] indices) {
+        super(indices.length);
+        this.primitiveType = primitiveType;
+        bufferType = GL_ELEMENT_ARRAY_BUFFER;
+        ByteBuffer bb = BufferUtils.createByteBuffer(elementSize * indices.length);
+        for (int i = 0, verticesSize = indices.length; i < verticesSize; i++) bb.putInt(indices[i]);
+        bb.rewind();
+        addChange(bb, 0).recreate = true;
+    }
+
     public void enable() {
         enable(elementsCount);
     }

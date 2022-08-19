@@ -6,7 +6,7 @@ import yk.senjin.DDDUtils;
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.fastgeom.Matrix4.identity;
 import static yk.jcommon.fastgeom.Matrix4.perspective;
-import static yk.jcommon.fastgeom.Quaternionf.toAngleAxis;
+import static yk.jcommon.fastgeom.Quaternionf.fromAngleAxisFast;
 import static yk.jcommon.fastgeom.Vec3f.v3;
 import static yk.jcommon.utils.MyMath.PI;
 
@@ -26,17 +26,17 @@ public class IKnowOpenGL_4_CamAndWorld extends SimpleLwjglRoutine {
 
         glMatrixMode(GL_MODELVIEW);
         DDDUtils.glLoadMatrix(
-                toAngleAxis(PI / 2, v3(0, 1, 0)).toMatrix4()                  //SECOND: rotate world (like for camera)
+                fromAngleAxisFast(PI / 2, v3(0, 1, 0)).toMatrix4()                  //SECOND: rotate world (like for camera)
                         .multiply(identity().translate(v3(10, 1, 0))));      //FIRST: displace world to the right and slightly up
 
         drawAxis(1);
 
         glMatrixMode(GL_MODELVIEW);
         DDDUtils.glLoadMatrix(
-                toAngleAxis(PI / 2, v3(0, 1, 0)).toMatrix4()                        //FOURTH rotate world (like for camera)
+                fromAngleAxisFast(PI / 2, v3(0, 1, 0)).toMatrix4()                        //FOURTH rotate world (like for camera)
                         .multiply(identity().translate(v3(10, 1, 0)))              //THIRD translate world (like for camera)
                         .multiply(identity().translate(v3(0.5f, 0.5f, 0.5f)))     //SECOND translate object
-                        .multiply(toAngleAxis(-PI / 4, v3(0, 0, 1)).toMatrix4()) //FIRST rotate object around 000
+                        .multiply(fromAngleAxisFast(-PI / 4, v3(0, 0, 1)).toMatrix4()) //FIRST rotate object around 000
         );
 
         //Or imagine it in the straight way:
