@@ -11,7 +11,7 @@ import static yk.jcommon.fastgeom.Matrix4.perspective;
  */
 public class IKnowOpenGL_3_Projection extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new IKnowOpenGL_3_Projection().main();
+        new IKnowOpenGL_3_Projection().start();
     }
 
     @Override public void onTick(float dt) {

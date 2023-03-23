@@ -19,7 +19,7 @@ import static yk.jcommon.fastgeom.Vec3f.v3;
  */
 public class IKnowOpenGL_9_FrameBuffer2 extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new IKnowOpenGL_9_FrameBuffer2().main();
+        new IKnowOpenGL_9_FrameBuffer2().start();
     }
 
     public Ikogl_8_Vs vs;

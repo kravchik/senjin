@@ -315,7 +315,7 @@ public static Vec4f smoothstep(float from, float to, Vec4f progress) {return Vec
     public static float distance(Vec4f v1, Vec4f v2) {return v1.dist(v2);}
 
     public static float dot(float v1, float v2) {return v1*v2;}
-    public static float dot(Vec2f v1, Vec2f v2) {return v1.mulScalar(v2);}
+    public static float dot(Vec2f v1, Vec2f v2) {return v1.scalarProduct(v2);}
     public static float dot(Vec3f v1, Vec3f v2) {return v1.scalarProduct(v2);}
     public static float dot(Vec4f v1, Vec4f v2) {return v1.dot(v2);}
 

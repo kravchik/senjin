@@ -18,7 +18,7 @@ import static yk.jcommon.fastgeom.Vec3f.v3;
  */
 public class WatchShaderUser extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new WatchShaderUser().main();
+        new WatchShaderUser().start();
     }
 
     ShaderUserMap user1;

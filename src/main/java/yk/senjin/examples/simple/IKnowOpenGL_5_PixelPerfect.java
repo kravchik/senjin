@@ -11,7 +11,7 @@ import static yk.senjin.DDDUtils.glLoadMatrix;
  */
 public class IKnowOpenGL_5_PixelPerfect extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new IKnowOpenGL_5_PixelPerfect().main();
+        new IKnowOpenGL_5_PixelPerfect().start();
     }
 
     @Override public void onTick(float dt) {

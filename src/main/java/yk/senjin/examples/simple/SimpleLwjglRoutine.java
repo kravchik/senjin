@@ -5,7 +5,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
-import org.lwjgl.opengl.Util;
 
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.utils.Threads.sleep;
@@ -16,25 +15,30 @@ import static yk.jcommon.utils.Threads.sleep;
 public class SimpleLwjglRoutine {
     public int w = 600;
     public int h = 600;
+    public long sleepMs;
+    public boolean checkExit = true;
     public boolean stopRenderThread;
 
     public static void main(String[] args) {
-        new SimpleLwjglRoutine().main();
+        SimpleLwjglRoutine routine = new SimpleLwjglRoutine();
+        routine.w = 1200;
+        routine.start();
     }
 
-    public void main() {
+    public void start() {
         new Thread(() -> {
-            onFirstPass();
-            long lastTick = System.currentTimeMillis();
-            while (!stopRenderThread) {
-                long curTime = System.currentTimeMillis();
-                try {
+            try {
+                onFirstPass();
+                long lastTick = System.currentTimeMillis();
+                while (!stopRenderThread) {
+                    long curTime = System.currentTimeMillis();
                     onTick((curTime - lastTick) / 1000f);
                     lastTick = curTime;
-                    sleep(10);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    sleep(sleepMs);
                 }
+            } catch (Throwable t) {
+                System.err.println("Error occurred");
+                t.printStackTrace();
             }
         }).start();
     }
@@ -54,13 +58,9 @@ public class SimpleLwjglRoutine {
     }
 
     public void onTick(float dt) {
-        Util.checkGLError();
         Display.update();
-        checkExit();
-    }
-
-    public void checkExit() {
-        if ((Keyboard.isKeyDown(Keyboard.KEY_LMENU) && Keyboard.isKeyDown(Keyboard.KEY_F4)) || Display.isCloseRequested()) stopRenderThread = true;
+        if (checkExit && ((Keyboard.isKeyDown(Keyboard.KEY_LMENU) && Keyboard.isKeyDown(Keyboard.KEY_F4))
+                || Display.isCloseRequested())) stopRenderThread = true;
     }
 
 }

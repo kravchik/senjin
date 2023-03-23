@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class IKnowOpenGL_2_ShowMe extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new IKnowOpenGL_2_ShowMe().main();
+        new IKnowOpenGL_2_ShowMe().start();
     }
 
     @Override public void onTick(float dt) {

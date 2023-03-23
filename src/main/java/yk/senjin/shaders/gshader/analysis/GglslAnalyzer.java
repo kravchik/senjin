@@ -194,7 +194,7 @@ public class GglslAnalyzer {
             for (YMap<String, Object> asArgM : asArgMm) {
                 Object callMethodName = asArgM.get("callMethodName");
                 Object asArgIndex = asArgM.get("argIndex");
-                result.put(paramFullName, result.getOr(paramFullName, hs()).with(result.getOr(callMethodName + ":" + asArgIndex, hs())));
+                result.put(paramFullName, result.getOr(paramFullName, hs()).withAll(result.getOr(callMethodName + ":" + asArgIndex, hs())));
             }
         }
         return result;

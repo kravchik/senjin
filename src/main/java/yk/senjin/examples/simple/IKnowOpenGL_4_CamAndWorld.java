@@ -15,7 +15,7 @@ import static yk.jcommon.utils.MyMath.PI;
  */
 public class IKnowOpenGL_4_CamAndWorld extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new IKnowOpenGL_4_CamAndWorld().main();
+        new IKnowOpenGL_4_CamAndWorld().start();
     }
 
     @Override public void onTick(float dt) {

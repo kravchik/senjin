@@ -12,7 +12,7 @@ import static yk.jcommon.fastgeom.Matrix4.ortho;
  */
 public class IKnowOpenGL_6_FragmentShader extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new IKnowOpenGL_6_FragmentShader().main();
+        new IKnowOpenGL_6_FragmentShader().start();
     }
 
     public Ikogl_6_Fs fs;

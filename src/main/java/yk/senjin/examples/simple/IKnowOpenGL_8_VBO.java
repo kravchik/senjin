@@ -19,7 +19,7 @@ import static yk.jcommon.fastgeom.Vec3f.v3;
  */
 public class IKnowOpenGL_8_VBO extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new IKnowOpenGL_8_VBO().main();
+        new IKnowOpenGL_8_VBO().start();
     }
 
     public Ikogl_8_Vs vs;

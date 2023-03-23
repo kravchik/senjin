@@ -153,7 +153,7 @@
         <dependency>
             <groupId>yk</groupId>
             <artifactId>yincubator</artifactId>
-            <version>0.04-SNAPSHOT</version>
+            <version>0.04</version>
         </dependency>
 
         <dependency>

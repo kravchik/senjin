@@ -11,7 +11,7 @@ import static yk.jcommon.fastgeom.Matrix4.ortho;
  */
 public class IKnowOpenGL_7_VertexShader extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new IKnowOpenGL_7_VertexShader().main();
+        new IKnowOpenGL_7_VertexShader().start();
     }
 
     public Ikogl_7_Vs vs;

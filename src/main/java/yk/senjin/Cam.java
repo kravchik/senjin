@@ -12,7 +12,7 @@ import static yk.jcommon.fastgeom.Quaternionf.ijka;
  * Time: 10:43
  */
 public class Cam {
-    public Vec3f lookAt = Vec3f.ZERO();
+    public Vec3f lookAt = Vec3f.ZERO;
     public Quaternionf lookRot = ijka(0, 0, 0, 1);
 
     public Cam() {

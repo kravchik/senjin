@@ -22,9 +22,9 @@ import java.io.Serializable;
 public class PoconuvVi implements Serializable {//TODO rename
 
     public Vec3f normal = Vec3f.ZERO();
-    public Vec4f color = Vec4f.ZERO;
+    public Vec4f color = new Vec4f();
     public Vec3f pos = Vec3f.ZERO();
-    public Vec2f uv = Vec2f.ZERO;
+    public Vec2f uv = new Vec2f();
     public float shininess;
     public float nType;
 

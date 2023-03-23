@@ -6,7 +6,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
-import org.lwjgl.opengl.Util;
 import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Quaternionf;
 import yk.jcommon.fastgeom.Vec2f;
@@ -62,6 +61,7 @@ public class Simple3DWatch {
     public SkyBox skyBox;
 
     public Float fixedDt;
+    public float camMoveSpeed = 20;
 
 //    public static void main(String[] args) throws LWJGLException {
 //        new Simple3DWatch(512, 512, true);
@@ -88,13 +88,12 @@ public class Simple3DWatch {
                 dt = fixedDt == null ? dt : fixedDt;
                 commonTick(dt);
                 THIS.tick(dt);
-                Util.checkGLError();
                 if (SIMPLE_AA) simpleAA.renderFBO();
                 Display.update();
                 if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) || Display.isCloseRequested()) exit = true;
             }
 
-        }, 10);
+        }, 1);
     }
 
     protected void commonTick(float dt) throws LWJGLException {
@@ -142,8 +141,7 @@ public class Simple3DWatch {
         glAlphaFunc ( GL_GREATER, 0.1f) ;
         glEnable ( GL_ALPHA_TEST ) ;
 
-        float camMoveSpeed = 20;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) camMoveSpeed /= 20;
+        //if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) camMoveSpeed /= 20;
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) cam.lookAt = cam.lookAt.add(cam.lookRot.rotateFast(new Vec3f(0, 0, -camMoveSpeed * dt)));
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) cam.lookAt = cam.lookAt.add(cam.lookRot.rotateFast(new Vec3f(0, 0, camMoveSpeed * dt)));
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) cam.lookAt = cam.lookAt.add(cam.lookRot.rotateFast(new Vec3f(-camMoveSpeed * dt, 0, 0)));
@@ -170,8 +168,10 @@ public class Simple3DWatch {
 //        } else {
         recalcMatrices();
 
-        glDisable(GL_DEPTH_TEST);
-        if (skyBox != null) skyBox.render(cam.lookAt);
+        if (skyBox != null) {
+            glDisable(GL_DEPTH_TEST);
+            skyBox.render(cam.lookAt);
+        }
         glEnable(GL_DEPTH_TEST);
 
         if (drawAxis) drawAxis();

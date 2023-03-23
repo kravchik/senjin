@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL11.GL_NEAREST;
  */
 public class IKnowOpenGL_9_FrameBuffer extends SimpleLwjglRoutine {
     public static void main(String[] args) {
-        new IKnowOpenGL_9_FrameBuffer().main();
+        new IKnowOpenGL_9_FrameBuffer().start();
     }
 
     SomeTexture texture;
