@@ -112,7 +112,7 @@ In order for native libs to become visible, you should either include native_lib
     <dependency>
         <groupId>yk</groupId>
         <artifactId>senjin</artifactId>
-        <version>0.13-SNAPSHOT</version>
+        <version>0.16-SNAPSHOT</version>
     </dependency>
     <dependency>
         <groupId>yk</groupId>
