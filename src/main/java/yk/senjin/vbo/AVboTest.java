@@ -14,7 +14,7 @@ import yk.jcommon.utils.BadException;
 import java.nio.ByteBuffer;
 
 import static junit.framework.TestCase.fail;
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 public class AVboTest {
 

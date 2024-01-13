@@ -4,15 +4,15 @@ import org.codehaus.groovy.ast.MethodNode;
 import org.codehaus.groovy.ast.builder.AstBuilder;
 import org.codehaus.groovy.ast.expr.*;
 import org.codehaus.groovy.control.CompilePhase;
-import yk.jcommon.collections.YMap;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.match2.Matcher;
 import yk.jcommon.utils.IO;
+import yk.ycollections.YMap;
 
-import static yk.jcommon.collections.YHashMap.hm;
 import static yk.jcommon.match2.MatcherShortNames.*;
 import static yk.senjin.shaders.gshader.analysis.GglslAnalyzer.G_BODY_ACCESSORS;
 import static yk.senjin.shaders.gshader.analysis.GglslAnalyzer.G_METHOD_ACCESSORS;
+import static yk.ycollections.YHashMap.hm;
 
 /**
  * Created with IntelliJ IDEA.

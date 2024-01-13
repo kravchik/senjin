@@ -3,7 +3,7 @@ package yk.senjin.vbo;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.Util;
-import yk.jcommon.collections.YList;
+import yk.ycollections.YList;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 25.03.18.

@@ -1,9 +1,9 @@
 package yk.senjin.ui.core;
 
-import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.Vec2f;
+import yk.ycollections.YList;
 
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created with IntelliJ IDEA.

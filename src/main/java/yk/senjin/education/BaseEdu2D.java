@@ -1,7 +1,7 @@
 package yk.senjin.education;
 
-import com.sun.javafx.geom.Vec3d;
 import yk.jcommon.fastgeom.Vec2f;
+import yk.jcommon.fastgeom.Vec3d;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.utils.Rnd;
 import yk.senjin.LoadTickUnload;

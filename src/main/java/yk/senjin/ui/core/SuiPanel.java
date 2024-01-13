@@ -1,13 +1,13 @@
 package yk.senjin.ui.core;
 
-import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.utils.BadException;
 import yk.senjin.util.Tickable;
+import yk.ycollections.YList;
 
 import java.util.function.Consumer;
 
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 15.12.17.

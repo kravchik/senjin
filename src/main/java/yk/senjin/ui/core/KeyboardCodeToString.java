@@ -1,9 +1,9 @@
 package yk.senjin.ui.core;
 
 import org.lwjgl.input.Keyboard;
-import yk.jcommon.collections.YMap;
+import yk.ycollections.YMap;
 
-import static yk.jcommon.collections.YHashMap.hm;
+import static yk.ycollections.YHashMap.hm;
 
 /**
  * Created with IntelliJ IDEA.

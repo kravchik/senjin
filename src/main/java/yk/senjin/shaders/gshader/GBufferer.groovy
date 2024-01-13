@@ -58,7 +58,7 @@ class GBufferer {
                 "import myengine.optiseq.states.VertexStructureState;\n" +
                 "import myengine.optiseq.states.shaders.gshader.GShader;\n" +
                 "import org.lwjgl.BufferUtils;\n" +
-                "import yk.jcommon.collections.YArrayList;\n" +
+                "import yk.ycollections.YArrayList;\n" +
                 "\n" +
                 "import java.nio.ByteBuffer;\n" +
                 "import java.util.List;\n" +

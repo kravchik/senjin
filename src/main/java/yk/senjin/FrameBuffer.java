@@ -3,9 +3,9 @@ package yk.senjin;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
-import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.utils.BadException;
+import yk.ycollections.YList;
 
 import java.nio.IntBuffer;
 import java.util.List;
@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on  10.06.15.

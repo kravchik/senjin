@@ -1,7 +1,5 @@
 package yk.senjin.vbo;
 
-import yk.jcommon.collections.YList;
-import yk.jcommon.collections.YMap;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
@@ -10,13 +8,15 @@ import yk.jcommon.utils.Reflector;
 import yk.senjin.shaders.gshader.ShaderTranslator;
 import yk.senjin.shaders.gshader.StandardFragmentData;
 import yk.senjin.shaders.gshader.StandardVertexData;
+import yk.ycollections.YList;
+import yk.ycollections.YMap;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import static yk.jcommon.collections.YHashMap.hm;
+import static yk.ycollections.YHashMap.hm;
 
 /**
  * Created by Yuri Kravchik on 02.10.18.

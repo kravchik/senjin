@@ -1,15 +1,15 @@
 package yk.senjin.ui.engine.fp;
 
 import org.lwjgl.input.Keyboard;
-import yk.jcommon.collections.YList;
-import yk.jcommon.collections.YSet;
 import yk.senjin.ui.core.KeyboardCodeToString;
 import yk.senjin.util.Tickable;
+import yk.ycollections.YList;
+import yk.ycollections.YSet;
 
 import java.util.function.Consumer;
 
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YHashSet.hs;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YHashSet.hs;
 
 /**
  * Created with IntelliJ IDEA.

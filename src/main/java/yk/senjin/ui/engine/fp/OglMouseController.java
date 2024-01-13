@@ -1,12 +1,12 @@
 package yk.senjin.ui.engine.fp;
 
 import org.lwjgl.input.Mouse;
-import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.Vec2i;
+import yk.ycollections.YList;
 
 import java.util.function.Consumer;
 
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created with IntelliJ IDEA.

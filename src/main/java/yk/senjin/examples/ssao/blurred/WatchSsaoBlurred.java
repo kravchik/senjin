@@ -1,6 +1,5 @@
 package yk.senjin.examples.ssao.blurred;
 
-import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.utils.Rnd;
 import yk.senjin.*;
@@ -10,15 +9,16 @@ import yk.senjin.examples.ds.PoconuvVi;
 import yk.senjin.examples.ds.PosuvV;
 import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.vbo.AVboTyped;
+import yk.ycollections.YList;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL30.GL_RGB32F;
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
 import static yk.jcommon.fastgeom.Vec3f.v3;
 import static yk.jcommon.utils.IO.readImage;
 import static yk.senjin.examples.ssao.WatchSsao.makeCube;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created with IntelliJ IDEA.

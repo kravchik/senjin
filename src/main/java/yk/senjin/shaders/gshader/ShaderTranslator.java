@@ -5,16 +5,16 @@ import org.codehaus.groovy.ast.builder.AstBuilder;
 import org.codehaus.groovy.ast.expr.*;
 import org.codehaus.groovy.ast.stmt.*;
 import org.codehaus.groovy.control.CompilePhase;
-import yk.jcommon.collections.YHashMap;
-import yk.jcommon.collections.YList;
-import yk.jcommon.collections.YMap;
-import yk.jcommon.collections.YSet;
 import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.Reflector;
 import yk.jcommon.utils.Tab;
 import yk.senjin.shaders.VertexAttrib;
 import yk.senjin.shaders.gshader.analysis.GglslAnalyzer;
 import yk.senjin.shaders.uniforms.*;
+import yk.ycollections.YHashMap;
+import yk.ycollections.YList;
+import yk.ycollections.YMap;
+import yk.ycollections.YSet;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -25,10 +25,10 @@ import java.util.Set;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_INT;
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YArrayList.toYList;
-import static yk.jcommon.collections.YHashMap.hm;
-import static yk.jcommon.collections.YHashSet.hs;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YArrayList.toYList;
+import static yk.ycollections.YHashMap.hm;
+import static yk.ycollections.YHashSet.hs;
 
 /**
  * Created with IntelliJ IDEA.

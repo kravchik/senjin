@@ -9,9 +9,9 @@ import yk.senjin.vbo.AVboShortIndices;
 import yk.senjin.vbo.AVboTyped;
 
 import static org.lwjgl.opengl.GL11.*;
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
 import static yk.jcommon.fastgeom.Vec3f.v3;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 17.11.17.

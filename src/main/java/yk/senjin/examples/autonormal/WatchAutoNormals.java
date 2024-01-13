@@ -7,9 +7,9 @@ import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.vbo.AVboTyped;
 
 import static org.lwjgl.opengl.GL11.*;
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Vec3f.v3;
 import static yk.jcommon.fastgeom.Vec4f.v4;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created with IntelliJ IDEA.

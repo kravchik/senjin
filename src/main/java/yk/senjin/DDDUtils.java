@@ -3,11 +3,11 @@ package yk.senjin;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
-import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.*;
 import yk.senjin.examples.ds.PoconuvVi;
 import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.vbo.AVboTyped;
+import yk.ycollections.YList;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -16,8 +16,8 @@ import java.util.List;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.util.glu.GLU.gluProject;
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.fastgeom.Vec3f.v3;
+import static yk.ycollections.YArrayList.al;
 
 
 /**

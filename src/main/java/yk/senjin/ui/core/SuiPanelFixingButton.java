@@ -1,10 +1,10 @@
 package yk.senjin.ui.core;
 
-import yk.jcommon.collections.YList;
+import yk.ycollections.YList;
 
 import java.util.function.Consumer;
 
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 15.03.18.

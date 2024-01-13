@@ -9,7 +9,7 @@ import yk.jcommon.utils.BadException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 01.10.18.

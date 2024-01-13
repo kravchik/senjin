@@ -10,8 +10,8 @@ import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.vbo.AVboTyped;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.utils.IO.readImage;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created with IntelliJ IDEA.

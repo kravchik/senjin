@@ -1,14 +1,14 @@
 package yk.senjin.ui.core;
 
-import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.senjin.ui.engine.fp.OglKeyboard;
 import yk.senjin.ui.engine.fp.OglMouseController;
+import yk.ycollections.YList;
 
 import java.util.Iterator;
 import java.util.function.Consumer;
 
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 23.02.18.

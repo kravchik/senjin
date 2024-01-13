@@ -1,12 +1,12 @@
 package yk.senjin.shaders.gshader;
 
-import yk.jcommon.collections.YMap;
 import yk.jcommon.utils.BadException;
 import yk.senjin.shaders.uniforms.UniformVariable;
+import yk.ycollections.YMap;
 
 import java.util.Map;
 
-import static yk.jcommon.collections.YHashMap.hm;
+import static yk.ycollections.YHashMap.hm;
 
 public class ShaderUserMap<V extends VertexShaderParent, F extends FragmentShaderParent> extends ShaderUser<V, F> {
     public YMap<String, Object> shaderParams = hm();

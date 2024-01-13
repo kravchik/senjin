@@ -8,18 +8,18 @@ import org.codehaus.groovy.ast.expr.VariableExpression;
 import org.codehaus.groovy.ast.stmt.BlockStatement;
 import org.codehaus.groovy.control.CompilePhase;
 import org.junit.Test;
-import yk.jcommon.collections.*;
 import yk.jcommon.match2.*;
 import yk.jcommon.utils.IO;
+import yk.ycollections.*;
 
 import java.util.List;
 
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YHashMap.hm;
 import static yk.jcommon.match2.MatcherShortNames.p;
 import static yk.jcommon.match2.MatcherShortNames.var;
 import static yk.senjin.shaders.gshader.ShaderTranslator.isPrimitive;
 import static yk.senjin.shaders.gshader.ShaderTranslator.translateType;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YHashMap.hm;
 
 /**
  * Created with IntelliJ IDEA.

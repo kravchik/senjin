@@ -1,12 +1,12 @@
 package yk.senjin.ui.core.text;
 
-import yk.jcommon.collections.YMap;
 import yk.senjin.ui.core.SuiPanelString;
 import yk.senjin.ui.engine.fp.SuiFont;
+import yk.ycollections.YMap;
 
 import java.awt.*;
 
-import static yk.jcommon.collections.YHashMap.hm;
+import static yk.ycollections.YHashMap.hm;
 
 public class SuiFontsCache {
     public SuiFont defaultFont;

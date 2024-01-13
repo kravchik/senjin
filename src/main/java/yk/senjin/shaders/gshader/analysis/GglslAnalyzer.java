@@ -12,20 +12,20 @@ import org.codehaus.groovy.ast.stmt.IfStatement;
 import org.codehaus.groovy.ast.stmt.ReturnStatement;
 import org.codehaus.groovy.control.CompilePhase;
 import org.junit.Test;
-import yk.jcommon.collections.*;
 import yk.jcommon.match2.*;
 import yk.jcommon.probe.Probe;
 import yk.jcommon.probe.State;
 import yk.jcommon.search.SSearch;
 import yk.jcommon.utils.IO;
+import yk.ycollections.*;
 
 import static org.junit.Assert.assertEquals;
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YHashMap.hm;
-import static yk.jcommon.collections.YHashSet.hs;
 import static yk.jcommon.match2.MatcherShortNames.*;
 import static yk.senjin.shaders.gshader.ShaderTranslator.isPrimitive;
 import static yk.senjin.shaders.gshader.ShaderTranslator.translateType;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YHashMap.hm;
+import static yk.ycollections.YHashSet.hs;
 
 /**
  * Created with IntelliJ IDEA.

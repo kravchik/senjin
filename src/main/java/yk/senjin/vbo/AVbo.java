@@ -1,13 +1,13 @@
 package yk.senjin.vbo;
 
-import yk.jcommon.collections.YList;
 import yk.jcommon.utils.BadException;
 import yk.senjin.State;
+import yk.ycollections.YList;
 
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL15.*;
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 25.03.18.

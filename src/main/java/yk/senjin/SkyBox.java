@@ -1,15 +1,15 @@
 package yk.senjin;
 
-import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.Quaternionf;
 import yk.jcommon.fastgeom.Vec3f;
+import yk.ycollections.YList;
 
 import java.awt.image.BufferedImage;
 
 import static org.lwjgl.opengl.GL11.*;
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.senjin.DDDUtils.glMultMatrix4;
 import static yk.senjin.DDDUtils.glVec3f;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,14 +1,14 @@
 package yk.senjin.education;
 
-import yk.jcommon.collections.YList;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.utils.Rnd;
 import yk.senjin.LoadTickUnload;
 import yk.senjin.WatchReloadable;
+import yk.ycollections.YList;
 
 import static org.lwjgl.opengl.GL11.*;
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.senjin.DDDUtils.CUBE_POS_AND_COLOR;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created with IntelliJ IDEA.

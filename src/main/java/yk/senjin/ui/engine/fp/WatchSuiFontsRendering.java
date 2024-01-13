@@ -1,15 +1,15 @@
 package yk.senjin.ui.engine.fp;
 
-import yk.jcommon.collections.YList;
 import yk.senjin.ui.core.*;
 import yk.senjin.util.GlWindow1;
+import yk.ycollections.YList;
 
 import java.awt.*;
 
-import static yk.jcommon.collections.YArrayList.al;
 import static yk.jcommon.utils.MyMath.max;
 import static yk.jcommon.utils.MyMath.min;
 import static yk.senjin.util.Utils.forThis;
+import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 2023.03.20

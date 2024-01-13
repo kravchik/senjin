@@ -2,9 +2,6 @@ package yk.senjin.shaders.gshader;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import yk.jcommon.collections.YList;
-import yk.jcommon.collections.YMap;
-import yk.jcommon.collections.YSet;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
@@ -18,6 +15,9 @@ import yk.senjin.shaders.uniforms.UniformVariable;
 import yk.senjin.vbo.AVbo;
 import yk.senjin.vbo.AVboTyped;
 import yk.senjin.vbo.TypeUtils;
+import yk.ycollections.YList;
+import yk.ycollections.YMap;
+import yk.ycollections.YSet;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -26,9 +26,9 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static yk.jcommon.collections.YArrayList.al;
-import static yk.jcommon.collections.YHashMap.hm;
-import static yk.jcommon.collections.YHashSet.hs;
+import static yk.ycollections.YArrayList.al;
+import static yk.ycollections.YHashMap.hm;
+import static yk.ycollections.YHashSet.hs;
 
 /**
  * Created with IntelliJ IDEA.

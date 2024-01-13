@@ -1,14 +1,14 @@
 package yk.senjin.shaders.gshader;
 
 import org.lwjgl.opengl.GL20;
-import yk.jcommon.collections.YList;
 import yk.jcommon.utils.BadException;
 import yk.senjin.AbstractState;
 import yk.senjin.shaders.ShaderHandler2;
 import yk.senjin.shaders.arraystructure.AbstractArrayStructure;
 import yk.senjin.shaders.uniforms.*;
+import yk.ycollections.YList;
 
-import static yk.jcommon.collections.YArrayList.al;
+import static yk.ycollections.YArrayList.al;
 
 abstract public class ShaderUser<V extends VertexShaderParent, F extends FragmentShaderParent> extends AbstractState {
     private ShaderHandler2 oldShaderHandler;
