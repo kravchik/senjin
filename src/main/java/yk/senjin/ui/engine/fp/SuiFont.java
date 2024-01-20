@@ -62,7 +62,7 @@ public class SuiFont {//TODO separate core and engine!
         oglTexture = new SomeTexture();
         oglTexture.magFilter = GL_NEAREST;
         oglTexture.minFilter = mipmap ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST;
-        oglTexture.setImage(bi);
+        oglTexture.uploadImage(bi);
     }
 
     private void initBufferedImage(Font font, boolean antiAlias) {

@@ -2,7 +2,6 @@ package yk.senjin.vbo;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.Util;
 import yk.ycollections.YList;
 
 import java.nio.ByteBuffer;
@@ -51,6 +50,7 @@ public class AVboIntIndices extends AVboInt {
         addChange(bb, 0).recreate = true;
     }
 
+    @Override
     public void enable() {
         enable(elementsCount);
     }
@@ -69,7 +69,6 @@ public class AVboIntIndices extends AVboInt {
         YList<Integer> list = al();
         for (int i = 0; i < count; i++) list.add(i);
         result.reload(list);
-        Util.checkGLError();
         return result;
     }
 

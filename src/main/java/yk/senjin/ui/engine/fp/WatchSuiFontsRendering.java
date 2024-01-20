@@ -1,6 +1,8 @@
 package yk.senjin.ui.engine.fp;
 
-import yk.senjin.ui.core.*;
+import yk.senjin.ui.core.SuiPanel;
+import yk.senjin.ui.core.SuiPanelImage;
+import yk.senjin.ui.core.SuiPanelString;
 import yk.senjin.util.GlWindow1;
 import yk.ycollections.YList;
 
@@ -8,11 +10,18 @@ import java.awt.*;
 
 import static yk.jcommon.utils.MyMath.max;
 import static yk.jcommon.utils.MyMath.min;
+import static yk.senjin.ui.core.SuiPanel.panel;
+import static yk.senjin.ui.core.SuiPosHBox.hbox;
+import static yk.senjin.ui.core.SuiPosVBox.vbox;
+import static yk.senjin.ui.core.SuiPositions.pos;
 import static yk.senjin.util.Utils.forThis;
 import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 2023.03.20
+ *
+ *
+ * <a href="https://stackoverflow.com/questions/76362308/create-png-without-text-anti-aliasing-in-java-11-on-mac-os-x">Looks like you can't disable antialiasing on Mac</a>
  */
 public class WatchSuiFontsRendering {
     //TODO font selection
@@ -20,6 +29,7 @@ public class WatchSuiFontsRendering {
     private GlWindow1 window = new GlWindow1()
             .setSize(800, 800)
             .stopOnEsc()
+            .onWindowReady(wh -> sui.init(wh))
             .onFirstFrame(this::onFirstPass)
             .onTick(sui);
 
@@ -37,18 +47,18 @@ public class WatchSuiFontsRendering {
     private SuiPanel fontsVBox;
 
     public static void main(String[] args) {
-        new WatchSuiFontsRendering().window.start(1);
+        new WatchSuiFontsRendering().window.start(10);
     }
 
     public void onFirstPass() {
         sui.tick(0);//because fonts should be already available
-        stringsVbox = new SuiPanel(){{pos = new SuiPosVBox(){{interval=5;}};}};
-        sui.getTopPanel().add(new SuiPanel(new SuiPosHBox()).add(stringsVbox));
+        stringsVbox = panel(vbox().interval(5));
+        sui.getTopPanel().add(panel(hbox()).add(stringsVbox));
 
         sui.getTopPanel().add(
-                new SuiPanel(new SuiPosVBox(){{right=10f;top=10f;}}).add(
+                panel(vbox().right(10f).top(10f)).add(
                         // size << 24 >> |
-                        new SuiPanel(new SuiPosHBox(){{right=0f;}}).add(
+                        panel(hbox().right(0f)).add(
                                 new SuiPanelString("size << ") {{
                                     onMouseUp.add(ams -> {
                                         sizeSelected = max(sizeSelected - 1, 2);
@@ -64,7 +74,7 @@ public class WatchSuiFontsRendering {
                                 }}
                         ),
                         // scale << 1 >> |
-                        new SuiPanel(new SuiPosHBox(){{right=0f;}}).add(
+                        panel(hbox().right(0f)).add(
                                 new SuiPanelString("scale << ") {{
                                     onMouseUp.add(ams -> {
                                         scaleSelected = max(scaleSelected - 1, 0);
@@ -80,8 +90,7 @@ public class WatchSuiFontsRendering {
                                 }}
                         ),
                         //AA
-                        new SuiPanelString("AA |") {{
-                            pos.right = 0f;
+                        new SuiPanelString(pos().right(0f), "AA |") {{
                             onMouseUp.add(ams -> {
                                 aaSelected = !aaSelected;
                                 setString(aaSelected ? "AA |" : "aa |");
@@ -89,8 +98,7 @@ public class WatchSuiFontsRendering {
                             });
                         }},
                         //mipmap
-                        new SuiPanelString("mipmap |") {{
-                            pos.right=0f;
+                        new SuiPanelString(pos().right(0f), "mipmap |") {{
                             onMouseUp.add(ams -> {
                                 mipmapSelected = !mipmapSelected;
                                 setString(mipmapSelected ? "MIPMAP |" : "mipmap |");
@@ -98,7 +106,7 @@ public class WatchSuiFontsRendering {
                             });
                         }},
                         // fonts << 1 >> |
-                        new SuiPanel(new SuiPosHBox(){{right=0f;}}).add(
+                        panel(hbox().right(0f)).add(
                                 new SuiPanelString("fonts << ") {{
                                     onMouseUp.add(ams -> {
                                         imagesDisplacement -= 500;
@@ -115,7 +123,7 @@ public class WatchSuiFontsRendering {
                 )
         );
 
-        sui.getTopPanel().add(fontsVBox = new SuiPanel(new SuiPosVBox(){{bottom = 5f;interval=5f;percentWidth = 1f;}}));
+        sui.getTopPanel().add(fontsVBox = panel(vbox().interval(5f).bottom(5f).percentWidth(1f)));
         recreate();
     }
                              

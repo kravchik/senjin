@@ -4,6 +4,9 @@ import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by Yuri Kravchik on 16.11.17.
+ *
+ * TODO rename
+ * Tutorial_opengl, or Cases
  */
 public class IKnowOpenGL_1_Clip extends SimpleLwjglRoutine {
     public static void main(String[] args) {

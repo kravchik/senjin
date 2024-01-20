@@ -1,11 +1,12 @@
 package yk.senjin.examples.blend;
 
 import yk.jcommon.fastgeom.Vec2f;
+import yk.jcommon.fastgeom.Vec2i;
 import yk.senjin.FrameBuffer;
 import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.GProgram;
 
-import static yk.jcommon.fastgeom.Matrix4.ortho;
+import static yk.jcommon.fastgeom.Matrix4.identity;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,8 +43,9 @@ public class Blender1 {
     public void init() {
         blendF = new BlendF();
         blendV = new BlendV();
-        blendV.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
-        blendProgram = new GProgram(blendV, blendF);
+        blendV.modelViewProjectionMatrix = identity();
+        //blendV.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
+        blendProgram = new GProgram(blendV, blendF).link();
 
         SomeTexture renderTexture = new SomeTexture();
         renderTexture.init(size, size);
@@ -61,6 +63,7 @@ public class Blender1 {
 
     }
     
+    public void renderToScreen(Vec2i wh) {renderToScreen(wh.x, wh.y);}
     public void renderToScreen(int w, int h) {
         renderToFbo2();
 

@@ -1,6 +1,7 @@
 package yk.senjin;
 
 import org.junit.Test;
+import yk.senjin.util.ImageUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -34,7 +35,7 @@ public class SomeTextureTest {
         System.out.println(Integer.toHexString(imBuffer[3]));
 
 
-        ByteBuffer buffer = SomeTexture.convertToGl_TYPE_TYPE_INT_ARGB(bi);
+        ByteBuffer buffer = ImageUtils.convertToGl_TYPE_TYPE_INT_ARGB(bi);
 
         System.out.println("\nOGL internal (0xAABBGGRR):");
         System.out.println(Integer.toHexString(buffer.getInt()));
@@ -72,7 +73,7 @@ public class SomeTextureTest {
         System.out.println(imBuffer[9] + " " + imBuffer[10] + " " + imBuffer[11]);
 
 
-        ByteBuffer buffer = SomeTexture.convertToGl_TYPE_3BYTE_BGR(bi);
+        ByteBuffer buffer = ImageUtils.convertToGl_TYPE_3BYTE_BGR(bi, (byte) 0xFF);
 
         System.out.println("\nOGL internal (0xAABBGGRR):");
         System.out.println(Integer.toHexString(buffer.getInt()));

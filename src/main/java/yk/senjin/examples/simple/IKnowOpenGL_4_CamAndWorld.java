@@ -21,31 +21,39 @@ public class IKnowOpenGL_4_CamAndWorld extends SimpleLwjglRoutine {
     @Override public void onTick(float dt) {
         glMatrixMode(GL_PROJECTION);
 
-        Matrix4 perspective = perspective(45, (float) w / h, 0.1f, 500);
+        Matrix4 perspective = perspective(45, (float) w() / h(), 0.1f, 500);
         DDDUtils.glLoadMatrix(perspective);
 
+        //big axis
         glMatrixMode(GL_MODELVIEW);
         DDDUtils.glLoadMatrix(
-                fromAngleAxisFast(PI / 2, v3(0, 1, 0)).toMatrix4()                  //SECOND: rotate world (like for camera)
-                        .multiply(identity().translate(v3(10, 1, 0))));      //FIRST: displace world to the right and slightly up
+                //SECOND: rotate world (for camera)
+                fromAngleAxisFast(PI / 2, v3(0, 1, 0)).toMatrix4()
+                //FIRST: displace world to the right and slightly up
+                .multiply(identity().translate(v3(10, 1, 0))));
 
         drawAxis(1);
 
+        //small axis
         glMatrixMode(GL_MODELVIEW);
         DDDUtils.glLoadMatrix(
-                fromAngleAxisFast(PI / 2, v3(0, 1, 0)).toMatrix4()                        //FOURTH rotate world (like for camera)
-                        .multiply(identity().translate(v3(10, 1, 0)))              //THIRD translate world (like for camera)
-                        .multiply(identity().translate(v3(0.5f, 0.5f, 0.5f)))     //SECOND translate object
-                        .multiply(fromAngleAxisFast(-PI / 4, v3(0, 0, 1)).toMatrix4()) //FIRST rotate object around 000
+                //FOURTH rotate world (for camera)
+                fromAngleAxisFast(PI / 2, v3(0, 1, 0)).toMatrix4()
+                //THIRD translate world (for camera)
+                .multiply(identity().translate(v3(10, 1, 0)))
+                //SECOND translate object
+                .multiply(identity().translate(v3(0.5f, 0.5f, 0.5f)))
+                //FIRST rotate object around 000
+                .multiply(fromAngleAxisFast(-PI / 4, v3(0, 0, 1)).toMatrix4())
         );
 
         //Or imagine it in the straight way:
-        //  1 rotate world (like for camera)
-        //  2 INSIDE IT translate world (like for camera)
-        //  3 INSIDE IT translate object
-        //  4 INSIDE IT rotate object around 000
+        //  1 rotate world (for camera)
+        //  2 inside it, translate world (for camera)
+        //  3 inside it, translate object
+        //  4 inside it, rotate object around 000
 
-        //As we always want the camera to rotate and displace the same way as an object, we must inverse its "true" displacement and rotation.
+        //As we usually want the camera to rotate and displace the same way as an object, we must inverse its "true" displacement and rotation. Because we never rotate the camera, but the world itself.
         //And also the camera has to have "rot * pos" instead of "pos * rot", as rotation of it is "more global" than it is in objects.
         //And, of course, we want cam matrix * obj matrix (not vice versa) because obj is "more local" to the camera.
 

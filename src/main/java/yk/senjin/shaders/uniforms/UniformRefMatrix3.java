@@ -27,6 +27,6 @@ public class UniformRefMatrix3 extends UniformRef<Matrix3> {
     @Override
     public void plug() {
         set(getValue());
-        GL20.glUniformMatrix3(index, false, matrixBuffer);
+        GL20.glUniformMatrix3fv(index, false, matrixBuffer);
     }
 }

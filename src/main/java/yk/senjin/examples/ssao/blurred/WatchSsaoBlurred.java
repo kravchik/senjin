@@ -42,9 +42,7 @@ public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
     public Blender2 blender = new Blender2();
 
     public static void main(String[] args) {
-        new WatchReloadable(new WatchSsaoBlurred(), Blender2.class) {{
-            SIMPLE_AA = false;
-        }};
+        new WatchReloadable(new WatchSsaoBlurred(), Blender2.class).run();
     }
 
     @Override
@@ -159,7 +157,7 @@ public class WatchSsaoBlurred implements LoadTickUnload<WatchReloadable> {
         finalProgram.vs.modelViewProjectionMatrix = Matrix4.identity();
 
         finalProgram.enable();
-        FrameBuffer.renderTexture0(watch.w, watch.h);
+        FrameBuffer.renderTexture0(watch.sizePixels);
         finalProgram.disable();
 
         blender.fbo1.textures.car().disable();

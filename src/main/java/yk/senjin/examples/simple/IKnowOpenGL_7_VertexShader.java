@@ -27,14 +27,14 @@ public class IKnowOpenGL_7_VertexShader extends SimpleLwjglRoutine {
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        vs.modelViewProjectionMatrix = ortho(0, w, 0, h, 0, 10);
+        vs.modelViewProjectionMatrix = ortho(0, w(), 0, h(), 0, 10);
         vs.timePassed += dt;
         program.enable();
 
         glBegin(GL_TRIANGLES);
             glVertex3f(0, 0, -5);
-            glVertex3f(w, 0, -5);
-            glVertex3f(0, h, -5);
+            glVertex3f(w(), 0, -5);
+            glVertex3f(0, h(), -5);
         glEnd();
 
         program.disable();

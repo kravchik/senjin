@@ -1,12 +1,12 @@
 package yk.senjin.util;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.PixelFormat;
 import yk.ycollections.YList;
 
+import java.util.function.Consumer;
+
+import static org.lwjgl.glfw.GLFW.*;
+import static yk.senjin.examples.simple.SimpleLwjglRoutine.initWindow;
+import static yk.senjin.util.ThreadUtils.tickerNotThread;
 import static yk.ycollections.YArrayList.al;
 
 /**
@@ -21,33 +21,30 @@ public class GlWindow1 {
     private int w = 600;
     private int h = 600;
     private boolean stopRenderThread;
-
+    private GlfwWindow win;
     private final YList<Tickable> tickable = al();
-    private Runnable beforeFirstFrame;
+    private final YList<Consumer<GlfwWindow>> onInit = al();
+    private final YList<Runnable> onFirstFrame = al();
 
     public final void start(long sleepMs) {
-        ThreadUtils.ticker(sleepMs, () -> firstFrame(), dt -> eachFrame(dt));
+        tickerNotThread(sleepMs, () -> firstFrame(), dt -> eachFrame(dt));
     }
 
-    //Makes initialisations. Should be in the right thread, as it is using thread locals.
     public void firstFrame() {
-        try {
-            Display.setDisplayMode(new DisplayMode(w, h));
-            Display.create(new PixelFormat());
-            Display.makeCurrent();
-            if (beforeFirstFrame != null) beforeFirstFrame.run();
-        } catch (LWJGLException e) {
-            throw new RuntimeException(e);
-        }
+        win = initWindow(w, h, "Hello World!", false);
+        w = win.sizePixels.x;
+        h = win.sizePixels.y;
+        for (Consumer<GlfwWindow> consumer : onInit) consumer.accept(win);
+        for (Runnable r : onFirstFrame) r.run();
     }
 
     //Should be in the same thread as initializations, as is using thread locals.
     public final boolean eachFrame(float dt) {
-        Display.update();
-        if (Display.isCloseRequested()) requestStop();
         for (Tickable r : tickable) r.tick(dt);
         tick(dt);
-        return !stopRenderThread;
+        glfwSwapBuffers(win.handle); // swap the color buffers
+        glfwPollEvents();
+        return !(stopRenderThread || glfwWindowShouldClose(win.handle));
     }
 
     //Should be in the same thread as initializations, as is using thread locals.
@@ -58,8 +55,13 @@ public class GlWindow1 {
         this.stopRenderThread = true;
     }
 
-    public final GlWindow1 onFirstFrame(Runnable onFirstPass) {
-        this.beforeFirstFrame = onFirstPass;
+    public final GlWindow1 onWindowReady(Consumer<GlfwWindow> onFirstFrame) {
+        this.onInit.add(onFirstFrame);
+        return this;
+    }
+
+    public final GlWindow1 onFirstFrame(Runnable onFirstFrame) {
+        this.onFirstFrame.add(onFirstFrame);
         return this;
     }
 
@@ -70,12 +72,12 @@ public class GlWindow1 {
 
     public final GlWindow1 stopOnEsc() {
         return onTick(dt -> {
-            if (((Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)))) requestStop();
+            if (glfwGetKey(win.handle, GLFW_KEY_ESCAPE) == GLFW_PRESS) requestStop();
         });
     }
     public final GlWindow1 stopOnAltF4() {
         return onTick(dt -> {
-            if (((Keyboard.isKeyDown(Keyboard.KEY_LMENU) && Keyboard.isKeyDown(Keyboard.KEY_F4)))) requestStop();
+            if (glfwGetKey(win.handle, GLFW_KEY_F4) == GLFW_PRESS) requestStop();
         });
     }
 
@@ -85,10 +87,6 @@ public class GlWindow1 {
         return this;
     }
 
-    public final int getWidth() {
-        return w;
-    }
-    public final int getHeight() {
-        return h;
-    }
+    public final int getWidth() {return w;}
+    public final int getHeight() {return h;}
 }

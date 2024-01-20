@@ -22,12 +22,12 @@ public class IKnowOpenGL_3_Projection extends SimpleLwjglRoutine {
         //gluPerspective(45, (float) w / h, 10, 500);
 
         // custom variant
-        Matrix4 perspective = perspective(45, (float) w / h, 10, 500);
+        Matrix4 perspective = perspective(45, (float) w() / h(), 10, 500);
         DDDUtils.glLoadMatrix(perspective);
 
 
         //camera is at 0 0 0
-        //we can see things if z is <= -10 and >= -500  (because in OpenGL "forward" is -Z)
+        //we can see things if z between -500 and -10 (because in OpenGL "forward" is -Z)
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 

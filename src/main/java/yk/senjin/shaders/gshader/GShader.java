@@ -1,7 +1,6 @@
 package yk.senjin.shaders.gshader;
 
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.Util;
 import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.FileWatcher2;
 import yk.jcommon.utils.IO;
@@ -98,19 +97,17 @@ public class GShader {
         //System.out.println("Sending: ");
         //System.out.println(generator.resultSrc);
 
-        if (generator.shaderType.equals("vs")) shaderIndex = createVertexShader(stringToBuffer(generator.resultSrc));
-        else if (generator.shaderType.equals("fs")) shaderIndex = createFragmentShader(stringToBuffer(generator.resultSrc));
-        else if (generator.shaderType.equals("gs")) shaderIndex = createGeometryShader(stringToBuffer(generator.resultSrc));
+        if (generator.shaderType.equals("vs")) shaderIndex = createVertexShader(generator.resultSrc);
+        else if (generator.shaderType.equals("fs")) shaderIndex = createFragmentShader(generator.resultSrc);
+        else if (generator.shaderType.equals("gs")) shaderIndex = createGeometryShader(generator.resultSrc);
         else BadException.die("unknown shader type: " + generator.shaderType);
 //        printLogInfo(shaderIndex);
-        Util.checkGLError();
     }
 
     public void removeShaderFromCard() {
         if (shaderIndex == -1) throw BadException.shouldNeverReachHere();
         GL20.glDeleteShader(shaderIndex);
         shaderIndex = -1;
-        Util.checkGLError();
     }
 
 // concurrency

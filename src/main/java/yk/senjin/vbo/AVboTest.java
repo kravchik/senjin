@@ -1,14 +1,7 @@
 package yk.senjin.vbo;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.PixelFormat;
-import org.lwjgl.opengl.Util;
 import yk.jcommon.utils.BadException;
 
 import java.nio.ByteBuffer;
@@ -18,17 +11,17 @@ import static yk.ycollections.YArrayList.al;
 
 public class AVboTest {
 
-    @Before
-    public void setup() throws LWJGLException {
-        Display.setDisplayMode(new DisplayMode(600, 600));
-        Display.create(new PixelFormat());
-        Display.makeCurrent();
-    }
-
-    @After
-    public void shutdown() {
-        Display.destroy();
-    }
+    //@Before
+    //public void setup() throws LWJGLException {
+    //    Display.setDisplayMode(new DisplayMode(600, 600));
+    //    Display.create(new PixelFormat());
+    //    Display.makeCurrent();
+    //}
+    //
+    //@After
+    //public void shutdown() {
+    //    Display.destroy();
+    //}
 
     @Test
     public void testEmpty() {
@@ -57,7 +50,7 @@ public class AVboTest {
         avbo.enable();
 
 
-        Util.checkGLError();
+        //Util.checkGLError();
 
     }
 

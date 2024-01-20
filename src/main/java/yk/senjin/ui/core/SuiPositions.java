@@ -25,6 +25,10 @@ public class SuiPositions {
 
     public float padding;
 
+    public static SuiPositions pos() {
+        return new SuiPositions();
+    }
+
     public static SuiPositions absolute(float left, float top) {
         SuiPositions result = new SuiPositions();
         result.left = left;
@@ -88,7 +92,7 @@ public class SuiPositions {
         //if (resultH == null) resultH = 100f;
         //resultW -= padding * 2;TODO account padding in children
         //resultH -= padding * 2;
-        for (SuiPanel child : panel.children) child.pos.calcSize(child);
+        for (SuiPanel child : panel.children) child.calcSize();
         //resultW += padding * 2;
         //resultH += padding * 2;
 
@@ -124,5 +128,60 @@ public class SuiPositions {
         }
         if (resultLocalX == null) resultLocalX = 0f;
         if (resultLocalY == null) resultLocalY = 0f;
+    }
+
+    public SuiPositions W(Float w) {
+        W = w;
+        return this;
+    }
+
+    public SuiPositions H(Float h) {
+        H = h;
+        return this;
+    }
+
+    public SuiPositions left(Float left) {
+        this.left = left;
+        return this;
+    }
+
+    public SuiPositions top(Float top) {
+        this.top = top;
+        return this;
+    }
+
+    public SuiPositions right(Float right) {
+        this.right = right;
+        return this;
+    }
+
+    public SuiPositions bottom(Float bottom) {
+        this.bottom = bottom;
+        return this;
+    }
+
+    public SuiPositions rightCenter(Float rightCenter) {
+        this.rightCenter = rightCenter;
+        return this;
+    }
+
+    public SuiPositions belowCenter(Float belowCenter) {
+        this.belowCenter = belowCenter;
+        return this;
+    }
+
+    public SuiPositions padding(Float padding) {
+        this.padding = padding;
+        return this;
+    }
+
+    public SuiPositions percentWidth(Float percentWidth) {
+        this.percentWidth = percentWidth;
+        return this;
+    }
+
+    public SuiPositions percentHeight(Float percentHeight) {
+        this.percentHeight = percentHeight;
+        return this;
     }
 }

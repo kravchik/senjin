@@ -30,7 +30,7 @@ public class WatchShaderUser extends SimpleLwjglRoutine {
     @Override public void onFirstPass() {
         super.onFirstPass();
         GProgram program = GProgram.initFrom("src/main/java/", new Ikogl_8_Vs(), new Ikogl_8_Fs()).runtimeReload();
-        vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0)));
+        vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w(), -h(), 0)), new Ikogl_8_Vd(v3(w(),  0, 0)), new Ikogl_8_Vd(v3( 0, h(), 0)));
 
         user1 = new ShaderUserMap(program, vbo.inputType);
         user2 = new ShaderUserMap(program, vbo.inputType);
@@ -48,7 +48,7 @@ public class WatchShaderUser extends SimpleLwjglRoutine {
 
         vbo.enable();
         user1.shaderParams.put("timePassed", timePassed);
-        user1.shaderParams.put("modelViewProjectionMatrix", ortho(0, w, 0, h, 0, 10));
+        user1.shaderParams.put("modelViewProjectionMatrix", ortho(0, w(), 0, h(), 0, 10));
         user1.uniformsChanged = true;
         
         user1.enable();
@@ -56,7 +56,7 @@ public class WatchShaderUser extends SimpleLwjglRoutine {
         user1.disable();
 
         user2.shaderParams.put("timePassed", -timePassed);
-        user2.shaderParams.put("modelViewProjectionMatrix", ortho(0, w, 0, h, 0, 10));
+        user2.shaderParams.put("modelViewProjectionMatrix", ortho(0, w(), 0, h(), 0, 10));
         user2.uniformsChanged = true;
 
         user2.enable();

@@ -42,15 +42,15 @@ public class WatchSsao implements LoadTickUnload<WatchReloadable> {
 
 
     public static void main(String[] args) {
-        new WatchReloadable(new WatchSsao()) {{
-            SIMPLE_AA = false;
-        }};
+        new WatchReloadable(new WatchSsao()).run();
     }
 
     @Override
     public void onLoad(WatchReloadable watch) {
-        defDataProgram = new GProgram(new PoconuvV(), new DeferredDataF()).runtimeReload();
-        ssaoProgram = new GProgram<>(new PosuvV(), new DeferredShadeSsao()).runtimeReload();
+        System.out.println("linking ssaoProgram");
+        ssaoProgram = new GProgram(new PosuvV(), new DeferredShadeSsao()).runtimeReload().link();
+        System.out.println("linking defDataProgram");
+        defDataProgram = new GProgram(new PoconuvV(), new DeferredDataF()).runtimeReload().link();
         ssaoProgram.vs.modelViewProjectionMatrix = ortho(-1, 1, 1, -1, 1, -1);
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
@@ -60,7 +60,7 @@ public class WatchSsao implements LoadTickUnload<WatchReloadable> {
         for (int i = 0; i < 10; i++) {
             all.addAll(makeCube(rnd.nextVec3f().mul(5), v3(1, 1, 1), rnd.nextVec3f().mul(0.5f).add(0.5f).toVec4f(1)));
         }
-        vbo1 = new AVboTyped(PoconuvV.class, all.size());
+        vbo1 = new AVboTyped(PoconuvVi.class, all.size());
         vbo1.addChange(all, 0);
         indices = DrawIndicesShort.simple(all.size(), GL_QUADS);
 
@@ -128,7 +128,7 @@ public class WatchSsao implements LoadTickUnload<WatchReloadable> {
 
         ssaoProgram.vs.modelViewProjectionMatrix = Matrix4.identity();
         ssaoProgram.enable();
-        FrameBuffer.renderTexture0(watch.w, watch.h);
+        FrameBuffer.renderTexture0(watch.sizePixels);
         ssaoProgram.disable();
         fbo1.textures.get(2).disable();
         fbo1.textures.get(1).disable();

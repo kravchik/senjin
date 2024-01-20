@@ -1,6 +1,5 @@
 package yk.senjin.examples.specular;
 
-import org.lwjgl.LWJGLException;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.DrawIndicesShort;
@@ -21,12 +20,12 @@ import static yk.ycollections.YArrayList.al;
  */
 public class WatchSpecular extends Simple3DWatch {
 
-    public WatchSpecular(int w, int h, boolean createThread) throws LWJGLException {
-        super(w, h, createThread);
+    public WatchSpecular(int w, int h) {
+        super(w, h);
     }
 
-    public static void main(String[] args) throws LWJGLException {
-        new WatchSpecular(800, 600, true);
+    public static void main(String[] args) {
+        new WatchSpecular(800, 600).run();
     }
 
     public SpecularV vs;

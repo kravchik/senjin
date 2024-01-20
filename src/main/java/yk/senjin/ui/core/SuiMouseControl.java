@@ -12,6 +12,7 @@ import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 23.02.18.
+ * //TODO rename: SuiInputControl
  */
 public class SuiMouseControl {
     public OglMouseController mouse = new OglMouseController();
@@ -25,20 +26,16 @@ public class SuiMouseControl {
     public SuiMouseControl() {
         mouse.onWheelListeners.add(w -> mouseState.wheel = w / 120);
         //should set them by event, or can miss rapid press-release
-        mouse.onMousePressedListeners.add(w -> { if (w < mouseState.keys.size()) {
-            mouseState.keys.get(w).justPressed = true;
-        } });
-        mouse.onMouseReleasedListeners.add(w -> { if (w < mouseState.keys.size()) mouseState.keys.get(w).justReleased = true;});
+        mouse.onMousePressedListeners.add(b -> {
+            if (b < mouseState.keys.size()) mouseState.keys.get(b).justPressed = true; });
+        mouse.onMouseReleasedListeners.add(b -> {
+            if (b < mouseState.keys.size()) mouseState.keys.get(b).justReleased = true;});
 
         mouseState.keys.add(new SuiMouseKey("left"));
         mouseState.keys.add(new SuiMouseKey("right"));
     }
 
     public void tick(float dt) {
-        for (SuiMouseKey key : mouseState.keys) {
-            key.justReleased = false;
-            key.justPressed = false;
-        }
 
         keyboard.tick(dt);
         mouseState.wheel = 0;
@@ -56,11 +53,15 @@ public class SuiMouseControl {
 
         workHierarchy();
         workTick(top, dt);
+
+        for (SuiMouseKey key : mouseState.keys) {
+            key.justReleased = false;
+            key.justPressed = false;
+        }
     }
 
     public void workHierarchy() {
         for (SuiPanel inProgress : mouseHovers) inProgress.seen = false;
-
         workHierarchy(top, new Vec2f(mouse.current.x, mouse.current.y));
 
         mouseState.justLeft = true;
@@ -106,4 +107,8 @@ public class SuiMouseControl {
         if (mouseState.wheel != 0) for (Consumer<SuiMouseState> consumer : panel.onWheel) consumer.accept(mouseState);
     }
 
+    public void init(long windowHandle) {
+        keyboard.init(windowHandle);
+        mouse.init(windowHandle);
+    }
 }

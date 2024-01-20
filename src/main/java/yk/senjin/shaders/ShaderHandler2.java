@@ -1,7 +1,6 @@
 package yk.senjin.shaders;
 
 import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.Util;
 import yk.senjin.AbstractState;
 import yk.senjin.shaders.uniforms.UniformVariable;
 
@@ -41,14 +40,12 @@ public class ShaderHandler2 extends AbstractState {
         if (isLinked) throw shouldNeverReachHere();
         if (program != -1) throw shouldNeverReachHere();
         program = GL20.glCreateProgram();
-        Util.checkGLError();
     }
 
     public void attachShader(int index) {
         if (isLinked) throw shouldNeverReachHere();
         if (program == -1) throw shouldNeverReachHere();
         GL20.glAttachShader(program, index);
-        Util.checkGLError();
     }
 
     public void linkProgram() {

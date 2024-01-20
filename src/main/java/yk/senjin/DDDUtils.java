@@ -2,7 +2,6 @@ package yk.senjin;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Matrix4f;
 import yk.jcommon.fastgeom.*;
 import yk.senjin.examples.ds.PoconuvVi;
 import yk.senjin.shaders.gshader.GProgram;
@@ -15,7 +14,6 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.util.glu.GLU.gluProject;
 import static yk.jcommon.fastgeom.Vec3f.v3;
 import static yk.ycollections.YArrayList.al;
 
@@ -30,68 +28,68 @@ public class DDDUtils {//TODO extract to another lib
 
     public static final float PI = (float) Math.PI;
 
-    public static Matrix4f QtoM(Quaternionf q) {
-        float x2 = q.i * q.i;
-        float y2 = q.j * q.j;
-        float z2 = q.k * q.k;
-        float xy = q.i * q.j;
-        float xz = q.i * q.k;
-        float yz = q.j * q.k;
-        float wx = q.a * q.i;
-        float wy = q.a * q.j;
-        float wz = q.a * q.k;
-
-        Matrix4f result = new Matrix4f();
-        result.m00 = 1.0f - 2.0f * (y2 + z2); result.m01 = 2.0f * (xy - wz); result.m02 = 2.0f * (xz + wy);
-        result.m10 = 2.0f * (xy + wz);result.m11 = 1.0f - 2.0f * (x2 + z2);result.m12 = 2.0f * (yz - wx);
-        result.m20 = 2.0f * (xz - wy);result.m21 = 2.0f * (yz + wx);result.m22 = 1.0f - 2.0f * (x2 + y2);
-        result.m33 = 1;
-        return result;
-    }
-
-    //TODO get my own matrix
-    public static Vec3f mul(Matrix4f m, Vec3f v) {
-        float x = v.x * m.m00 + v.y * m.m10 + v.z * m.m20 + m.m30;
-        float y = v.x * m.m01 + v.y * m.m11 + v.z * m.m21 + m.m31;
-        float z = v.x * m.m02 + v.y * m.m12 + v.z * m.m22 + m.m32;
-        return new Vec3f(x, y, z);
-    }
-
-    public static Vec3f mul33(Matrix4f m, Vec3f v) {
-        float x = v.x * m.m00 + v.y * m.m10 + v.z * m.m20;
-        float y = v.x * m.m01 + v.y * m.m11 + v.z * m.m21;
-        float z = v.x * m.m02 + v.y * m.m12 + v.z * m.m22;
-        return new Vec3f(x, y, z);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(QtoM(Quaternionf.fromAngleAxisFast(0.1f, new Vec3f(0, 0, 1))));
-    }
+    //public static Matrix4f QtoM(Quaternionf q) {
+    //    float x2 = q.i * q.i;
+    //    float y2 = q.j * q.j;
+    //    float z2 = q.k * q.k;
+    //    float xy = q.i * q.j;
+    //    float xz = q.i * q.k;
+    //    float yz = q.j * q.k;
+    //    float wx = q.a * q.i;
+    //    float wy = q.a * q.j;
+    //    float wz = q.a * q.k;
+    //
+    //    Matrix4f result = new Matrix4f();
+    //    result.m00 = 1.0f - 2.0f * (y2 + z2); result.m01 = 2.0f * (xy - wz); result.m02 = 2.0f * (xz + wy);
+    //    result.m10 = 2.0f * (xy + wz);result.m11 = 1.0f - 2.0f * (x2 + z2);result.m12 = 2.0f * (yz - wx);
+    //    result.m20 = 2.0f * (xz - wy);result.m21 = 2.0f * (yz + wx);result.m22 = 1.0f - 2.0f * (x2 + y2);
+    //    result.m33 = 1;
+    //    return result;
+    //}
+    //
+    ////TODO get my own matrix
+    //public static Vec3f mul(Matrix4f m, Vec3f v) {
+    //    float x = v.x * m.m00 + v.y * m.m10 + v.z * m.m20 + m.m30;
+    //    float y = v.x * m.m01 + v.y * m.m11 + v.z * m.m21 + m.m31;
+    //    float z = v.x * m.m02 + v.y * m.m12 + v.z * m.m22 + m.m32;
+    //    return new Vec3f(x, y, z);
+    //}
+    //
+    //public static Vec3f mul33(Matrix4f m, Vec3f v) {
+    //    float x = v.x * m.m00 + v.y * m.m10 + v.z * m.m20;
+    //    float y = v.x * m.m01 + v.y * m.m11 + v.z * m.m21;
+    //    float z = v.x * m.m02 + v.y * m.m12 + v.z * m.m22;
+    //    return new Vec3f(x, y, z);
+    //}
+    //
+    //public static void main(String[] args) {
+    //    System.out.println(QtoM(Quaternionf.fromAngleAxisFast(0.1f, new Vec3f(0, 0, 1))));
+    //}
 
     private static FloatBuffer multMatrixTemp = BufferUtils.createFloatBuffer(16);
 
-    public static void multMatrix(Matrix4f m4) {
-        FloatBuffer buf = BufferUtils.createFloatBuffer(16);
-        m4.store(buf);
-        buf.rewind();
-        glMultMatrix(buf);
-    }
-
+    //public static void multMatrix(Matrix4f m4) {
+    //    FloatBuffer buf = BufferUtils.createFloatBuffer(16);
+    //    m4.store(buf);
+    //    buf.rewind();
+    //    glMultMatrix(buf);
+    //}
+    //
     public static void multMatrix(Quaternionf q) {
         fillFromQuaternion(q, multMatrixTemp);
-        glMultMatrix(multMatrixTemp);
+        glMultMatrixf(multMatrixTemp);
     }
 
     public static void glLoadMatrix(Matrix4 m) {
         m.store(multMatrixTemp);
         multMatrixTemp.rewind();
-        GL11.glLoadMatrix(multMatrixTemp);
+        GL11.glLoadMatrixf(multMatrixTemp);
     }
 
     public static void glMultMatrix4(Matrix4 m) {
         m.store(multMatrixTemp);
         multMatrixTemp.rewind();
-        GL11.glMultMatrix(multMatrixTemp);
+        GL11.glMultMatrixf(multMatrixTemp);
     }
 
     public static void fillFromQuaternion(Quaternionf q, FloatBuffer matrixBuffer) {
@@ -137,33 +135,33 @@ public class DDDUtils {//TODO extract to another lib
         matrixBuffer.rewind();
     }
 
-    public static void fillMatrix(Quaternionf q, Matrix4f m) {
-        float x2 = q.i * q.i;
-        float y2 = q.j * q.j;
-        float z2 = q.k * q.k;
-        float xy = q.i * q.j;
-        float xz = q.i * q.k;
-        float yz = q.j * q.k;
-        float wx = q.a * q.i;
-        float wy = q.a * q.j;
-        float wz = q.a * q.k;
-        m.m00 = 1.0f - 2.0f * (y2 + z2);
-        m.m01 = 2.0f * (xy - wz);
-        m.m02 = 2.0f * (xz + wy);
-        m.m10 = 2.0f * (xy + wz);
-        m.m11 = 1.0f - 2.0f * (x2 + z2);
-        m.m12 = 2.0f * (yz - wx);
-        m.m20 = 2.0f * (xz - wy);
-        m.m21 = 2.0f * (yz + wx);
-        m.m22 = 1.0f - 2.0f * (x2 + y2);
-        m.m33 = 1;
-    }
-
-    public static Matrix4f getMatrix(Quaternionf q) {
-        Matrix4f result = new Matrix4f();
-        fillMatrix(q, result);
-        return result;
-    }
+    //public static void fillMatrix(Quaternionf q, Matrix4f m) {
+    //    float x2 = q.i * q.i;
+    //    float y2 = q.j * q.j;
+    //    float z2 = q.k * q.k;
+    //    float xy = q.i * q.j;
+    //    float xz = q.i * q.k;
+    //    float yz = q.j * q.k;
+    //    float wx = q.a * q.i;
+    //    float wy = q.a * q.j;
+    //    float wz = q.a * q.k;
+    //    m.m00 = 1.0f - 2.0f * (y2 + z2);
+    //    m.m01 = 2.0f * (xy - wz);
+    //    m.m02 = 2.0f * (xz + wy);
+    //    m.m10 = 2.0f * (xy + wz);
+    //    m.m11 = 1.0f - 2.0f * (x2 + z2);
+    //    m.m12 = 2.0f * (yz - wx);
+    //    m.m20 = 2.0f * (xz - wy);
+    //    m.m21 = 2.0f * (yz + wx);
+    //    m.m22 = 1.0f - 2.0f * (x2 + y2);
+    //    m.m33 = 1;
+    //}
+    //
+    //public static Matrix4f getMatrix(Quaternionf q) {
+    //    Matrix4f result = new Matrix4f();
+    //    fillMatrix(q, result);
+    //    return result;
+    //}
 
 
     public static void drawPointer() {
@@ -183,12 +181,12 @@ public class DDDUtils {//TODO extract to another lib
         glEnd();
     }
 
-    public static void setCam(Cam cam) {
-        glMatrixMode(GL11.GL_MODELVIEW);
-        glLoadIdentity();
-        multMatrix(cam.lookRot.conjug());
-        GL11.glTranslatef(-cam.lookAt.x, -cam.lookAt.y, -cam.lookAt.z);
-    }
+    //public static void setCam(Cam cam) {
+    //    glMatrixMode(GL11.GL_MODELVIEW);
+    //    glLoadIdentity();
+    //    multMatrix(cam.lookRot.conjug());
+    //    GL11.glTranslatef(-cam.lookAt.x, -cam.lookAt.y, -cam.lookAt.z);
+    //}
 
 
     public static Vec3f getStrictLineProjection(Vec3f point, Vec3f a, Vec3f b) {
@@ -369,19 +367,19 @@ public class DDDUtils {//TODO extract to another lib
     private static IntBuffer viewport = BufferUtils.createIntBuffer(16);
     private final static FloatBuffer tempBuffer = FloatBuffer.allocate(3);
 
-    private static void generateArrays() {
-        modelview.clear();
-        projection.clear();
-        viewport.clear();
-        glGetFloat(GL_MODELVIEW_MATRIX, modelview);
-        glGetFloat(GL_PROJECTION_MATRIX, projection);
-        glGetInteger(GL_VIEWPORT, viewport);
-    }
-
-    public static Vec3f world2Screen(Vec3f worldPos) {
-        gluProject(worldPos.x, worldPos.y, worldPos.z, modelview, projection, viewport, tempBuffer);
-        return new Vec3f(tempBuffer.get(0), tempBuffer.get(1), tempBuffer.get(2));
-    }
+    //private static void generateArrays() {
+    //    modelview.clear();
+    //    projection.clear();
+    //    viewport.clear();
+    //    glGetFloat(GL_MODELVIEW_MATRIX, modelview);
+    //    glGetFloat(GL_PROJECTION_MATRIX, projection);
+    //    glGetInteger(GL_VIEWPORT, viewport);
+    //}
+    //
+    //public static Vec3f world2Screen(Vec3f worldPos) {
+    //    gluProject(worldPos.x, worldPos.y, worldPos.z, modelview, projection, viewport, tempBuffer);
+    //    return new Vec3f(tempBuffer.get(0), tempBuffer.get(1), tempBuffer.get(2));
+    //}
 
     public static void glTranslate(Vec3f v) {
         GL11.glTranslatef(v.x, v.y, v.z);

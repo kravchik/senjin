@@ -29,6 +29,6 @@ public class Uniform4Ai extends UniformVariable {
 
     @Override
     public void plug() {
-        GL20.glUniform4(index, values);
+        GL20.glUniform4iv(index, values);
     }
 }

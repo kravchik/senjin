@@ -9,6 +9,6 @@ package yk.senjin;
 public class WatchSimple3DWatch extends Simple3DWatch {
 
     public static void main(String[] args) {
-        new WatchSimple3DWatch();
+        new WatchSimple3DWatch().run();
     }
 }

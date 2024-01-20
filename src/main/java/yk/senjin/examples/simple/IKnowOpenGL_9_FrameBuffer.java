@@ -30,7 +30,7 @@ public class IKnowOpenGL_9_FrameBuffer extends SimpleLwjglRoutine {
         fb.beginRenderToFbo();
         IKnowOpenGL_5_PixelPerfect.drawPixelScheme(texture.width, texture.height);
         fb.endRenderToFbo();
-        fb.render(w, h);
+        fb.render(win.sizePixels);
     }
 
 

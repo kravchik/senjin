@@ -29,7 +29,7 @@ public class Uniform4Af extends UniformVariable {
 
     @Override
     public void plug() {
-        GL20.glUniform4(index, values);
+        GL20.glUniform4fv(index, values);
     }
 
 }

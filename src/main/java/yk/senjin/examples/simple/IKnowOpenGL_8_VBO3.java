@@ -33,7 +33,7 @@ public class IKnowOpenGL_8_VBO3 extends SimpleLwjglRoutine {
         super.onFirstPass();
         program = GProgram.initFrom("src/main/java/", vs = new Ikogl_8_Vs(), fs = new Ikogl_8_Fs()).runtimeReload();
         vbo = new AVboTyped(Ikogl_8_Vd.class, 3);
-        vbo.reload(al(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0))));
+        vbo.reload(al(new Ikogl_8_Vd(v3(-w(), -h(), 0)), new Ikogl_8_Vd(v3(w(),  0, 0)), new Ikogl_8_Vd(v3( 0, h(), 0))));
         indices = AVboShortIndices.simple(3, GL_TRIANGLES);
     }
     
@@ -42,13 +42,13 @@ public class IKnowOpenGL_8_VBO3 extends SimpleLwjglRoutine {
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        vs.modelViewProjectionMatrix = ortho(0, w, 0, h, 0, 10);
+        vs.modelViewProjectionMatrix = ortho(0, w(), 0, h(), 0, 10);
         vs.timePassed += dt;
 
         //partial update
         //vbo.addChange(al(new Ikogl_8_Vd(v3( w, MyMath.sin(time * 10) * h * 0.5f, 0))), 1);
         //whole data update
-        vbo.reload(al(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w, MyMath.sin(time * 10) * h * 0.5f, 0)), new Ikogl_8_Vd(v3( 0,  h, 0))));
+        vbo.reload(al(new Ikogl_8_Vd(v3(-w(), -h(), 0)), new Ikogl_8_Vd(v3(w(), MyMath.sin(time * 10) * h() * 0.5f, 0)), new Ikogl_8_Vd(v3( 0, h(), 0))));
 
         program.setInput(vbo);
         program.enable();

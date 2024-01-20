@@ -10,5 +10,6 @@ import yk.jcommon.fastgeom.Vec4f;
  */
 public class StandardFSOutput {
     public Vec4f gl_FragColor;
+    public Vec4f[] gl_FragData;
     public float gl_FragDepth;
 }

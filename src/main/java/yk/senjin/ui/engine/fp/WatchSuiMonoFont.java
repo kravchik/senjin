@@ -14,6 +14,7 @@ public class WatchSuiMonoFont {
     private SuiEngineFp sui = new SuiEngineFp();
     private GlWindow1 window = new GlWindow1()
             .stopOnEsc()
+            .onWindowReady(wh -> sui.init(wh))
             .onTick(sui);
 
     public static void main(String[] args) {
@@ -30,7 +31,7 @@ public class WatchSuiMonoFont {
 
         //TODO size based on children?
         SuiPanelString sps = (SuiPanelString) app.sui.getTopPanel().children.first().children.first();
-        sps.pos.calcSize(sps);
+        sps.calcSize();
         app.sui.getTopPanel().pos.W = sps.pos.resultW;
         app.sui.getTopPanel().pos.H = sps.pos.resultH * 20;
         app.sui.recalcLayout();

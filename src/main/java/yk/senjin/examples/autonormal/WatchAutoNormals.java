@@ -18,9 +18,9 @@ import static yk.ycollections.YArrayList.al;
  * Time: 10:30
  */
 public class WatchAutoNormals implements LoadTickUnload<WatchReloadable> {
-
+    //TODO fix after implementing post-glsl-120
     public static void main(String[] args) {
-        new WatchReloadable(new WatchAutoNormals());
+        new WatchReloadable(new WatchAutoNormals()).run();
     }
 
     GProgram<AutoV, AutoF> shader = new GProgram<>();

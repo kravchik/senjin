@@ -3,6 +3,7 @@ package yk.senjin;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
+import yk.jcommon.fastgeom.Vec2i;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.utils.BadException;
 import yk.ycollections.YList;
@@ -11,7 +12,6 @@ import java.nio.IntBuffer;
 import java.util.List;
 
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
-import static org.lwjgl.opengl.GL11.glGetInteger;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;
 import static yk.ycollections.YArrayList.al;
@@ -126,9 +126,8 @@ public class FrameBuffer {
     /**
      * Renders currently enabled texture 0 to the whole screen (width and height should be provided)
      */
-    public static void renderTexture0(int width, int height) {
-        renderTexture0(0, 0, width, height, true);
-    }
+    public static void renderTexture0(Vec2i wh) {renderTexture0(wh.x, wh.y);}
+    public static void renderTexture0(int width, int height) {renderTexture0(0, 0, width, height, true);}
 
     /**
      * Renders currently enabled texture 0 to the screen.
@@ -141,8 +140,9 @@ public class FrameBuffer {
 
         glViewport (left, bottom, width, height);
         glMatrixMode(GL_PROJECTION);
+
         glLoadIdentity();
-        //glOrtho(0, 0, width, height, -1, 1);
+        //glOrtho(-1, 1, -1, 1, 1, -1);//MULTIPLIES current matrix! So maybe load identity before this
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
@@ -171,6 +171,7 @@ public class FrameBuffer {
         for (SomeTexture t : textures) t.release();
     }
 
+    public void render(Vec2i wh) {render(wh.x, wh.y);}
     public void render(int w, int h) {
         render(0, w, h);
     }

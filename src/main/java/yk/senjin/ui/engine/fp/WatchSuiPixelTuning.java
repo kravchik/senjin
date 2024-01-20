@@ -15,6 +15,7 @@ public class WatchSuiPixelTuning {
     private GlWindow1 window = new GlWindow1()
             .setSize(800, 800)
             .stopOnEsc()
+            .onWindowReady(wh -> aui.init(wh))
             .onFirstFrame(this::onFirstPass)
             .onTick(aui);
 

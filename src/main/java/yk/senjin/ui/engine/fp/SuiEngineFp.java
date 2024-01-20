@@ -1,11 +1,11 @@
 package yk.senjin.ui.engine.fp;
 
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+import yk.jcommon.fastgeom.Vec2i;
 import yk.senjin.ui.core.Sui;
 import yk.senjin.ui.core.SuiMouseControl;
 import yk.senjin.ui.core.SuiPanel;
 import yk.senjin.ui.core.SuiSkinner1;
+import yk.senjin.util.GlfwWindow;
 import yk.senjin.util.Tickable;
 
 /**
@@ -17,7 +17,6 @@ public class SuiEngineFp implements Tickable {
     public SuiRendererFp auiRenderer;
     public SuiMouseControl auiInput = new SuiMouseControl();
     public SuiSkinner1 skinner1 = new SuiSkinner1();
-    private boolean isInited;
 
     public SuiEngineFp() {
         this(new SuiPanel());
@@ -34,28 +33,28 @@ public class SuiEngineFp implements Tickable {
 
     @Override
     public void tick(float dt) {
-        if (!isInited) init();
         recalcLayout();//TODO on changes only
         auiInput.tick(dt);
         auiRenderer.render(getTopPanel());
     }
 
-    private void init() {
-        //we can hard wire this because we depend on AuiRenderer1 anyway
-        DisplayMode displayMode = Display.getDisplayMode();
-        int w = displayMode.getWidth();
-        int h = displayMode.getHeight();
+    public SuiEngineFp init(GlfwWindow win) {
+        //Vec2i wh = win.sizePixels;
+        Vec2i wh = GlfwWindow.getWindowsUxSize(win.handle);
+
+
+        auiInput.init(win.handle);
         auiInput.mouse.topBottom = true;
-        auiInput.mouse.height = h;
+        auiInput.mouse.height = wh.y;
         auiInput.top = getTopPanel();
-        getTopPanel().pos.W = (float)w;
-        getTopPanel().pos.H = (float)h;
-        isInited = true;
+        getTopPanel().pos.W = (float)wh.x;
+        getTopPanel().pos.H = (float)wh.y;
+        return this;
     }
 
     public void recalcLayout() {
         if (auiRenderer == null) return;
-        getTopPanel().pos.calcSize(getTopPanel());
+        getTopPanel().calcSize();
         getTopPanel().pos.calcPos(getTopPanel());
         getTopPanel().pos.localToGlobal(getTopPanel());
     }

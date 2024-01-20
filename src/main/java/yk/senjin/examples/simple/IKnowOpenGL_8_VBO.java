@@ -35,7 +35,7 @@ public class IKnowOpenGL_8_VBO extends SimpleLwjglRoutine {
         vs = new Ikogl_8_Vs();
         program = GProgram.initFrom("src/main/java/", vs, fs).runtimeReload();
 
-        vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0)));
+        vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w(), -h(), 0)), new Ikogl_8_Vd(v3(w(),  0, 0)), new Ikogl_8_Vd(v3( 0, h(), 0)));
         indexBuffer = BufferUtils.createShortBuffer(3);
         indexBuffer.put(new short[]{0, 1, 2});
         indexBuffer.rewind();
@@ -46,7 +46,7 @@ public class IKnowOpenGL_8_VBO extends SimpleLwjglRoutine {
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        vs.modelViewProjectionMatrix = ortho(0, w, 0, h, 0, 10);
+        vs.modelViewProjectionMatrix = ortho(0, w(), 0, h(), 0, 10);
         vs.timePassed += dt;
 
         program.setInput(this.vbo);

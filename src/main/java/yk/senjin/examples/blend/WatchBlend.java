@@ -1,6 +1,5 @@
 package yk.senjin.examples.blend;
 
-import org.lwjgl.LWJGLException;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.DDDUtils;
@@ -36,19 +35,19 @@ public class WatchBlend extends Simple3DWatch {
     public Blender1 blender;
 
     public WatchBlend() {
-        super(600, 600, true);
+        super(600, 600);
         SIMPLE_AA =  false;
     }
 
     public static void main(String[] args) {
-        new WatchBlend();
+        new WatchBlend().run();
     }
 
     @Override
     public void firstFrame() {
         specularF = new SpecularF();
         specularV = new SpecularV();
-        specularProgram = new GProgram(specularV, specularF);
+        specularProgram = new GProgram(specularV, specularF).link();
 
         textureJfdi = new SomeTexture(readImage("jfdi.png"));
         vbo1 = new AVboTyped(
@@ -63,8 +62,7 @@ public class WatchBlend extends Simple3DWatch {
     }
 
     @Override
-    protected void commonTick(float dt) throws LWJGLException {
-        if (firstFrame) onFirstFrame();
+    protected void commonTick(float dt) {
         blender.beginRenderToFbo1();
         onRender(dt);
     }
@@ -80,8 +78,7 @@ public class WatchBlend extends Simple3DWatch {
         DDDUtils.cameraDraw(specularProgram, vbo1, indices, textureJfdi);
         blender.endRenderToFbo1();
 
-        blender.renderToScreen(w, h);
-
+        blender.renderToScreen(sizePixels);
     }
 
 

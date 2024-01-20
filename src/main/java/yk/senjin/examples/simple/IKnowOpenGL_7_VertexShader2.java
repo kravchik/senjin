@@ -28,14 +28,14 @@ public class IKnowOpenGL_7_VertexShader2 extends SimpleLwjglRoutine {
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        vs.modelViewProjectionMatrix = ortho(0, w, 0, h, 0, 10);
+        vs.modelViewProjectionMatrix = ortho(0, w(), 0, h(), 0, 10);
         vs.timePassed += dt;
         program.enable();
 
         glBegin(GL_TRIANGLES);
             glVertexAttrib3f(program.shaderState.vertexAttribs.get("pos").getIndex(), 0, 0, -5);
-            glVertexAttrib3f(program.shaderState.vertexAttribs.get("pos").getIndex(), w, 0, -5);
-            glVertexAttrib3f(program.shaderState.vertexAttribs.get("pos").getIndex(), 0, h, -5);
+            glVertexAttrib3f(program.shaderState.vertexAttribs.get("pos").getIndex(), w(), 0, -5);
+            glVertexAttrib3f(program.shaderState.vertexAttribs.get("pos").getIndex(), 0, h(), -5);
         glEnd();
 
         program.disable();

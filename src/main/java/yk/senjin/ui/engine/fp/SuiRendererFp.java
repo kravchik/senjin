@@ -15,7 +15,7 @@ import java.awt.*;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
-import static yk.jcommon.fastgeom.Matrix4.ortho;
+import static yk.jcommon.fastgeom.Matrix4.orthoPixel;
 import static yk.jcommon.utils.MyMath.min;
 import static yk.senjin.DDDUtils.glLoadMatrix;
 
@@ -41,7 +41,7 @@ public class SuiRendererFp {
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrix(Matrix4.identity());//0,0 is LEFT BOTTOM
         glMatrixMode(GL_PROJECTION);
-        glLoadMatrix(ortho(0, topPanel.pos.resultW, topPanel.pos.resultH, 0, 0, 10));//0,0 is LEFT BOTTOM
+        glLoadMatrix(orthoPixel(0, topPanel.pos.resultW, topPanel.pos.resultH, 0, 0, 10));//0,0 is LEFT BOTTOM
         glDisable(GL_DEPTH_TEST);
         renderImpl(topPanel);
     }

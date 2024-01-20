@@ -26,16 +26,16 @@ public class IKnowOpenGL_6_FragmentShader extends SimpleLwjglRoutine {
     
     @Override public void onTick(float dt) {
         glMatrixMode(GL_PROJECTION);
-        DDDUtils.glLoadMatrix(ortho(0, w, 0, h, 0, 10));
+        DDDUtils.glLoadMatrix(ortho(0, w(), 0, h(), 0, 10));
 
-        fs.w = w;
-        fs.h = h;
+        fs.w = w();
+        fs.h = h();
         program.enable();
 
         glBegin(GL_TRIANGLES);
             glVertex3f(0, 0, -5);
-            glVertex3f(w, 0, -5);
-            glVertex3f(0, h, -5);
+            glVertex3f(w(), 0, -5);
+            glVertex3f(0, h(), -5);
         glEnd();
 
         program.disable();

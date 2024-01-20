@@ -1,6 +1,7 @@
 package yk.senjin.ui.core;
 
 import yk.jcommon.fastgeom.Vec4f;
+import yk.senjin.ui.engine.fp.SuiFont;
 
 import static yk.jcommon.fastgeom.Vec4f.v4;
 
@@ -11,7 +12,7 @@ import static yk.jcommon.fastgeom.Vec4f.v4;
 public class SuiPanelString extends SuiPanel {
     public Vec4f color = v4(1, 1, 1, 1);
     private String string;
-    public boolean isChanged;
+    private boolean isChanged;
 
     //System font (vector based) -> pixel font (image based)
     //  using fontSize, fontStyle and fontAntialiased (for possible system AA)
@@ -30,7 +31,11 @@ public class SuiPanelString extends SuiPanel {
     }
     
     public SuiPanelString(String string) {
-        pos = new SuiPosString();
+        setString(string);
+    }
+
+    public SuiPanelString(SuiPositions pos, String string) {
+        this.pos = pos;
         setString(string);
     }
 
@@ -43,5 +48,16 @@ public class SuiPanelString extends SuiPanel {
             this.string = string;
             isChanged = true;
         }
+    }
+
+    @Override
+    public void calcSize() {
+        if (isChanged) {
+            SuiFont font = sui.fonts.getFont(this);
+            pos.W = (float)font.getWidth(getString()) * scale;
+            pos.H = (float)font.getHeight() * scale;
+            isChanged = false;
+        }
+        super.calcSize();
     }
 }

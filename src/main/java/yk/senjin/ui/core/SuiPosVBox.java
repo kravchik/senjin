@@ -5,12 +5,21 @@ import static yk.jcommon.utils.MyMath.max;
 public class SuiPosVBox extends SuiPositions {
     public float interval;
 
+    public SuiPosVBox interval(float interval) {
+        this.interval = interval;
+        return this;
+    }
+
+    public static SuiPosVBox vbox() {
+        return new SuiPosVBox();
+    }
+
     @Override
     public void calcSize(SuiPanel panel) {
         float resW = 0;
         float resH = 0;
         for (SuiPanel child : panel.children) {
-            child.pos.calcSize(child);
+            child.calcSize();
 
             resW = max(resW, child.pos.resultW);
             resH += child.pos.resultH + interval;

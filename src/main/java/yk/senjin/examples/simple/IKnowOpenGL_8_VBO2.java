@@ -29,7 +29,7 @@ public class IKnowOpenGL_8_VBO2 extends SimpleLwjglRoutine {
     @Override public void onFirstPass() {
         super.onFirstPass();
         program = GProgram.initFrom("src/main/java/", vs = new Ikogl_8_Vs(), fs = new Ikogl_8_Fs()).runtimeReload();
-        vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w, -h, 0)), new Ikogl_8_Vd(v3( w,  0, 0)), new Ikogl_8_Vd(v3( 0,  h, 0)));
+        vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w(), -h(), 0)), new Ikogl_8_Vd(v3(w(),  0, 0)), new Ikogl_8_Vd(v3( 0, h(), 0)));
         indices = AVboShortIndices.simple(3, GL_TRIANGLES);
     }
     
@@ -37,7 +37,7 @@ public class IKnowOpenGL_8_VBO2 extends SimpleLwjglRoutine {
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        vs.modelViewProjectionMatrix = ortho(0, w, 0, h, 0, 10);
+        vs.modelViewProjectionMatrix = ortho(0, w(), 0, h(), 0, 10);
         vs.timePassed += dt;
 
         program.setInput(vbo);

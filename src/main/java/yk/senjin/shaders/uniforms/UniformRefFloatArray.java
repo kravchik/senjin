@@ -34,6 +34,6 @@ public class UniformRefFloatArray extends UniformRef {
     public void plug() {
         buffer.put(getValue());
         buffer.rewind();
-        GL20.glUniform1(index, buffer);
+        GL20.glUniform1fv(index, buffer);
     }
 }

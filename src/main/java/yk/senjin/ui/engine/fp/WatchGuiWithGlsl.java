@@ -11,11 +11,12 @@ import static yk.jcommon.utils.IO.readImage;
  */
 public class WatchGuiWithGlsl {
     private SuiEngineFp ui = new SuiEngineFp(new SuiPanel().add(
-            new SuiPanelImage().setImage(readImage("/home/yuri/Pictures/Screenshot at 2022-08-20 16-10-09.png"))));
+            new SuiPanelImage().setImage(readImage("/Users/ykravchik/Screenshots/Screenshot 2023-10-30 at 20.07.11.png"))));
 
     private GlWindow1 window = new GlWindow1()
             .setSize(800, 800)
             .stopOnEsc()
+            .onWindowReady(wh -> ui.init(wh))
             .onTick(ui);
 
     public static void main(String[] args) {

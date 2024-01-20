@@ -27,4 +27,20 @@ public class ThreadUtils {
         }).start();
     }
     
+    public static void tickerNotThread(long sleepMs, Runnable onInit, Function<Float, Boolean> ticker) {
+        try {
+            if (onInit != null) onInit.run();
+            long lastTick = System.currentTimeMillis();
+            while (true) {
+                long curTime = System.currentTimeMillis();
+                if (!ticker.apply((curTime - lastTick) / 1000f)) break;
+                lastTick = curTime;
+                sleep(sleepMs);
+            }
+        } catch (Throwable t) {
+            System.err.println("Error occurred");
+            t.printStackTrace();
+        }
+    }
+
 }

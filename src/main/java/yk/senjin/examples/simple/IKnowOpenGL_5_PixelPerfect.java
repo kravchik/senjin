@@ -3,7 +3,7 @@ package yk.senjin.examples.simple;
 import yk.jcommon.utils.MyMath;
 
 import static org.lwjgl.opengl.GL11.*;
-import static yk.jcommon.fastgeom.Matrix4.ortho;
+import static yk.jcommon.fastgeom.Matrix4.orthoPixel;
 import static yk.senjin.DDDUtils.glLoadMatrix;
 
 /**
@@ -15,20 +15,23 @@ public class IKnowOpenGL_5_PixelPerfect extends SimpleLwjglRoutine {
     }
 
     @Override public void onTick(float dt) {
-        glMatrixMode(GL_PROJECTION);
-        drawPixelScheme(this.w, this.h);
+        drawPixelScheme(this.w(), this.h());
         super.onTick(dt);
     }
 
     public static void drawPixelScheme(int w, int h) {
-        //glLoadMatrix(ortho(0, w, h, 0, 0, 10));//0,0 is LEFT TOP
-        glLoadMatrix(ortho(0, w, 0, h, 0, 10));//0,0 is LEFT BOTTOM
+        glMatrixMode(GL_PROJECTION);
+        glLoadMatrix(orthoPixel(0, w, 0, h, 0, 10));//0,0 is LEFT BOTTOM
 
         glBegin(GL_TRIANGLES);
         glColor3f(1, 1, 1);
-        glVertex3f(0, 0, 0);
-        glVertex3f(10, 0, 0);
-        glVertex3f(10, 10, 0);
+        glVertex3f(0 + 3, 0, 0);
+        glVertex3f(5 + 3, 0, 0);
+        glVertex3f(0 + 3, 5, 0);
+
+        glVertex3f(0 + 3, h-1, 0);
+        glVertex3f(5 + 3, h-1-5, 0);
+        glVertex3f(5 + 3, h-1, 0);
         glEnd();
 
         glBegin(GL_LINES);

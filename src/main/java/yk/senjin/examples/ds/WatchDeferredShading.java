@@ -1,6 +1,5 @@
 package yk.senjin.examples.ds;
 
-import org.lwjgl.BufferUtils;
 import yk.jcommon.fastgeom.Matrix4;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
@@ -9,9 +8,7 @@ import yk.senjin.*;
 import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.vbo.AVboTyped;
 
-import java.nio.FloatBuffer;
-
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL30.GL_RGBA32F;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
 import static yk.jcommon.utils.IO.readImage;
@@ -24,7 +21,7 @@ import static yk.ycollections.YArrayList.al;
  * Time: 12:09
  */
 public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
-
+    //TODO fix
     public PosuvV hdrV;
     public DeferredShadeF hdrF;
     public GProgram hdrProgram;
@@ -41,9 +38,7 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
 
 
     public static void main(String[] args) {
-        new WatchReloadable(new WatchDeferredShading()) {{
-            SIMPLE_AA = false;
-        }};
+        new WatchReloadable(new WatchDeferredShading()).run();
     }
 
     @Override
@@ -107,14 +102,14 @@ public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
 //        cameraDraw(blendProgram, ???, ???, fbo2.texture);
         hdrV.modelViewProjectionMatrix = Matrix4.identity();
         hdrProgram.enable();
-        FrameBuffer.renderTexture0(watch.w, watch.h);
+        FrameBuffer.renderTexture0(watch.sizePixels);
         hdrProgram.disable();
         fbo1.textures.get(2).disable();
         fbo1.textures.get(1).disable();
         fbo1.textures.get(0).disable();
 
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(4);
-        glReadPixels(watch.w / 2, watch.h / 2, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, buffer);
+        //FloatBuffer buffer = BufferUtils.createFloatBuffer(4);
+        //glReadPixels(watch.w / 2, watch.h / 2, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, buffer);
     }
 
     @Override

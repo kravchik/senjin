@@ -31,6 +31,6 @@ public class UniformMatrix4 extends UniformVariable {
 
     @Override
     public void plug() {
-        GL20.glUniformMatrix4(index, false, matrixBuffer);
+        GL20.glUniformMatrix4fv(index, false, matrixBuffer);
     }
 }

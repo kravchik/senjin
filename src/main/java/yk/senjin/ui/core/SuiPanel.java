@@ -60,6 +60,15 @@ public class SuiPanel {
         this.pos = pos;
     }
 
+    public SuiPanel(SuiPositions pos, SuiPanel... pp) {
+        this.pos = pos;
+        add(pp);
+    }
+
+    public static SuiPanel panel(SuiPositions pos, SuiPanel... pp) {
+        return new SuiPanel(pos, pp);
+    }
+
     public void setSuiInChildren() {
         if (sui != null) {
             for (SuiPanel child : children) {
@@ -114,5 +123,9 @@ public class SuiPanel {
         pos.left = x;
         pos.top = y;
         return this;
+    }
+
+    public void calcSize() {
+        pos.calcSize(this);
     }
 }

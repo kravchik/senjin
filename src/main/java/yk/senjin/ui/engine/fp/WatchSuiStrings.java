@@ -1,11 +1,17 @@
 package yk.senjin.ui.engine.fp;
 
-import yk.senjin.ui.core.*;
+import yk.senjin.ui.core.SuiPanelDbgRect;
+import yk.senjin.ui.core.SuiPanelString;
+import yk.senjin.ui.core.SuiPositions;
 import yk.senjin.util.GlWindow1;
 
 import java.awt.*;
 
 import static yk.jcommon.fastgeom.Vec4f.v4;
+import static yk.senjin.ui.core.SuiPanel.panel;
+import static yk.senjin.ui.core.SuiPosHBox.hbox;
+import static yk.senjin.ui.core.SuiPosVBox.vbox;
+import static yk.senjin.ui.core.SuiPositions.pos;
 
 /**
  * Created by Yuri Kravchik on 15.12.17.
@@ -15,6 +21,7 @@ public class WatchSuiStrings {
     private GlWindow1 window = new GlWindow1()
             .setSize(800, 800)
             .stopOnEsc()
+            .onWindowReady(wh -> aui.init(wh))
             .onFirstFrame(this::onFirstPass)
             .onTick(aui);
 
@@ -34,49 +41,37 @@ public class WatchSuiStrings {
 
 
         aui.getTopPanel().add(
-                new SuiPanel(){{
-                    pos = new SuiPosHBox(){{interval=10;
-                        belowCenter =0f;right=5f;}};}}.add(
-                        new SuiPanelDbgRect(){{bodyColor = v4(0.5f, 0.5f, 0.8f, 1);
-                            pos = new SuiPositions(){{W=50f;H=50f;}};}},
-                        new SuiPanelDbgRect(){{bodyColor = v4(0.5f, 0.5f, 0.8f, 1);
-                            pos = new SuiPositions(){{W=50f;H=50f;}};}},
-                        new SuiPanelDbgRect(){{bodyColor = v4(0.5f, 0.5f, 0.8f, 1);
-                            pos = new SuiPositions(){{W=50f;H=50f;}};}}
+                panel(hbox().interval(10).belowCenter(0f).right(5f),
+                    new SuiPanelDbgRect(pos().W(50f).H(50f), v4(0.5f, 0.5f, 0.8f, 1)),
+                    new SuiPanelDbgRect(pos().W(50f).H(50f), v4(0.5f, 0.5f, 0.8f, 1)),
+                    new SuiPanelDbgRect(pos().W(50f).H(50f), v4(0.5f, 0.5f, 0.8f, 1))
                 ),
-                new SuiPanel(){{
-                    pos = new SuiPosVBox(){{interval=10;
-                        rightCenter =0f;bottom=5f;}};}}.add(
-                        new SuiPanelDbgRect(){{bodyColor = v4(1, 0, 0, 1);
-                            pos = new SuiPositions(){{W=50f;H=50f;}};}},
-                        new SuiPanelDbgRect(){{bodyColor = v4(1, 0, 0, 1);
-                            pos = new SuiPositions(){{W=50f;H=50f;}};}},
-                        new SuiPanelDbgRect(){{bodyColor = v4(1, 0, 0, 1);
-                            pos = new SuiPositions(){{W=50f;H=50f;}};}}
+                panel(vbox().interval(10).rightCenter(0f).bottom(5f),
+                        new SuiPanelDbgRect(pos().W(50f).H(50f), v4(1, 0, 0, 1)),
+                        new SuiPanelDbgRect(pos().W(50f).H(50f), v4(1, 0, 0, 1)),
+                        new SuiPanelDbgRect(pos().W(50f).H(50f), v4(1, 0, 0, 1))
                 ),
 
-                new SuiPanelDbgRect(){{bodyColor = v4(1, 0.4f, 0, 1);
-                    pos = new SuiPositions(){{left=50f;W=100f;H=600f;}};}},
+                new SuiPanelDbgRect(pos().left(50f).W(100f).H(600f), v4(1, 0.4f, 0, 1)),
 
-                new SuiPanelString("Hello bold world! :)") {{
-                    pos = new SuiPosString(){{left=10f;top=0f;}};fontStyle= Font.BOLD;}},
-                new SuiPanelString("Hello pixel world! :)") {{
-                    pos = new SuiPosString(){{
-                    left=10f;top=40f;}};fontAntialiased=false;fontSize=18;scale=3;fontName="Ubuntu Condensed";}},
+                new SuiPanelString(pos().left(10f).top(0f), "Hello bold world! :)") {{
+                    fontStyle= Font.BOLD;}},
+                new SuiPanelString(pos().left(10f).top(40f), "Hello pixel world! :)") {{
+                    fontAntialiased=false;fontSize=18;scale=3;fontName="Ubuntu Condensed";}},
 
-                new SuiPanelString("Hello antialiased world! :)") {{
-                    pos = new SuiPosString(){{left=10f;top=100f;}};fontSize=24;}},
-                new SuiPanelString("Hello aliased world! :)") {{
-                    pos = new SuiPosString(){{left=10f;top=150f;}};fontAntialiased=false;fontSize=24;}},
+                new SuiPanelString(pos().left(10f).top(100f), "Hello antialiased world! :)") {{
+                    fontSize=24;}},
+                new SuiPanelString(pos().left(10f).top(150f), "Hello aliased world! :)") {{
+                    fontAntialiased=false;fontSize=24;}},
 
-                new SuiPanelString("Scale with mipmap! :)") {{
-                    pos = new SuiPosString(){{left=10f;top=190f;}};fontSize=24;fontMipmap=true;scale=0.5f;}},
-                new SuiPanelString("Scale without mipmap! :)") {{
-                    pos = new SuiPosString(){{left=10f;top=210f;}};fontAntialiased=false;fontSize=24;scale=0.5f;}},
-                new SuiPanelString("Scale with mipmap! :)") {{
-                    pos = new SuiPosString(){{left=10f;top=230f;}};fontSize=24;fontMipmap=true;scale=0.3f;}},
-                new SuiPanelString("Scale without mipmap! :)") {{
-                    pos = new SuiPosString(){{left=10f;top=240f;}};fontAntialiased=false;fontSize=24;scale=0.3f;}},
+                new SuiPanelString(pos().left(10f).top(190f), "Scale with mipmap! :)") {{
+                    scale=0.5f;fontMipmap=true;}},
+                new SuiPanelString(pos().left(10f).top(210f), "Scale without mipmap! :)") {{
+                    scale=0.5f;fontAntialiased=false;}},
+                new SuiPanelString(pos().left(10f).top(230f), "Scale with mipmap! :)") {{
+                    scale=0.3f;fontMipmap=true;}},
+                new SuiPanelString(pos().left(10f).top(240f), "Scale without mipmap! :)") {{
+                    scale=0.3f;fontAntialiased=false;}},
                 rect
         );
 
