@@ -3,7 +3,7 @@ package yk.senjin.ui.engine.fp;
 import yk.senjin.ui.core.SuiPanelDbgRect;
 import yk.senjin.ui.core.SuiPanelString;
 import yk.senjin.ui.core.SuiPositions;
-import yk.senjin.util.GlWindow1;
+import yk.senjin.viewers.GlWindow1;
 
 import java.awt.*;
 
@@ -19,7 +19,7 @@ import static yk.senjin.ui.core.SuiPositions.pos;
 public class WatchSuiStrings {
     private SuiEngineFp aui = new SuiEngineFp();
     private GlWindow1 window = new GlWindow1()
-            .setSize(800, 800)
+            .setUxSize(800, 800)
             .stopOnEsc()
             .onWindowReady(wh -> aui.init(wh))
             .onFirstFrame(this::onFirstPass)

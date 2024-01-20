@@ -6,6 +6,7 @@ import yk.senjin.examples.simple.stuff.Ikogl_8_Vd;
 import yk.senjin.examples.simple.stuff.Ikogl_8_Vs;
 import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.vbo.AVboTyped;
+import yk.senjin.viewers.SimpleLwjglRoutine;
 
 import java.nio.ShortBuffer;
 

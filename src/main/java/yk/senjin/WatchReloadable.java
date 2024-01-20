@@ -1,5 +1,7 @@
 package yk.senjin;
 
+import yk.senjin.viewers.Simple3DWatch;
+
 import java.util.function.Consumer;
 
 /**

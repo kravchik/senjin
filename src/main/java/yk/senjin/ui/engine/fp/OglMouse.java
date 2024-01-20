@@ -17,7 +17,7 @@ import static yk.ycollections.YArrayList.al;
  * Time: 12:29
  * //TODO rename OglMouse
  */
-public class OglMouseController {
+public class OglMouse {
     public Vec2i current;
     public boolean topBottom;
     public int height;
@@ -35,7 +35,7 @@ public class OglMouseController {
     private long windowHandle;
 
 
-    public OglMouseController init(long windowHandle) {
+    public OglMouse init(long windowHandle) {
         this.windowHandle = windowHandle;
         glfwSetScrollCallback(windowHandle, (win, dx, dy) -> {
             for (Consumer<Integer> wl : onWheelListeners) wl.accept((int) dx);

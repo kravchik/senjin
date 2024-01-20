@@ -2,7 +2,7 @@ package yk.senjin.ui.engine.fp;
 
 import yk.senjin.ui.core.SuiPanel;
 import yk.senjin.ui.core.SuiPanelImage;
-import yk.senjin.util.GlWindow1;
+import yk.senjin.viewers.GlWindow1;
 
 import static yk.jcommon.utils.IO.readImage;
 
@@ -14,7 +14,7 @@ public class WatchGuiWithGlsl {
             new SuiPanelImage().setImage(readImage("/Users/ykravchik/Screenshots/Screenshot 2023-10-30 at 20.07.11.png"))));
 
     private GlWindow1 window = new GlWindow1()
-            .setSize(800, 800)
+            .setUxSize(800, 800)
             .stopOnEsc()
             .onWindowReady(wh -> ui.init(wh))
             .onTick(ui);

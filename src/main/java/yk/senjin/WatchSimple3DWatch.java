@@ -1,5 +1,7 @@
 package yk.senjin;
 
+import yk.senjin.viewers.Simple3DWatch;
+
 /**
  * Created with IntelliJ IDEA.
  * User: yuri

@@ -2,6 +2,7 @@ package yk.senjin.examples.simple;
 
 import yk.jcommon.fastgeom.Matrix4;
 import yk.senjin.DDDUtils;
+import yk.senjin.viewers.SimpleLwjglRoutine;
 
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.fastgeom.Matrix4.identity;

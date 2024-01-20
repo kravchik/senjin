@@ -3,6 +3,7 @@ package yk.senjin.examples.simple;
 import yk.senjin.DDDUtils;
 import yk.senjin.examples.simple.stuff.Ikogl_6_Fs;
 import yk.senjin.shaders.gshader.GProgram;
+import yk.senjin.viewers.SimpleLwjglRoutine;
 
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.fastgeom.Matrix4.ortho;

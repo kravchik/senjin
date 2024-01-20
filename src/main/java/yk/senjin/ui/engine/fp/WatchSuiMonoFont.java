@@ -3,7 +3,7 @@ package yk.senjin.ui.engine.fp;
 import yk.senjin.ui.core.SuiPanel;
 import yk.senjin.ui.core.SuiPanelString;
 import yk.senjin.ui.core.SuiPosVBox;
-import yk.senjin.util.GlWindow1;
+import yk.senjin.viewers.GlWindow1;
 
 /**
  * Created by Yuri Kravchik on 2023.03.23
@@ -36,7 +36,7 @@ public class WatchSuiMonoFont {
         app.sui.getTopPanel().pos.H = sps.pos.resultH * 20;
         app.sui.recalcLayout();
 
-        app.window.setSize(app.sui.getWindowW(), app.sui.getWindowH())
+        app.window.setUxSize(app.sui.getWindowW(), app.sui.getWindowH())
                   .start(1);
     }
 

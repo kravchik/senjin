@@ -2,7 +2,7 @@ package yk.senjin.ui.core;
 
 import yk.jcommon.fastgeom.Vec2f;
 import yk.senjin.ui.engine.fp.OglKeyboard;
-import yk.senjin.ui.engine.fp.OglMouseController;
+import yk.senjin.ui.engine.fp.OglMouse;
 import yk.ycollections.YList;
 
 import java.util.Iterator;
@@ -12,10 +12,9 @@ import static yk.ycollections.YArrayList.al;
 
 /**
  * Created by Yuri Kravchik on 23.02.18.
- * //TODO rename: SuiInputControl
  */
-public class SuiMouseControl {
-    public OglMouseController mouse = new OglMouseController();
+public class SuiInputControl {
+    public OglMouse mouse = new OglMouse();
     public OglKeyboard keyboard = new OglKeyboard();
 
     public SuiPanel top;
@@ -23,7 +22,7 @@ public class SuiMouseControl {
     YList<SuiPanel> mouseHovers = al();
     public SuiMouseState mouseState = new SuiMouseState();
 
-    public SuiMouseControl() {
+    public SuiInputControl() {
         mouse.onWheelListeners.add(w -> mouseState.wheel = w / 120);
         //should set them by event, or can miss rapid press-release
         mouse.onMousePressedListeners.add(b -> {

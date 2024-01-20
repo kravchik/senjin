@@ -8,6 +8,7 @@ import yk.senjin.examples.simple.stuff.Ikogl_8_Vs;
 import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.vbo.AVboShortIndices;
 import yk.senjin.vbo.AVboTyped;
+import yk.senjin.viewers.SimpleLwjglRoutine;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;

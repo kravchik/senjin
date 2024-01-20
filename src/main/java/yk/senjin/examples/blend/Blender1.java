@@ -15,8 +15,6 @@ import static yk.jcommon.fastgeom.Matrix4.identity;
  * Time: 14:41
  */
 public class Blender1 {
-    //TODO don't use deprecated gl_Vertex
-    //TODO use Poconuv instesad
     //http://dev.theomader.com/gaussian-kernel-calculator/
     public static final float[] KERNEL_3_11 = new float[]{0.035822f, 0.05879f, 0.086425f, 0.113806f, 0.13424f, 0.141836f, 0.13424f, 0.113806f, 0.086425f, 0.05879f, 0.035822f};
     public static final float[] KERNEL_1_11 = new float[]{0.000003f, 0.000229f, 0.005977f, 0.060598f, 0.24173f, 0.382925f, 0.24173f, 0.060598f, 0.005977f, 0.000229f, 0.000003f};

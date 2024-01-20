@@ -3,10 +3,10 @@ package yk.senjin.examples.specular;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.senjin.DrawIndicesShort;
-import yk.senjin.Simple3DWatch;
 import yk.senjin.SomeTexture;
 import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.vbo.AVboTyped;
+import yk.senjin.viewers.Simple3DWatch;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static yk.jcommon.utils.IO.readImage;

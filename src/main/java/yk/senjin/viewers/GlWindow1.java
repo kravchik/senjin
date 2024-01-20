@@ -1,12 +1,14 @@
-package yk.senjin.util;
+package yk.senjin.viewers;
 
+import yk.senjin.util.GlfwWindow;
+import yk.senjin.util.Tickable;
 import yk.ycollections.YList;
 
 import java.util.function.Consumer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static yk.senjin.examples.simple.SimpleLwjglRoutine.initWindow;
 import static yk.senjin.util.ThreadUtils.tickerNotThread;
+import static yk.senjin.viewers.SimpleLwjglRoutine.initWindow;
 import static yk.ycollections.YArrayList.al;
 
 /**
@@ -18,8 +20,8 @@ import static yk.ycollections.YArrayList.al;
  * Excessive finals placed to point at the right methods to (if) override
  */
 public class GlWindow1 {
-    private int w = 600;
-    private int h = 600;
+    private int uxW = 600;
+    private int uxH = 600;
     private boolean stopRenderThread;
     private GlfwWindow win;
     private final YList<Tickable> tickable = al();
@@ -31,9 +33,9 @@ public class GlWindow1 {
     }
 
     public void firstFrame() {
-        win = initWindow(w, h, "Hello World!", false);
-        w = win.sizePixels.x;
-        h = win.sizePixels.y;
+        win = initWindow(uxW, uxH, "Hello World!", false);
+        uxW = win.sizePixels.x;
+        uxH = win.sizePixels.y;
         for (Consumer<GlfwWindow> consumer : onInit) consumer.accept(win);
         for (Runnable r : onFirstFrame) r.run();
     }
@@ -81,12 +83,12 @@ public class GlWindow1 {
         });
     }
 
-    public final GlWindow1 setSize(int w, int h) {
-        this.w = w;
-        this.h = h;
+    public final GlWindow1 setUxSize(int w, int h) {
+        this.uxW = w;
+        this.uxH = h;
         return this;
     }
 
-    public final int getWidth() {return w;}
-    public final int getHeight() {return h;}
+    public final int getWidth() {return uxW;}
+    public final int getHeight() {return uxH;}
 }

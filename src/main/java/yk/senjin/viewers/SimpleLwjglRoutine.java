@@ -1,4 +1,4 @@
-package yk.senjin.examples.simple;
+package yk.senjin.viewers;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -17,7 +17,6 @@ import static yk.jcommon.utils.Threads.sleep;
 
 /**
  * Created by Yuri Kravchik on 16.11.17.
- * //TODO move to utils, or "viewers"
  */
 public class SimpleLwjglRoutine {
     public long sleepMs;

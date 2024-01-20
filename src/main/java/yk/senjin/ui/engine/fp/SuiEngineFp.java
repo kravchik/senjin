@@ -2,7 +2,7 @@ package yk.senjin.ui.engine.fp;
 
 import yk.jcommon.fastgeom.Vec2i;
 import yk.senjin.ui.core.Sui;
-import yk.senjin.ui.core.SuiMouseControl;
+import yk.senjin.ui.core.SuiInputControl;
 import yk.senjin.ui.core.SuiPanel;
 import yk.senjin.ui.core.SuiSkinner1;
 import yk.senjin.util.GlfwWindow;
@@ -15,7 +15,7 @@ public class SuiEngineFp implements Tickable {
     public Sui sui;
 
     public SuiRendererFp auiRenderer;
-    public SuiMouseControl auiInput = new SuiMouseControl();
+    public SuiInputControl auiInput = new SuiInputControl();
     public SuiSkinner1 skinner1 = new SuiSkinner1();
 
     public SuiEngineFp() {

@@ -21,7 +21,6 @@ import static yk.ycollections.YArrayList.al;
  * Time: 12:09
  */
 public class WatchDeferredShading implements LoadTickUnload<WatchReloadable> {
-    //TODO fix
     public PosuvV hdrV;
     public DeferredShadeF hdrF;
     public GProgram hdrProgram;

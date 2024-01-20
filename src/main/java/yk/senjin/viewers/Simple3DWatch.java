@@ -1,8 +1,12 @@
-package yk.senjin;
+package yk.senjin.viewers;
 
 import yk.jcommon.fastgeom.*;
+import yk.senjin.Cam;
+import yk.senjin.DDDUtils;
+import yk.senjin.SimpleAntiAliasing2;
+import yk.senjin.SkyBox;
 import yk.senjin.ui.engine.fp.OglKeyboard;
-import yk.senjin.ui.engine.fp.OglMouseController;
+import yk.senjin.ui.engine.fp.OglMouse;
 import yk.senjin.util.FixAwt2;
 import yk.senjin.util.GlfwWindow;
 import yk.senjin.util.ThreadUtils;
@@ -14,7 +18,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.fastgeom.Matrix4.perspective;
 import static yk.jcommon.fastgeom.Vec2i.v2i;
-import static yk.senjin.examples.simple.SimpleLwjglRoutine.initWindow;
+import static yk.senjin.viewers.SimpleLwjglRoutine.initWindow;
 import static yk.ycollections.YHashMap.hm;
 
 /**
@@ -60,7 +64,7 @@ public class Simple3DWatch {
     public boolean SIMPLE_AA = false;
     public SimpleAntiAliasing2 simpleAA;
 
-    private final OglMouseController oglMouse = new OglMouseController();
+    private final OglMouse oglMouse = new OglMouse();
     {
         oglMouse.onMousePressedListeners.add(this::onMousePressed);
         oglMouse.onMouseReleasedListeners.add(this::onMouseReleased);
@@ -133,7 +137,6 @@ public class Simple3DWatch {
 
         //if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) camMoveSpeed /= 20;
         for (Map.Entry<String, Vec3f> entry : MOVEMENTS.entrySet()) {
-            //TODO get rid
             if (oglKeyboard.isPressed(entry.getKey()))
                 cam.lookAt = cam.lookAt.add(cam.lookRot.conjug().rotate(entry.getValue().mul(camMoveSpeed * dt)));
         }

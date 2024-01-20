@@ -2,6 +2,8 @@
 ## SimpleENGINe
 developer version: 0.13-SNAPSHOT
            
+TODO update info on lwjgl3
+TODO mention Sui
 TODO mention -Djava.awt.headless=true
 
 [![Join the chat at https://gitter.im/kravchik/senjin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kravchik/senjin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

@@ -2,6 +2,7 @@ package yk.senjin.examples.simple;
 
 import yk.senjin.examples.simple.stuff.Ikogl_7_Vs2;
 import yk.senjin.shaders.gshader.GProgram;
+import yk.senjin.viewers.SimpleLwjglRoutine;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glVertexAttrib3f;

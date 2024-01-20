@@ -2,6 +2,7 @@ package yk.senjin.examples.simple;
 
 import yk.senjin.FrameBuffer;
 import yk.senjin.SomeTexture;
+import yk.senjin.viewers.SimpleLwjglRoutine;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 

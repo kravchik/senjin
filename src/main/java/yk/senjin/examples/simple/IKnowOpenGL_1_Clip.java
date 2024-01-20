@@ -1,5 +1,7 @@
 package yk.senjin.examples.simple;
 
+import yk.senjin.viewers.SimpleLwjglRoutine;
+
 import static org.lwjgl.opengl.GL11.*;
 
 /**
