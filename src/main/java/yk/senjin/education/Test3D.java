@@ -11,7 +11,7 @@ import yk.senjin.WatchReloadable;
 public class Test3D extends BaseEdu3D {
 
     public static void main(String[] args) {
-        new WatchReloadable(new Test3D());
+        new WatchReloadable(new Test3D()).run();
     }
 
     @Override

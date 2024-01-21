@@ -18,6 +18,7 @@ import static yk.jcommon.utils.Util.sqr;
  * Time: 11:46
  */
 public class BaseEdu2D implements LoadTickUnload<Viewer> {
+    //TODO fix
     private Rnd rnd = new Rnd();
     private Vec3d currentColor = new Vec3d(1, 1, 1);
     public Graphics2D g;
