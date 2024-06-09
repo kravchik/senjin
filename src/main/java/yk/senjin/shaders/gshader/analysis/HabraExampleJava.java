@@ -26,26 +26,26 @@ public class HabraExampleJava {
             //на какой-то глубине
             deeper(G_BODY_ACCESSORS),
             //есть объект такого класса
-            p(MethodCallExpression.class,
+            obj(MethodCallExpression.class,
                     //с такими параметрами
-                    "getMethod", p("getText", var("METHOD_NAME")),
+                    "getMethod", obj("getText", var("METHOD_NAME")),
                     //а метод getArguments возвращает...
                     "getArguments"),
             // такой объект, у которого есть поле expressions, которое...
-            p(ArgumentListExpression.class, "expressions"),
+            obj(ArgumentListExpression.class, "expressions"),
             //является массивом, а по индексу (который мы запомним) находится...
             i(var("ARG_INDEX")),
             //такой объект
-            p(PropertyExpression.class,
+            obj(PropertyExpression.class,
                     //с каким-то ответвлением
-                    "getObjectExpression", p(VariableExpression.class,
+                    "getObjectExpression", obj(VariableExpression.class,
                             "variable", var("OBJ_NAME")),
                     //и с ещё одним
-                    "getProperty", p("value", var("FIELD_NAME"))));
+                    "getProperty", obj("value", var("FIELD_NAME"))));
 
     //    public static final Object G_WRITE_FIELD_PATTERN = new Match2Deeper(G_BODY_ACCESSORS,
-//            p(BinaryExpression.class, "operation", p("text", "="),
-//                    "leftExpression", p(PropertyExpression.class, "objectExpression", p(VariableExpression.class, "variable", ARG_NAME_USAGE), "property", p("value", var("value")))
+//            obj(BinaryExpression.class, "operation", obj("text", "="),
+//                    "leftExpression", obj(PropertyExpression.class, "objectExpression", obj(VariableExpression.class, "variable", ARG_NAME_USAGE), "property", obj("value", var("value")))
 //            ));
 
 
@@ -53,15 +53,15 @@ public class HabraExampleJava {
 
         Object varWritePattern = stairs(
                 deeper(G_BODY_ACCESSORS),
-                p(BinaryExpression.class, "operation", p("text", "="), "leftExpression"),
-                p(VariableExpression.class, "variable", var("VAR_NAME")));
+                obj(BinaryExpression.class, "operation", obj("text", "="), "leftExpression"),
+                obj(VariableExpression.class, "variable", var("VAR_NAME")));
 
         String src = IO.readFile("src/main/java/yk/senjin/shaders/gshader/analysis/HabraExample.groovy");
         //parse kotlin file
         Object node = new AstBuilder().buildFromString(CompilePhase.INSTRUCTION_SELECTION, src);
 
         //select method "foo"
-        for (YMap<String, Object> m : new Matcher().match(node, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), "foo"))) {
+        for (YMap<String, Object> m : new Matcher().match(node, stairs(deeper(G_METHOD_ACCESSORS), var("method"), obj(MethodNode.class, "name"), "foo"))) {
             //getting methodNode object from select result
             Object methodNode = m.get("method");
             System.out.println("all variables are free:");
@@ -74,8 +74,8 @@ public class HabraExampleJava {
 
         System.out.println("\nsimple array\n");
         Vec3f[] vv = new Vec3f[]{new Vec3f(0, 0, 0), new Vec3f(1, 1, 1)};
-        System.out.println(new Matcher().match(vv, i(p("x", var("X_VALUE")))));
-        System.out.println(new Matcher().match(vv, i(var("OBJ_INDEX"), p("x", var("X_VALUE")))));
+        System.out.println(new Matcher().match(vv, i(obj("x", var("X_VALUE")))));
+        System.out.println(new Matcher().match(vv, i(var("OBJ_INDEX"), obj("x", var("X_VALUE")))));
 
 
 

@@ -56,6 +56,8 @@ public class WatchSuiStrings {
 
                 new SuiPanelString(pos().left(10f).top(0f), "Hello bold world! :)") {{
                     fontStyle= Font.BOLD;}},
+
+                //TODO fix for Mac (render on another platform?)
                 new SuiPanelString(pos().left(10f).top(40f), "Hello pixel world! :)") {{
                     fontAntialiased=false;fontSize=18;scale=3;fontName="Ubuntu Condensed";}},
 

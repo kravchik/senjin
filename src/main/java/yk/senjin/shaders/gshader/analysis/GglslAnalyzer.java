@@ -63,49 +63,49 @@ public class GglslAnalyzer {
 
     public static final YArrayList<Object> G_BODY_ACCESSORS = al(
             i(var("access")),
-            p("methodsList", var("access")),
-            p(MethodNode.class, "code", var("access")),
-            p(MethodCallExpression.class, "getReceiver", var("access")),
-            p(BlockStatement.class, "getStatements", var("access")),
-            p(ExpressionStatement.class, "expression", var("access")),
-            p(BinaryExpression.class, "leftExpression", var("access")),
-            p(BinaryExpression.class, "rightExpression", var("access")),
-            p(DeclarationExpression.class, "getLeftExpression", var("access")),
-            p(DeclarationExpression.class, "getRightExpression", var("access")),
-            p(UnaryMinusExpression.class, "getExpression", var("access")),
-            p(UnaryPlusExpression.class, "getExpression", var("access")),
-            p(ReturnStatement.class, "getExpression", var("access")),
-            p(ConstructorCallExpression.class, "arguments", p("expressions", i(var("access")))),
-            p(IfStatement.class, "booleanExpression", var("access")),
-            p(IfStatement.class, "ifBlock", var("access")),
-            p(IfStatement.class, "elseBlock", var("access"))
+            obj("methodsList", var("access")),
+            obj(MethodNode.class, "code", var("access")),
+            obj(MethodCallExpression.class, "getReceiver", var("access")),
+            obj(BlockStatement.class, "getStatements", var("access")),
+            obj(ExpressionStatement.class, "expression", var("access")),
+            obj(BinaryExpression.class, "leftExpression", var("access")),
+            obj(BinaryExpression.class, "rightExpression", var("access")),
+            obj(DeclarationExpression.class, "getLeftExpression", var("access")),
+            obj(DeclarationExpression.class, "getRightExpression", var("access")),
+            obj(UnaryMinusExpression.class, "getExpression", var("access")),
+            obj(UnaryPlusExpression.class, "getExpression", var("access")),
+            obj(ReturnStatement.class, "getExpression", var("access")),
+            obj(ConstructorCallExpression.class, "arguments", obj("expressions", i(var("access")))),
+            obj(IfStatement.class, "booleanExpression", var("access")),
+            obj(IfStatement.class, "ifBlock", var("access")),
+            obj(IfStatement.class, "elseBlock", var("access"))
     );
-    public static final YList<Object> G_METHOD_ACCESSORS = al(i(var("access")), p("methodsList", var("access")));
+    public static final YList<Object> G_METHOD_ACCESSORS = al(i(var("access")), obj("methodsList", var("access")));
 
     public static final Object G_AS_ARG_PATTERN = stairs(
             deeper(G_BODY_ACCESSORS),
-            p(MethodCallExpression.class, "getMethod", p("getText", var("callMethodName")), "getArguments"),
-            p(ArgumentListExpression.class, "expressions"),
+            obj(MethodCallExpression.class, "getMethod", obj("getText", var("callMethodName")), "getArguments"),
+            obj(ArgumentListExpression.class, "expressions"),
             i(var("argIndex")),
-            p("variable", var("name")));
+            obj("variable", var("name")));
 
     public static final Object G_FIELD_AS_ARG_PATTERN = stairs(
             deeper(G_BODY_ACCESSORS),
-            p(MethodCallExpression.class,
-                    "getMethod", p("getText", var("METHOD_NAME")),
+            obj(MethodCallExpression.class,
+                    "getMethod", obj("getText", var("METHOD_NAME")),
                     "getArguments"),
-            p(ArgumentListExpression.class, "expressions"),
+            obj(ArgumentListExpression.class, "expressions"),
             i(var("ARG_INDEX")),
-            p(PropertyExpression.class,
-                    "getObjectExpression", p(VariableExpression.class,
+            obj(PropertyExpression.class,
+                    "getObjectExpression", obj(VariableExpression.class,
                             "variable", var("OBJ_NAME")),
-                    "getProperty", p("value", var("FIELD_NAME"))));
+                    "getProperty", obj("value", var("FIELD_NAME"))));
 
     public static final Object G_WRITE_FIELD_PATTERN = stairs(
             deeper(G_BODY_ACCESSORS),
-            p(BinaryExpression.class, "operation", p("text", "="), "leftExpression"),
-            p(PropertyExpression.class, "objectExpression"),
-            p(VariableExpression.class, "variable", "OBJ_NAME"));
+            obj(BinaryExpression.class, "operation", obj("text", "="), "leftExpression"),
+            obj(PropertyExpression.class, "objectExpression"),
+            obj(VariableExpression.class, "variable", "OBJ_NAME"));
 
     @Test
     public void testCalcCallers() {
@@ -114,7 +114,7 @@ public class GglslAnalyzer {
 
         src = IO.readFile("/home/yuri/1/public/senjin/src/main/java/yk/senjin/shaders/gshader/examples/blend/BlendF.groovy");
 
-        Probe probe = new Probe(new AstBuilder().buildFromString(CompilePhase.INSTRUCTION_SELECTION, src), p(MethodCallExpression.class, "getMethod", p("getText", "foo"))){{
+        Probe probe = new Probe(new AstBuilder().buildFromString(CompilePhase.INSTRUCTION_SELECTION, src), obj(MethodCallExpression.class, "getMethod", obj("getText", "foo"))){{
             skipMethods = hs("getMethodAsString", "getFirstStatement", "getVariableScope", "getDeclaringClass");
         }};
         SSearch.Node<State> node = probe.nextSolution(100000);
@@ -126,15 +126,15 @@ public class GglslAnalyzer {
 
     public static YMap<String, YSet<String>> calcCallers(Object data) {
         YMap<String, YSet<String>> result = hm();
-        YSet<YMap<String, Object>> methods = new Matcher().match(data, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), var("methodName")));
+        YSet<YMap<String, Object>> methods = new Matcher().match(data, stairs(deeper(G_METHOD_ACCESSORS), var("method"), obj(MethodNode.class, "name"), var("methodName")));
         for (YMap<String, Object> mp : methods) {
-            Object methodCalls = stairs(deeper(G_BODY_ACCESSORS), p(MethodCallExpression.class, "getMethod"), p("getText"), var("callMethodName"));
+            Object methodCalls = stairs(deeper(G_BODY_ACCESSORS), obj(MethodCallExpression.class, "getMethod"), obj("getText"), var("callMethodName"));
             for (YMap<String, Object> mcp : new Matcher().match(mp.get("method"), methodCalls)) {
                 result.put((String) mp.get("methodName"), result.getOr((String) mp.get("methodName"), hs()).with((String) mcp.get("callMethodName")));
             }
 
             //TODO statics in other class
-            methodCalls = stairs(deeper(G_BODY_ACCESSORS), p(StaticMethodCallExpression.class, "getMethod"), var("callMethodName"));
+            methodCalls = stairs(deeper(G_BODY_ACCESSORS), obj(StaticMethodCallExpression.class, "getMethod"), var("callMethodName"));
             for (YMap<String, Object> mcp : new Matcher().match(mp.get("method"), methodCalls)) {
                 result.put((String) mp.get("methodName"), result.getOr((String) mp.get("methodName"), hs()).with((String) mcp.get("callMethodName")));
             }
@@ -158,8 +158,8 @@ public class GglslAnalyzer {
 
     public static YHashMap<String, YSet<String>> inferInOutModifiers(Object nodes) {
         YList<Object> accessors = YArrayList.al(new MatchByIndex(new MatchVar("access")));
-        YList<Object> accessors2 = accessors.with(MatchProperty.p("methodsList", new MatchVar("access")));
-        YSet<YMap<String, Object>> method = new Matcher().match(nodes, new MatchDeeper(accessors2, var("method", p(MethodNode.class, "name", var("methodName")))));
+        YList<Object> accessors2 = accessors.with(MatchObject.obj("methodsList", new MatchVar("access")));
+        YSet<YMap<String, Object>> method = new Matcher().match(nodes, new MatchDeeper(accessors2, var("method", obj(MethodNode.class, "name", var("methodName")))));
         YHashMap<String, YSet<String>> modifiers = hm();
         int oldModifiersCount = 0;
         while (true) {
@@ -180,11 +180,11 @@ public class GglslAnalyzer {
     public static YMap<String, YSet<String>> getArgsModifiers(MethodNode methodNode, YMap<String, YSet<String>> result) {
 
         Object fieldWritePattern = new MatchDeeper(G_BODY_ACCESSORS,
-                p(BinaryExpression.class, "operation", p("text", "="),
-                        "leftExpression", p(PropertyExpression.class, "objectExpression", p(VariableExpression.class, "variable", var("name")), "property", p("value", var("value")))
+                obj(BinaryExpression.class, "operation", obj("text", "="),
+                        "leftExpression", obj(PropertyExpression.class, "objectExpression", obj(VariableExpression.class, "variable", var("name")), "property", obj("value", var("value")))
                 ));
 
-        YSet<YMap<String, Object>> paramMm = new Matcher().match(methodNode, p("parameters", i(var("paramIndex"), p("name", var("paramName")))));
+        YSet<YMap<String, Object>> paramMm = new Matcher().match(methodNode, obj("parameters", i(var("paramIndex"), obj("name", var("paramName")))));
         for (YMap<String, Object> paramM : paramMm) if (!isPrimitive(translateType((String) paramM.get("paramName")))) {
             String paramName = (String) paramM.get("paramName");
             String paramFullName = methodNode.getName() + ":" + paramM.get("paramIndex");
@@ -226,19 +226,19 @@ public class GglslAnalyzer {
 
         Object refReadPattern = stairs(
                 deeper(G_BODY_ACCESSORS),
-                p(BinaryExpression.class, "operation", p("text", "="), "rightExpression"),
+                obj(BinaryExpression.class, "operation", obj("text", "="), "rightExpression"),
                 deeper(G_BODY_ACCESSORS),
-                p(VariableExpression.class, "variable", var("name")));
+                obj(VariableExpression.class, "variable", var("name")));
 
         Object refReadPattern2 = stairs(
                 deeper(G_BODY_ACCESSORS),
-                p(ReturnStatement.class, "getExpression"),
+                obj(ReturnStatement.class, "getExpression"),
                 deeper(G_BODY_ACCESSORS),
-                p(VariableExpression.class, "variable", var("name")));
+                obj(VariableExpression.class, "variable", var("name")));
 
         Object fieldReadPattern = new MatchDeeper(G_BODY_ACCESSORS,
-                p("operation", p("text", "="), "rightExpression", new MatchDeeper(G_BODY_ACCESSORS,
-                        p("objectExpression", p("variable", var("name"))))));
+                obj("operation", obj("text", "="), "rightExpression", new MatchDeeper(G_BODY_ACCESSORS,
+                        obj("objectExpression", obj("variable", var("name"))))));
 
         return null;
     }
@@ -248,15 +248,15 @@ public class GglslAnalyzer {
 
         Object varWritePattern = stairs(
                 deeper(G_BODY_ACCESSORS),
-                p(BinaryExpression.class, "operation", p("text", "="), "leftExpression"),
-                p(VariableExpression.class, "variable", var("VAR_NAME")));
+                obj(BinaryExpression.class, "operation", obj("text", "="), "leftExpression"),
+                obj(VariableExpression.class, "variable", var("VAR_NAME")));
 
         Object varReturnPattern = stairs(
                 deeper(G_BODY_ACCESSORS),
-                p(ReturnStatement.class, "getExpression"),
-                p(VariableExpression.class, "variable", var("VAR_NAME")));
+                obj(ReturnStatement.class, "getExpression"),
+                obj(VariableExpression.class, "variable", var("VAR_NAME")));
 
-        for (YMap<String, Object> m : new Matcher().match(mainClass, stairs(deeper(G_METHOD_ACCESSORS), var("method"), p(MethodNode.class, "name"), var("methodName")))) {
+        for (YMap<String, Object> m : new Matcher().match(mainClass, stairs(deeper(G_METHOD_ACCESSORS), var("method"), obj(MethodNode.class, "name"), var("methodName")))) {
             Object methodName = m.get("methodName");
             String prefix = "(method " + methodName + ") ";
             for (Parameter parameter : ((MethodNode)m.get("method")).getParameters()) if (!isPrimitive(translateType(parameter.getType().getName()))) {//TODO match type
@@ -270,7 +270,7 @@ public class GglslAnalyzer {
                 }
             }
 
-            YSet<YMap<String, Object>> fieldsMm = new Matcher().match(mainClass, stairs(i(), p(ClassNode.class, "getFields"), i(), p(FieldNode.class, "getName"), var("fieldName")));
+            YSet<YMap<String, Object>> fieldsMm = new Matcher().match(mainClass, stairs(i(), obj(ClassNode.class, "getFields"), i(), obj(FieldNode.class, "getName"), var("fieldName")));
             for (YMap<String, Object> fieldM : fieldsMm) {
 
                 String fieldName = (String) fieldM.get("fieldName");

@@ -26,7 +26,7 @@ import static yk.ycollections.YArrayList.al;
 public class WatchSuiFontsRendering {
     //TODO font selection
     private SuiEngineFp sui = new SuiEngineFp();
-    private GlWindow1 window = new GlWindow1()
+    public GlWindow1 window = new GlWindow1()
             .setUxSize(800, 800)
             .stopOnEsc()
             .onWindowReady(wh -> sui.init(wh))
