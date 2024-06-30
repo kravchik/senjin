@@ -27,11 +27,6 @@ public class SuiPanelFixingButton extends SuiPanel {//TODO rename
         onMouseDown.add(m -> change());
     }
 
-    @Override public void updateSkin() {
-        skinUnder = isPressed ? downSkin : upSkin;
-        super.updateSkin();
-    }
-
     public void change() {
         if (isPressed) {if (canSelfRelease) release();}
         else press();

@@ -27,13 +27,14 @@ public class GlWindow1 {
     private final YList<Tickable> tickable = al();
     private final YList<Consumer<GlfwWindow>> onInit = al();
     private final YList<Runnable> onFirstFrame = al();
+    private boolean startHidden = false;
 
     public final void start(long sleepMs) {
         tickerNotThread(sleepMs, () -> firstFrame(), dt -> eachFrame(dt));
     }
 
     public void firstFrame() {
-        win = initWindow(uxW, uxH, "Hello World!", false);
+        win = initWindow(uxW, uxH, "Hello World!", false, !startHidden);
         uxW = win.sizePixels.x;
         uxH = win.sizePixels.y;
         for (Consumer<GlfwWindow> consumer : onInit) consumer.accept(win);
@@ -48,11 +49,9 @@ public class GlWindow1 {
         glfwPollEvents();
         return !(stopRenderThread || glfwWindowShouldClose(win.handle));
     }
-
     //Should be in the same thread as initializations, as is using thread locals.
     public void tick(float dt) {
     }
-
     public final void requestStop() {
         this.stopRenderThread = true;
     }
@@ -77,12 +76,12 @@ public class GlWindow1 {
             if (glfwGetKey(win.handle, GLFW_KEY_ESCAPE) == GLFW_PRESS) requestStop();
         });
     }
+
     public final GlWindow1 stopOnAltF4() {
         return onTick(dt -> {
             if (glfwGetKey(win.handle, GLFW_KEY_F4) == GLFW_PRESS) requestStop();
         });
     }
-
     public final GlWindow1 setUxSize(int w, int h) {
         this.uxW = w;
         this.uxH = h;
@@ -90,5 +89,11 @@ public class GlWindow1 {
     }
 
     public final int getWidth() {return uxW;}
+
     public final int getHeight() {return uxH;}
+
+    public GlWindow1 startHidden() {
+        this.startHidden = true;
+        return this;
+    }
 }

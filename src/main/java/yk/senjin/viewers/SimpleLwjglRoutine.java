@@ -67,6 +67,10 @@ public class SimpleLwjglRoutine {
     }
 
     public static GlfwWindow initWindow(int width, int height, String title, boolean exitByEsc) {
+        return initWindow(width, height, title, exitByEsc, true);
+    }
+
+    public static GlfwWindow initWindow(int width, int height, String title, boolean exitByEsc, boolean show) {
         long windowHandle;
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
@@ -122,7 +126,7 @@ public class SimpleLwjglRoutine {
         //glfwSwapInterval(1);
 
         // Make the window visible
-        glfwShowWindow(windowHandle);
+        if (show) glfwShowWindow(windowHandle);
 
 
         // This line is critical for LWJGL's interoperation with GLFW's

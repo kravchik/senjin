@@ -7,6 +7,7 @@ package yk.senjin;
  */
 abstract public class AbstractState implements State {
 
+    @Override
     public void release() {
     }
 }

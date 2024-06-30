@@ -13,8 +13,6 @@ import yk.senjin.shaders.gshader.StandardVertexData;
 public class Poco extends StandardVertexData {
     public Vec3f pos;
     public Vec4f color;
-    public float shininess = 0;
-    public float nType = 0;
 
     public Poco(Vec3f pos) {
         this.pos = pos;

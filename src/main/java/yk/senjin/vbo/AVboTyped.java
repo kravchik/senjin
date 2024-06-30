@@ -1,9 +1,5 @@
 package yk.senjin.vbo;
 
-import org.lwjgl.BufferUtils;
-import yk.jcommon.fastgeom.Vec2f;
-import yk.jcommon.fastgeom.Vec3f;
-import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
 
 import java.nio.ByteBuffer;
@@ -14,23 +10,28 @@ import static yk.ycollections.YArrayList.al;
 /**
  * Created by Yuri Kravchik on 01.10.18.
  */
-
 public class AVboTyped extends AVbo {
-    public final Class inputType;
-    protected int elementsCount;
+    public final Class elementType;
     public final int elementSize;
-    public final boolean simpleTyped;
+    public final TypeUtils.DataSerializer serializer;
+    protected int count;
 
-    public int getElementsCount() {
-        return elementsCount;
+    public int getCount() {
+        return count;
     }
 
-    public AVboTyped(Class inputType, int elementsCount) {
-        this.inputType = inputType;
-        this.elementsCount = elementsCount;
-        simpleTyped = TypeUtils.isSimpleType(inputType);
-        elementSize = simpleTyped ? TypeUtils.getTypeSize(inputType) : TypeUtils.getComplexTypeSize(inputType);
-        size = elementsCount * elementSize;
+    public AVboTyped(Class elementType, int count) {
+        this.elementType = elementType;
+        this.count = count;
+        elementSize = TypeUtils.getTypeSize(elementType);
+        serializer = TypeUtils.getSerializer(elementType);
+        size = count * elementSize;
+    }
+
+    public AVboTyped(Class elementType) {
+        this.elementType = elementType;
+        elementSize = TypeUtils.getTypeSize(elementType);
+        serializer = TypeUtils.getSerializer(elementType);
     }
 
     public AVboTyped(List initial) {
@@ -47,7 +48,7 @@ public class AVboTyped extends AVbo {
     public void reloadResize(ByteBuffer data) {
         int capacity = data.capacity();
         if (capacity % elementSize != 0) BadException.die("wrong buffer size " + capacity + " for element size " + elementSize);
-        this.elementsCount = capacity / elementSize;
+        this.count = capacity / elementSize;
         super.reloadResize(data);
     }
 
@@ -63,7 +64,7 @@ public class AVboTyped extends AVbo {
         int newSize = newCount * elementSize;
         if (newSize < capacity) BadException.die("wrong provided buffer size " + capacity + " for new size " + newSize);
         size = newSize;
-        this.elementsCount = newCount;
+        this.count = newCount;
         reload(data);
     }
 
@@ -74,7 +75,7 @@ public class AVboTyped extends AVbo {
      * <li>Loses all previous changes.
      */
     public void setCount(int count) {
-        this.elementsCount = count;
+        this.count = count;
         this.size = size * count * elementSize;
         Change change = new Change();
         change.recreate = true;
@@ -91,8 +92,7 @@ public class AVboTyped extends AVbo {
      * <li>Loses all previous changes.
      */
     public void reload(List data) {
-        if (data.size() > elementsCount) BadException.die("Too many elements (" + data.size() + " > " + elementsCount + ")");
-        //if (data.size() != elementsCount) BadException.die("expected full size data here"); //we can supply NOT full data
+        if (data.size() > count) BadException.die("Too many elements (" + data.size() + " > " + count + ")");
         changes = null;//we don't need previous changes as a whole data is updated anyway
         addChange(data, 0).recreate = true;
     }
@@ -118,46 +118,16 @@ public class AVboTyped extends AVbo {
      * <li>ADDS changes, previous changes will be called before this.
      */
     public Change addChange(List data, int position) {
-        Class<?> aClass = data.get(0).getClass();
+        Class<?> c = data.get(0).getClass();
         int elementsCount1 = data.size();
-        if (position + elementsCount1 > this.elementsCount)
-            BadException.die("not matching size. Max: " + this.elementsCount + " position: " + position + " data.size(): " + elementsCount1);
-        if (simpleTyped) {
-            if (aClass == Short.class && inputType != short.class
-                || aClass == Byte.class && inputType != byte.class
-                || aClass == Integer.class && inputType != int.class
-                || aClass == Float.class && inputType != float.class
-                    )
-                BadException.die("buffer type differs from supplied data type: " + inputType + " " + aClass);
-        } else {
-            if (aClass != inputType) BadException.die("buffer type differs from supplied data type: " + inputType + " " + aClass);
-        }
-
-        ByteBuffer bb = BufferUtils.createByteBuffer(elementSize * data.size());
-        serializeData(bb, data);
-        bb.rewind();
-        return addChange(bb, elementSize * position);
+        if (position + elementsCount1 > this.count)
+            BadException.die("not matching size. Max: " + this.count + " position: " + position + " data.size(): " + elementsCount1);
+        if (c != elementType) BadException.die("buffer type differs from supplied data type: " + elementType + " " + c);
+        return addChange(TypeUtils.createByteBuffer(data), elementSize * position);
     }
 
-    //override this to add type-aware serialization
-    public void serializeData(ByteBuffer buffer, Object data) {
-        if (simpleTyped) {
-            if (inputType == float.class) TypeUtils.setDataFloat((float[])data, buffer);
-            else if (inputType == Vec2f.class) TypeUtils.setDataVec2f((List)data, buffer);
-            else if (inputType == Vec3f.class) TypeUtils.setDataVec3f((List)data, buffer);
-            else if (inputType == Vec4f.class) TypeUtils.setDataVec4f((List)data, buffer);
-            else if (inputType == byte.class) TypeUtils.setDataByte((List)data, buffer);
-            else if (inputType == short.class) TypeUtils.setDataShort((List)data, buffer);
-            else if (inputType == int.class) TypeUtils.setDataInt((List)data, buffer);
-            else if (inputType == float.class) TypeUtils.setDataFloat((List)data, buffer);
-
-        } else {
-            TypeUtils.setData((List)data, buffer, inputType);
-        }
-    }
-
-    public Class getInputType() {
-        return inputType;
+    public Class getElementType() {
+        return elementType;
     }
 
 }

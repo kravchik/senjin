@@ -3,6 +3,7 @@ package yk.senjin.ui.core;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.utils.BadException;
 import yk.senjin.util.Tickable;
+import yk.ycollections.YCollection;
 import yk.ycollections.YList;
 
 import java.util.function.Consumer;
@@ -13,14 +14,10 @@ import static yk.ycollections.YArrayList.al;
  * Created by Yuri Kravchik on 15.12.17.
  */
 public class SuiPanel {
-    public static boolean dirtyPos;//TODO not static
     public SuiPanel parent;
     public YList<SuiPanel> children = al();
-    public SuiPanel skinUnder;
-    public SuiPanel skinOver;
     public Sui sui;
 
-    public boolean posChanged;
     public SuiPositions pos = new SuiPositions();
     public float resultGlobalX;
     public float resultGlobalY;
@@ -37,9 +34,11 @@ public class SuiPanel {
     public YList<Consumer<SuiMouseState>> onMouse = al();//called if mouse is above (every frame, can be no action)
 
     public YList<Consumer<SuiMouseState>> onMouseEnter = al();
+    public SuiPanel onMouseEnter(Consumer<SuiMouseState> consumer) {onMouseEnter.add(consumer);return this;}
     public YList<Consumer<SuiMouseState>> onMouseLeave = al();
     public YList<Consumer<SuiMouseState>> onMouseUp = al();
     public YList<Consumer<SuiMouseState>> onMouseDown = al();
+    public SuiPanel onMouseDown(Consumer<SuiMouseState> consumer) {onMouseDown.add(consumer);return this;}
     public YList<Consumer<SuiMouseState>> onWheel = al();
     public YList<Consumer<SuiMouseState>> onMouseMove = al();
 
@@ -65,7 +64,16 @@ public class SuiPanel {
         add(pp);
     }
 
+    public SuiPanel(SuiPositions pos, YCollection<? extends SuiPanel> pp) {
+        this.pos = pos;
+        add(pp);
+    }
+
     public static SuiPanel panel(SuiPositions pos, SuiPanel... pp) {
+        return new SuiPanel(pos, pp);
+    }
+
+    public static SuiPanel panel(SuiPositions pos, YCollection<? extends SuiPanel> pp) {
         return new SuiPanel(pos, pp);
     }
 
@@ -83,33 +91,32 @@ public class SuiPanel {
             if (p.parent != null) if (!p.parent.children.remove(p)) BadException.die("inconsistency");
             children.add(p);
             p.parent = this;
-            p.dirtyPos = true;
         }
         setSuiInChildren();
         return this;
     }
 
-    public SuiPanel add(YList<? extends SuiPanel> pp) {
+    public SuiPanel add(YCollection<? extends SuiPanel> pp) {
         for (SuiPanel p : pp) {
             if (p.parent != null) if (!p.parent.children.remove(p)) BadException.die("inconsistency");
             children.add(p);
             p.parent = this;
-            p.dirtyPos = true;
         }
         setSuiInChildren();
         return this;
     }
 
-    public void updateSkin() {
-        if (skinUnder == null) return;
-        skinUnder.resultW = resultW;
-        skinUnder.resultH = resultH;
-        skinUnder.resultGlobalX = resultGlobalX;
-        skinUnder.resultGlobalY = resultGlobalY;
+    public void remove(SuiPanel panel) {
+        if (panel.parent != this) BadException.die("Trying to remove panel from a wrong parent");
+        if (!children.remove(panel)) BadException.die("Removing, but it is absent");
     }
 
     public void removeChildren() {
-        for (int i = 0; i < children.size(); i++) children.get(i).parent = null;
+        for (int i = 0; i < children.size(); i++) {
+            SuiPanel c = children.get(i);
+            if (c.parent != this) BadException.die("Trying to remove panel from a wrong parent");
+            c.parent = null;
+        }
         children.clear();
     }
 

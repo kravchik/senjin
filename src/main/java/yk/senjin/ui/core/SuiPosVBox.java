@@ -25,17 +25,19 @@ public class SuiPosVBox extends SuiPositions {
             resH += child.pos.resultH + interval;
         }
         resH -= interval;
-        resultW = resW + padding * 2;
+        if (resultW == null) resultW = resW + padding * 2;
         //TODO reuse percentW, etc
-        resultH = resH + padding * 2;
+        if (resultH == null) resultH = resH + padding * 2;
     }
 
     @Override
     public void calcPos(SuiPanel panel) {
         float bot = 0;
         for (SuiPanel child : panel.children) {
-            child.pos.calcPos(child);
-            child.pos.resultLocalY += bot;
+            if (child.pos.resultLocalY == null) {
+                child.pos.calcPos(child);
+                child.pos.resultLocalY += bot;
+            }
             bot += child.pos.resultH + interval;
         }
         calcPosSelf(panel);

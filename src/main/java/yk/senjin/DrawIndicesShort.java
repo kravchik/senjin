@@ -51,9 +51,11 @@ public class DrawIndicesShort extends AbstractState {
         return primitiveType;
     }
 
+    @Override
     public void disable() {
     }
 
+    @Override
     public void enable() {
         GL12.glDrawRangeElements(primitiveType, 0, indexBuffer.limit(), indexBuffer);
     }

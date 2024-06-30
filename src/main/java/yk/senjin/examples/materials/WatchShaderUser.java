@@ -32,11 +32,10 @@ public class WatchShaderUser extends SimpleLwjglRoutine {
         GProgram program = GProgram.initFrom("src/main/java/", new Ikogl_8_Vs(), new Ikogl_8_Fs()).runtimeReload();
         vbo = new AVboTyped(new Ikogl_8_Vd(v3(-w(), -h(), 0)), new Ikogl_8_Vd(v3(w(),  0, 0)), new Ikogl_8_Vd(v3( 0, h(), 0)));
 
-        user1 = new ShaderUserMap(program, vbo.inputType);
-        user2 = new ShaderUserMap(program, vbo.inputType);
+        user1 = new ShaderUserMap(program, vbo.elementType);
+        user2 = new ShaderUserMap(program, vbo.elementType);
 
         indices = AVboShortIndices.simple(3, GL_TRIANGLES);
-
     }
 
     float timePassed;

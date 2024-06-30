@@ -48,8 +48,6 @@ public class SuiRendererFp {
 
     public void renderImpl(SuiPanel suiPanel) {
         if (!suiPanel.visible) return;
-        suiPanel.updateSkin();
-        if (suiPanel.skinUnder != null) renderImpl(suiPanel.skinUnder);
 
         float left = suiPanel.resultGlobalX;
         float top = suiPanel.resultGlobalY;
@@ -94,7 +92,7 @@ public class SuiRendererFp {
 
         if (suiPanel instanceof SuiPanelString) {
             SuiPanelString ms = (SuiPanelString) suiPanel;
-            drawText(ms, left, top, ms.getString(), ms.color.mul(1, 1, 1, 1), ms.scale);
+            drawText(ms, left, top, ms.getString(), ms.color, ms.scale);
         }
 
         if (suiPanel instanceof SuiPanelDbgRect) {
@@ -130,8 +128,6 @@ public class SuiRendererFp {
         for (SuiPanel child : suiPanel.children) {
             renderImpl(child);
         }
-
-        if (suiPanel.skinOver != null) renderImpl(suiPanel.skinOver);
 
         if (drawDebug) {
             if (suiPanel.mouseHovers) glColor4f(1, 0.5f, 0.5f, 1); else glColor4f(1, 1, 1, 0.5f);

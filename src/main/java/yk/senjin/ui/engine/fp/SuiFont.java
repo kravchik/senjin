@@ -131,6 +131,7 @@ public class SuiFont {//TODO separate core and engine!
         return result;
     }
 
+    //WARNING! Doesn't count console modifications! (like \33[3m)
     public int getWidth(String s) {
         return fontMetrics.stringWidth(s);
     }

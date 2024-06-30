@@ -41,12 +41,12 @@ public class WatchSuiStrings {
 
 
         aui.getTopPanel().add(
-                panel(hbox().interval(10).belowCenter(0f).right(5f),
+                panel(hbox().interval(10).centerY(0f).right(5f),
                     new SuiPanelDbgRect(pos().W(50f).H(50f), v4(0.5f, 0.5f, 0.8f, 1)),
                     new SuiPanelDbgRect(pos().W(50f).H(50f), v4(0.5f, 0.5f, 0.8f, 1)),
                     new SuiPanelDbgRect(pos().W(50f).H(50f), v4(0.5f, 0.5f, 0.8f, 1))
                 ),
-                panel(vbox().interval(10).rightCenter(0f).bottom(5f),
+                panel(vbox().interval(10).centerX(0f).bottom(5f),
                         new SuiPanelDbgRect(pos().W(50f).H(50f), v4(1, 0, 0, 1)),
                         new SuiPanelDbgRect(pos().W(50f).H(50f), v4(1, 0, 0, 1)),
                         new SuiPanelDbgRect(pos().W(50f).H(50f), v4(1, 0, 0, 1))

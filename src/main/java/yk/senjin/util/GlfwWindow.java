@@ -1,13 +1,9 @@
 package yk.senjin.util;
 
-import org.lwjgl.system.MemoryStack;
 import yk.jcommon.fastgeom.Vec2i;
-
-import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.glfwGetFramebufferSize;
 import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import static yk.jcommon.fastgeom.Vec2i.v2i;
 
 public class GlfwWindow {
@@ -22,22 +18,15 @@ public class GlfwWindow {
     }
 
     public static Vec2i getWindowsUxSize(long windowHandle) {
-        try ( MemoryStack stack = stackPush() ) {
-            IntBuffer pWidth = stack.mallocInt(1);
-            IntBuffer pHeight = stack.mallocInt(1);
-            glfwGetWindowSize(windowHandle, pWidth, pHeight);
-            glfwGetWindowSize(windowHandle, pWidth, pHeight);
-            return v2i(pWidth.get(0), pHeight.get(0));
-        }
+        int[] w = new int[1], h = new int[1];
+        glfwGetWindowSize(windowHandle, w, h);
+        return v2i(w[0], h[0]);
     }
 
     public static Vec2i getWindowsPixelSize(long windowHandle) {
-        try ( MemoryStack stack = stackPush() ) {
-            IntBuffer pWidth = stack.mallocInt(1);
-            IntBuffer pHeight = stack.mallocInt(1);
-            glfwGetFramebufferSize(windowHandle, pWidth, pHeight);
-            return v2i(pWidth.get(0), pHeight.get(0));
-        }
+        int[] w = new int[1], h = new int[1];
+        glfwGetFramebufferSize(windowHandle, w, h);
+        return v2i(w[0], h[0]);
     }
 
 }

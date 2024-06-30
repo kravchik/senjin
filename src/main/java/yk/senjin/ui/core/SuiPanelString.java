@@ -12,7 +12,7 @@ import static yk.jcommon.fastgeom.Vec4f.v4;
 public class SuiPanelString extends SuiPanel {
     public Vec4f color = v4(1, 1, 1, 1);
     private String string;
-    private boolean isChanged;
+    public boolean isChanged;
 
     //System font (vector based) -> pixel font (image based)
     //  using fontSize, fontStyle and fontAntialiased (for possible system AA)

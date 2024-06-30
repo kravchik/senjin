@@ -11,6 +11,7 @@ import yk.jcommon.utils.Tab;
 import yk.senjin.shaders.VertexAttrib;
 import yk.senjin.shaders.gshader.analysis.GglslAnalyzer;
 import yk.senjin.shaders.uniforms.*;
+import yk.senjin.vbo.TypeUtils;
 import yk.ycollections.YHashMap;
 import yk.ycollections.YList;
 import yk.ycollections.YMap;
@@ -108,9 +109,7 @@ public class ShaderTranslator {
 
 
         if (inputClass.isArray()) {
-            for (Field fn : getFieldsForData(inputClass)) {
-                if (Modifier.isStatic(fn.getModifiers())) continue;
-                if (Modifier.isTransient(fn.getModifiers())) continue;
+            for (Field fn : TypeUtils.getFieldsForData(inputClass)) {
                 if (glNames.contains(fn.getName())) throw new Error("clash with gl names: " + fn.getName() + " in input data for " + shaderType);
                 String type = translateType(fn.getType().getName());
                 String name = withInputSuffix(fn.getName());
@@ -118,9 +117,7 @@ public class ShaderTranslator {
             }
         } else
 
-        if (inputClass != StandardVertexData.class) for (Field fn : getFieldsForData(inputClass)) {
-            if (Modifier.isStatic(fn.getModifiers())) continue;
-            if (Modifier.isTransient(fn.getModifiers())) continue;
+        if (inputClass != StandardVertexData.class) for (Field fn : TypeUtils.getFieldsForData(inputClass)) {
             if (glNames.contains(fn.getName())) throw new Error("clash with gl names: " + fn.getName() + " in input data for " + shaderType);
             String type = translateType(fn.getType().getName());
             String name = withInputSuffix(fn.getName());
@@ -242,19 +239,6 @@ public class ShaderTranslator {
         return result;
     }
 
-    private static YMap<Class, YList<Field>> CACHE = hm(StandardFragmentData.class, al(), Object.class, al(), StandardVertexData.class, al());
-    public static YList<Field> getFieldsForData(Class inputClass) {
-        YList<Field> result = CACHE.get(inputClass);
-        if (inputClass.isArray()) {
-            return getFieldsForData(inputClass.getComponentType());
-        }
-        if (result == null) {
-            result = getFieldsForData(inputClass.getSuperclass()).with(inputClass.getDeclaredFields());
-            CACHE.put(inputClass, result);
-        }
-        return result;
-    }
-
     private MethodNode findByShortDesc(String s) {
         //TODO from imports
         for (MethodNode m : mainClassNode.getMethods()) {
@@ -305,7 +289,7 @@ public class ShaderTranslator {
     }
 
     private String translateExpression(ConstantExpression e) {
-        return convertions.containsKey(e.getText()) ? convertions.get(e.getText()) : e.getText();
+        return CONVERTIONS.containsKey(e.getText()) ? CONVERTIONS.get(e.getText()) : e.getText();
     }
 
     private String translateExpression(DeclarationExpression e) {
@@ -413,7 +397,7 @@ public class ShaderTranslator {
         return PRIMITIVES.contains(oglType);
     }
 
-    private static Map<String, String> convertions = hm(
+    private static final Map<String, String> CONVERTIONS = hm(
             "[I", "int[]",
             "[F", "float[]",
             "Integer", "int",
@@ -427,8 +411,8 @@ public class ShaderTranslator {
     );
     public static String translateType(String groovyType) {
         String t = al(groovyType.split("\\.")).last();
-        if (!convertions.containsKey(t)) return groovyType;
-        return convertions.get(t);
+        if (!CONVERTIONS.containsKey(t)) return groovyType;
+        return CONVERTIONS.get(t);
     }
 
 

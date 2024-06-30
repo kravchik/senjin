@@ -12,19 +12,14 @@ import static yk.ycollections.YArrayList.al;
 /**
  * Created by Yuri Kravchik on 25.03.18.
  */
-//TODO use instead IndexBufferShort
 //TODO local ByteBuffer cache for continuous update
 public class AVbo implements State {
 
-    //GL_ARRAY_BUFFER
-    //GL_ELEMENT_ARRAY_BUFFER
-    //...
+    //GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, ...
     protected int bufferType = GL_ARRAY_BUFFER;
     protected boolean enabled;
     public final int bufferId = glGenBuffers();
-    //GL_STATIC_DRAW
-    //GL_DYNAMIC_DRAW
-    //GL_STREAM_DRAW
+    //GL_STATIC_DRAW, GL_DYNAMIC_DRAW, GL_STREAM_DRAW
     public int usage = GL_DYNAMIC_DRAW;
 
     public boolean dirty;

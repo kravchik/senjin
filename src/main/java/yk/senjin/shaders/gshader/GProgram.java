@@ -20,7 +20,6 @@ import yk.ycollections.YMap;
 import yk.ycollections.YSet;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -214,13 +213,11 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
         YList<AbstractArrayStructure> result = type2structure.get(clazz);
         if (result != null) return result;
         result = al();
-        YList<Field> dataFields = ShaderTranslator.getFieldsForData(clazz);
-        int stride = TypeUtils.getComplexTypeSize(clazz);
+        YList<Field> dataFields = TypeUtils.getFieldsForData(clazz);
+        int stride = TypeUtils.getTypeSize(clazz);
         int offset = 0;
         YSet<String> hasFields = hs();
         for (Field dataField : dataFields) {
-            if (Modifier.isStatic(dataField.getModifiers())) continue;
-            if (Modifier.isTransient(dataField.getModifiers())) continue;
             String dataFieldName = dataField.getName();
             String vertexFieldName = dataToShaderNames == null ? dataFieldName : dataToShaderNames.getOrDefault(dataFieldName, dataFieldName);
 
@@ -250,9 +247,9 @@ public class GProgram<V extends VertexShaderParent, F extends FragmentShaderPare
 
     public void setInput(AVboTyped vbo) {
         currentVBO = vbo;
-        YList<AbstractArrayStructure> result = type2structure.get(vbo.getInputType());
+        YList<AbstractArrayStructure> result = type2structure.get(vbo.getElementType());
         if (result != null) currentStructure = result;
-        else currentStructure = getShaderSpecificStructure(vbo.getInputType(), null);
+        else currentStructure = getShaderSpecificStructure(vbo.getElementType(), null);
     }
 
     public void tick() {

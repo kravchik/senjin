@@ -123,7 +123,7 @@ public class WatchSuiFontsRendering {
                 )
         );
 
-        sui.getTopPanel().add(fontsVBox = panel(vbox().interval(5f).bottom(5f).percentWidth(1f)));
+        sui.getTopPanel().add(fontsVBox = panel(vbox().interval(5f).bottom(5f).widthRatio(1f)));
         recreate();
     }
                              

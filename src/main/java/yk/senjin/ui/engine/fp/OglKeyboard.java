@@ -18,8 +18,8 @@ import static yk.ycollections.YHashSet.hs;
  * Time: 20:42
  */
 public class OglKeyboard implements Tickable {
-    private final YList<Consumer<String>> onKeyDown = al();
-    private final YList<Consumer<String>> onKeyUp = al();
+    public final YList<Consumer<String>> onKeyDown = al();
+    public final YList<Consumer<String>> onKeyUp = al();
     private final YSet<String> pressed = hs();
 
     public OglKeyboard() {

@@ -1,11 +1,11 @@
 package yk.senjin.vbo;
 
+import org.lwjgl.BufferUtils;
 import yk.jcommon.fastgeom.Vec2f;
 import yk.jcommon.fastgeom.Vec3f;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.jcommon.utils.BadException;
 import yk.jcommon.utils.Reflector;
-import yk.senjin.shaders.gshader.ShaderTranslator;
 import yk.senjin.shaders.gshader.StandardFragmentData;
 import yk.senjin.shaders.gshader.StandardVertexData;
 import yk.ycollections.YList;
@@ -16,48 +16,42 @@ import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import static yk.ycollections.YArrayList.al;
 import static yk.ycollections.YHashMap.hm;
 
 /**
  * Created by Yuri Kravchik on 02.10.18.
  */
 public class TypeUtils {
-    private static final YMap<Class, Integer> type2size = hm();
+    private static final YMap<Class, Integer> TYPE2SIZE_CACHE = hm();
 
-    public static void setData(List vertices, ByteBuffer buffer, Class inputType) {
+    private static final YMap<Class, YList<Field>> CACHE =
+        hm(StandardFragmentData.class, al(), Object.class, al(), StandardVertexData.class, al());
 
-        YList<Field> fields = ShaderTranslator.getFieldsForData(inputType);
-        for (int i = 0, verticesSize = vertices.size(); i < verticesSize; i++) {
-            Object vertex = vertices.get(i);
-            if (vertex.getClass() != inputType) BadException.die("wrong input type: " + vertex + ", expected: " + inputType);
-            for (int i1 = 0, fieldsSize = fields.size(); i1 < fieldsSize; i1++) {
-                Field field = fields.get(i1);
-                if (Modifier.isStatic(field.getModifiers())) continue;
-                if (Modifier.isTransient(field.getModifiers())) continue;
-                Object value = Reflector.get(vertex, field);
-                if (value == null) throw BadException.die("null value in field " + field.getName());
-                if (value instanceof Vec3f) {
-                    Vec3f vec3f = (Vec3f) value;
-                    buffer.putFloat(vec3f.x);
-                    buffer.putFloat(vec3f.y);
-                    buffer.putFloat(vec3f.z);
-                } else if (value instanceof Vec2f) {
-                    Vec2f vec2f = (Vec2f) value;
-                    buffer.putFloat(vec2f.x);
-                    buffer.putFloat(vec2f.y);
-                } else if (value instanceof Float) {
-                    buffer.putFloat((Float) value);
-                } else if (value instanceof Vec4f) {
-                    Vec4f vec4f = (Vec4f) value;
-                    buffer.putFloat(vec4f.x);
-                    buffer.putFloat(vec4f.y);
-                    buffer.putFloat(vec4f.z);
-                    buffer.putFloat(vec4f.w);
-                } else {
-                    throw BadException.die("unknown VS input field type: " + value.getClass());
-                }
-            }
+    private static final YMap<Class, DataSerializer> SERIALIZERS_CACHE = hm(
+        short.class, (DataSerializer<Short>) (buffer, el) -> buffer.putShort(el),
+        int.class, (DataSerializer<Integer>) (buffer, el) -> buffer.putInt(el),
+        float.class, (DataSerializer<Float>) (buffer, el) -> buffer.putFloat(el),
+        Float.class, (DataSerializer<Float>) (buffer, el) -> buffer.putFloat(el),
+        Vec2f.class, (DataSerializer<Vec2f>) (buffer, el) -> {
+            buffer.putFloat(el.x);
+            buffer.putFloat(el.y);
+        },
+        Vec3f.class, (DataSerializer<Vec3f>) (buffer, el) -> {
+            buffer.putFloat(el.x);
+            buffer.putFloat(el.y);
+            buffer.putFloat(el.z);
+        },
+        Vec4f.class, (DataSerializer<Vec4f>) (buffer, el) -> {
+            buffer.putFloat(el.x);
+            buffer.putFloat(el.y);
+            buffer.putFloat(el.z);
+            buffer.putFloat(el.w);
         }
+    );
+
+    public static void setData(ByteBuffer buffer, List vertices) {
+        getSerializer(vertices.get(0).getClass()).serialize(buffer, vertices);
     }
 
     public static void setDataVec2f(List<Vec2f> vertices, ByteBuffer buffer) {
@@ -135,37 +129,82 @@ public class TypeUtils {
         }
     }
 
-    public static int getComplexTypeSize(Class clazz) {
-        if (clazz == StandardFragmentData.class || clazz == StandardVertexData.class || clazz == Object.class) return 0;
+    public static int getTypeSize(Class clazz) {
+        if (clazz == null || clazz == StandardFragmentData.class || clazz == StandardVertexData.class || clazz == Object.class) return 0;
 
-        Integer result = type2size.get(clazz);
+        Integer result = TYPE2SIZE_CACHE.get(clazz);
         if (result == null) {
-            result = 0;
-            for (Field field : clazz.getDeclaredFields()) if (!Modifier.isTransient(field.getModifiers()) && !Modifier.isStatic(field.getModifiers())) result += getTypeSize(field.getType());
-            type2size.put(clazz, result);
+            result = getSimpleTypeSize(clazz);
+            if (result == 0) {
+                result = getFieldsForData(clazz).reduce(0, (i, f) -> i + getTypeSize(f.getType()));
+            }
+            TYPE2SIZE_CACHE.put(clazz, result);
         }
-        return getComplexTypeSize(clazz.getSuperclass()) + result;
+        return getTypeSize(clazz.getSuperclass()) + result;
     }
 
-    public  static int getTypeSize(Class<?> type) {
-        if (type == Vec2f.class) return 4 * 2;
-        else if (type == Vec3f.class) return 4 * 3;
-        else if (type == Vec4f.class) return 4 * 4;
-        else if (type == float.class) return 4;
+    public  static int getSimpleTypeSize(Class<?> type) {
+        if (type == float.class) return 4;
         else if (type == int.class) return 4;
         else if (type == short.class) return 2;
         else if (type == byte.class) return 1;
-        else throw BadException.die("unknown type " + type);
+        else return 0;
     }
 
-    public static boolean isSimpleType(Class c) {
-        if (c == Vec2f.class) return true;
-        if (c == Vec3f.class) return true;
-        if (c == Vec4f.class) return true;
-        if (c == float.class) return true;
-        if (c == int.class) return true;
-        if (c == short.class) return true;
-        if (c == byte.class) return true;
-        return false;
+    public static ByteBuffer createByteBuffer(List data) {
+        int capacity = getTypeSize(data.get(0).getClass()) * data.size();
+        ByteBuffer bb = BufferUtils.createByteBuffer(capacity);
+        setData(bb, data);
+        bb.rewind();
+        return bb;
+    }
+
+    public static YList<Field> getFieldsForData(Class inputClass) {
+        if (inputClass.isArray()) return getFieldsForData(inputClass.getComponentType());
+        YList<Field> result = CACHE.get(inputClass);
+        if (result == null) {
+            result = getFieldsForData(inputClass.getSuperclass())
+                .withAll(al(inputClass.getDeclaredFields()).filter(f ->
+                    (f.getModifiers() & (Modifier.STATIC | Modifier.TRANSIENT)) == 0));
+            CACHE.put(inputClass, result);
+        }
+        return result;
+    }
+
+    public static DataSerializer getSerializer(Class inputClass) {
+        DataSerializer result = SERIALIZERS_CACHE.get(inputClass);
+        if (result == null) {
+            result = getObjectSerializer(inputClass);
+            SERIALIZERS_CACHE.put(inputClass, result);
+        }
+        return result;
+    }
+
+    private static DataSerializer getObjectSerializer(Class inputClass) {
+        YList<DataSerializer> fieldSerizaliers = getFieldsForData(inputClass)
+            .map(f -> {
+                DataSerializer ds = getSerializer(f.getType());
+                return (buffer, element) -> {
+                    Object value = Reflector.get(element, f);
+                    if (value == null) throw BadException.die("null value in field " + f.getName());
+                    ds.serialize(buffer, value);
+                };
+            });
+
+        return (DataSerializer<YList>) (buffer, ee) -> {
+            for (int i = 0, eeSize = ee.size(); i < eeSize; i++) {
+                Object e = ee.get(i);
+                if (e == null) BadException.die("null element");
+                if (e.getClass() != inputClass) BadException.die("wrong input type: "
+                    + e.getClass() + ", expected: " + inputClass);
+                for (int j = 0, fieldsSize = fieldSerizaliers.size(); j < fieldsSize; j++) {
+                    fieldSerizaliers.get(j).serialize(buffer, e);
+                }
+            }
+        };
+    }
+
+    public interface DataSerializer<T> {
+        void serialize(ByteBuffer buffer, T element);
     }
 }

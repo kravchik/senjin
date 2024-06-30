@@ -15,7 +15,7 @@ import static yk.ycollections.YArrayList.al;
 /**
  * Created by Yuri Kravchik on 25.03.18.
  */
-public class AVboShortIndices extends AVboShort {
+public class AVboShortIndices extends AVboTyped {
     /**
      * Specifies what kind of primitives to render. Symbolic constants
      * GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_TRIANGLE_STRIP,
@@ -25,7 +25,7 @@ public class AVboShortIndices extends AVboShort {
     private final int primitiveType;
 
     public AVboShortIndices(int primitiveType, int elementsCount) {
-        super(elementsCount);
+        super(short.class, elementsCount);
         this.primitiveType = primitiveType;
         bufferType = GL_ELEMENT_ARRAY_BUFFER;
     }
@@ -40,9 +40,9 @@ public class AVboShortIndices extends AVboShort {
         addChange(bb, 0).recreate = true;
     }
 
-
+    @Override
     public void enable() {
-        enable(elementsCount);
+        enable(count);
     }
 
     public void enable(int count) {//call it if your buffer larger than you want to draw
@@ -51,7 +51,6 @@ public class AVboShortIndices extends AVboShort {
         checkDirty();
         GL11.glDrawElements(primitiveType, count, GL_UNSIGNED_SHORT, 0);
         enabled = false;
-//        GL12.glDrawRangeElements(primitiveType, 0, indexBuffer.limit(), indexBuffer);
     }
 
     public static AVboShortIndices simple(int count, int primitiveType) {

@@ -6,9 +6,9 @@ package yk.senjin;
  * Time: 17:38:34
  */
 public interface State {
-    public void enable();
+    void enable();
 
-    public void disable();
+    void disable();
 
-    public void release();
+    void release();
 }

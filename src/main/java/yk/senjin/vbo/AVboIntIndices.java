@@ -15,7 +15,7 @@ import static yk.ycollections.YArrayList.al;
 /**
  * Created by Yuri Kravchik on 25.03.18.
  */
-public class AVboIntIndices extends AVboInt {
+public class AVboIntIndices extends AVboTyped {
     /**
      * Specifies what kind of primitives to render. Symbolic constants
      * GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP, GL_LINES, GL_TRIANGLE_STRIP,
@@ -25,7 +25,7 @@ public class AVboIntIndices extends AVboInt {
     private final int primitiveType;
 
     public AVboIntIndices(int primitiveType, int elementsCount) {
-        super(elementsCount);
+        super(int.class, elementsCount);
         this.primitiveType = primitiveType;
         bufferType = GL_ELEMENT_ARRAY_BUFFER;
     }
@@ -52,7 +52,7 @@ public class AVboIntIndices extends AVboInt {
 
     @Override
     public void enable() {
-        enable(elementsCount);
+        enable(count);
     }
 
     public void enable(int count) {//call it if your buffer larger than you want to draw
@@ -63,7 +63,6 @@ public class AVboIntIndices extends AVboInt {
         enabled = false;
     }
 
-    //TODO int[]
     public static AVboShortIndices simple(int count, int primitiveType) {
         AVboShortIndices result = new AVboShortIndices(primitiveType, count);
         YList<Integer> list = al();
