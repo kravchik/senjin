@@ -184,7 +184,7 @@ public class ShaderTranslator {
         while(true) {
             String toConvert = null;
             for (Map.Entry<String, YSet<String>> entry : caller2callee.entrySet()) {
-                toConvert = entry.getValue().first(m -> !systemMethods.contains(m) && !watched.contains(m));
+                toConvert = entry.getValue().find(m -> !systemMethods.contains(m) && !watched.contains(m));
                 if (toConvert != null) break;
             }
             if (toConvert == null) break;
@@ -234,7 +234,7 @@ public class ShaderTranslator {
         YList<String> ordered = Orderer.orderMethods("main", method2body, caller2callee);
         if (ordered == null) throw BadException.die("can't find proper order (check long recursions)");//TODO show best guess cycle
 
-        for (String m : ordered.reverse()) result += method2body.get(m) + "\n";
+        for (String m : ordered.reversed()) result += method2body.get(m) + "\n";
 
         return result;
     }

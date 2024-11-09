@@ -96,31 +96,40 @@ public class SuiRendererFp {
         }
 
         if (suiPanel instanceof SuiPanelDbgRect) {
-            SuiPanelDbgRect rect = (SuiPanelDbgRect) suiPanel;
-            if (rect.bodyColor != null) {
-                glColor4f(rect.bodyColor.x, rect.bodyColor.y, rect.bodyColor.z, rect.bodyColor.w);
-                glBegin(GL11.GL_TRIANGLES);
-                glVertex3f(left, top, 0);
-                glVertex3f(right, bot, 0);
-                glVertex3f(right, top, 0);
-                glVertex3f(left, top, 0);
-                glVertex3f(left, bot, 0);
-                glVertex3f(right, bot, 0);
-                glEnd();
-            }
+            SuiPanelDbgRect dbg = (SuiPanelDbgRect) suiPanel;
+            if (!dbg.isLine) {
+                if (dbg.bodyColor != null) {
+                    glColor4f(dbg.bodyColor.x, dbg.bodyColor.y, dbg.bodyColor.z, dbg.bodyColor.w);
+                    glBegin(GL11.GL_TRIANGLES);
+                    glVertex3f(left, top, 0);
+                    glVertex3f(right, bot, 0);
+                    glVertex3f(right, top, 0);
+                    glVertex3f(left, top, 0);
+                    glVertex3f(left, bot, 0);
+                    glVertex3f(right, bot, 0);
+                    glEnd();
+                }
 
-            if (rect.borderColor != null) {
-                glColor4f(rect.borderColor.x, rect.borderColor.y, rect.borderColor.z, rect.borderColor.w);
+                if (dbg.borderColor != null) {
+                    glColor4f(dbg.borderColor.x, dbg.borderColor.y, dbg.borderColor.z, dbg.borderColor.w);
+                    glLineWidth(1);//it doesn't paint last point in line
+                    glBegin(GL11.GL_LINES);
+                    glVertex3f(left, top, 0);
+                    glVertex3f(right + 1, top, 0);
+                    glVertex3f(right, top, 0);
+                    glVertex3f(right, bot + 1, 0);
+                    glVertex3f(right, bot, 0);
+                    glVertex3f(left - 1, bot, 0);
+                    glVertex3f(left, bot, 0);
+                    glVertex3f(left, top - 1, 0);
+                    glEnd();
+                }
+            } else {
+                glColor4f(dbg.borderColor.x, dbg.borderColor.y, dbg.borderColor.z, dbg.borderColor.w);
                 glLineWidth(1);//it doesn't paint last point in line
                 glBegin(GL11.GL_LINES);
                 glVertex3f(left, top, 0);
-                glVertex3f(right+1, top, 0);
-                glVertex3f(right, top, 0);
-                glVertex3f(right, bot+1, 0);
                 glVertex3f(right, bot, 0);
-                glVertex3f(left-1, bot, 0);
-                glVertex3f(left, bot, 0);
-                glVertex3f(left, top-1, 0);
                 glEnd();
             }
         }

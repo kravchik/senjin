@@ -8,6 +8,7 @@ import yk.jcommon.fastgeom.Vec4f;
 public class SuiPanelDbgRect extends SuiPanel {
     public Vec4f bodyColor = null;
     public Vec4f borderColor = null;
+    public boolean isLine;
     public boolean isSelected;
 
     public SuiPanelDbgRect() {
