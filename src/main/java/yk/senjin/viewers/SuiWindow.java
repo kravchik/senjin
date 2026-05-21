@@ -1,5 +1,7 @@
 package yk.senjin.viewers;
 
+import yk.senjin.ui.engine.fp.OglKeyboard;
+import yk.senjin.ui.engine.fp.OglMouse;
 import yk.senjin.util.GlfwWindow;
 import yk.senjin.util.Tickable;
 import yk.ycollections.YList;
@@ -19,35 +21,43 @@ import static yk.ycollections.YArrayList.al;
  *
  * Excessive finals placed to point at the right methods to (if) override
  */
-public class GlWindow1 {
+public class SuiWindow {
     private int uxW = 600;
     private int uxH = 600;
     private boolean stopRenderThread;
-    private GlfwWindow win;
+    private GlfwWindow glfwWindow;
     private final YList<Tickable> tickable = al();
-    private final YList<Consumer<GlfwWindow>> onInit = al();
+    private final YList<Consumer<SuiWindow>> onInit = al();
     private final YList<Runnable> onFirstFrame = al();
     private boolean startHidden = false;
+
+    public final OglMouse mouse = new OglMouse();
+    public final OglKeyboard keyboard = new OglKeyboard();
 
     public final void start(long sleepMs) {
         tickerNotThread(sleepMs, () -> firstFrame(), dt -> eachFrame(dt));
     }
 
     public void firstFrame() {
-        win = initWindow(uxW, uxH, "Hello World!", false, !startHidden);
-        uxW = win.sizePixels.x;
-        uxH = win.sizePixels.y;
-        for (Consumer<GlfwWindow> consumer : onInit) consumer.accept(win);
+        glfwWindow = initWindow(uxW, uxH, "Hello World!", false, !startHidden);
+        uxW = glfwWindow.sizePixels.x;
+        uxH = glfwWindow.sizePixels.y;
+        mouse.init(glfwWindow.handle);
+        mouse.height = glfwWindow.sizeUx.y;
+        keyboard.init(glfwWindow.handle);
+        for (Consumer<SuiWindow> consumer : onInit) consumer.accept(this);
         for (Runnable r : onFirstFrame) r.run();
     }
 
     //Should be in the same thread as initializations, as is using thread locals.
     public final boolean eachFrame(float dt) {
+        keyboard.clearStates();
+        glfwPollEvents();
+        mouse.tick(dt);
         for (Tickable r : tickable) r.tick(dt);
         tick(dt);
-        glfwSwapBuffers(win.handle); // swap the color buffers
-        glfwPollEvents();
-        return !(stopRenderThread || glfwWindowShouldClose(win.handle));
+        glfwSwapBuffers(glfwWindow.handle); // swap the color buffers
+        return !(stopRenderThread || glfwWindowShouldClose(glfwWindow.handle));
     }
     //Should be in the same thread as initializations, as is using thread locals.
     public void tick(float dt) {
@@ -56,33 +66,29 @@ public class GlWindow1 {
         this.stopRenderThread = true;
     }
 
-    public final GlWindow1 onWindowReady(Consumer<GlfwWindow> onFirstFrame) {
+    public final SuiWindow onWindowReady(Consumer<SuiWindow> onFirstFrame) {
         this.onInit.add(onFirstFrame);
         return this;
     }
 
-    public final GlWindow1 onFirstFrame(Runnable onFirstFrame) {
+    public final SuiWindow onFirstFrame(Runnable onFirstFrame) {
         this.onFirstFrame.add(onFirstFrame);
         return this;
     }
 
-    public final GlWindow1 onTick(Tickable tickable) {
+    public final SuiWindow onTick(Tickable tickable) {
         this.tickable.add(tickable);
         return this;
     }
 
-    public final GlWindow1 stopOnEsc() {
+    public final SuiWindow stopOnEsc() {
+        //TODO use OglKeyboard
         return onTick(dt -> {
-            if (glfwGetKey(win.handle, GLFW_KEY_ESCAPE) == GLFW_PRESS) requestStop();
+            if (glfwGetKey(glfwWindow.handle, GLFW_KEY_ESCAPE) == GLFW_PRESS) requestStop();
         });
     }
 
-    public final GlWindow1 stopOnAltF4() {
-        return onTick(dt -> {
-            if (glfwGetKey(win.handle, GLFW_KEY_F4) == GLFW_PRESS) requestStop();
-        });
-    }
-    public final GlWindow1 setUxSize(int w, int h) {
+    public final SuiWindow setUxSize(int w, int h) {
         this.uxW = w;
         this.uxH = h;
         return this;
@@ -92,8 +98,12 @@ public class GlWindow1 {
 
     public final int getHeight() {return uxH;}
 
-    public GlWindow1 startHidden() {
+    public SuiWindow startHidden() {
         this.startHidden = true;
         return this;
+    }
+
+    public GlfwWindow getGlfwWindow() {
+        return glfwWindow;
     }
 }

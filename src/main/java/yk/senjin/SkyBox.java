@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 
 import static org.lwjgl.opengl.GL11.*;
 import static yk.senjin.DDDUtils.glMultMatrix4;
-import static yk.senjin.DDDUtils.glVec3f;
+import static yk.senjin.DDDUtils.glVertex;
 import static yk.ycollections.YArrayList.al;
 
 /**
@@ -62,10 +62,10 @@ public class SkyBox {
 
         glBegin(GL_QUADS);
         glColor3f(1, 1, 1);
-        glTexCoord2f(0, 1); glVec3f(pos);
-        glTexCoord2f(1, 1); glVec3f(pos.add(vx));
-        glTexCoord2f(1, 0); glVec3f(pos.add(vx).add(vy));
-        glTexCoord2f(0, 0); glVec3f(pos.add(vy));
+        glTexCoord2f(0, 1); glVertex(pos);
+        glTexCoord2f(1, 1); glVertex(pos.add(vx));
+        glTexCoord2f(1, 0); glVertex(pos.add(vx).add(vy));
+        glTexCoord2f(0, 0); glVertex(pos.add(vy));
         glEnd();
 
 //        glBegin(GL_LINES);

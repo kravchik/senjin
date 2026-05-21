@@ -3,7 +3,7 @@ package yk.senjin.ui.engine.fp;
 import yk.jcommon.fastgeom.Vec4f;
 import yk.senjin.ui.core.SuiPanelDbgRect;
 import yk.senjin.ui.core.SuiPositions;
-import yk.senjin.viewers.GlWindow1;
+import yk.senjin.viewers.SuiWindow;
 
 import static yk.jcommon.fastgeom.Vec4f.v4;
 
@@ -12,7 +12,7 @@ import static yk.jcommon.fastgeom.Vec4f.v4;
  */
 public class WatchSuiPixelTuning {
     private SuiEngineFp aui = new SuiEngineFp();
-    private GlWindow1 window = new GlWindow1()
+    private SuiWindow window = new SuiWindow()
             .setUxSize(800, 800)
             .stopOnEsc()
             .onWindowReady(wh -> aui.init(wh))

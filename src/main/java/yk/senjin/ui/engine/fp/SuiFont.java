@@ -29,8 +29,10 @@ public class SuiFont {//TODO separate core and engine!
         this.mipmap = mipmap;
         glyphs = new HashMap<>();
         Graphics2D tempG = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics();
+        setupFontRendering(tempG, antiAlias);
         tempG.setFont(font);
         fontMetrics = tempG.getFontMetrics();
+        tempG.dispose();
         borderW = font.isItalic() ? 5 : 2;
         borderH = 0;
         initBufferedImage(font, antiAlias);
@@ -98,15 +100,21 @@ public class SuiFont {//TODO separate core and engine!
         int h = fontMetrics.getHeight() + borderH * 2;
         if (w == 0) return null;
         BufferedImage result = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        drawCharImage(result, font, c, antiAlias);
+        if (!antiAlias) {
+            if (!hasInk(result)) drawCharImage(result, font, c, true);
+            hardenAlpha(result);
+        }
+        return result;
+    }
+
+    private void drawCharImage(BufferedImage result, Font font, char c, boolean antiAlias) {
         Graphics2D g = result.createGraphics();
         //for debugging
         //g.setBackground(new Color(100, 0, 0, 255));
         g.setBackground(new Color(255, 255, 255, 0));
-        g.clearRect(0, 0, w, h);
-        if (antiAlias) g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        //g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        //g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        //g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        g.clearRect(0, 0, result.getWidth(), result.getHeight());
+        setupFontRendering(g, antiAlias);
         //Toolkit tk = Toolkit.getDefaultToolkit();
         //Map desktopHints = (Map) (tk.getDesktopProperty("awt.font.desktophints"));
         //if (desktopHints != null) {
@@ -128,7 +136,39 @@ public class SuiFont {//TODO separate core and engine!
         //layout.draw(g, borderW, fontMetrics.getAscent() + borderH);
 
         g.dispose();
-        return result;
+    }
+
+    private static void setupFontRendering(Graphics2D g, boolean antiAlias) {
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, antiAlias
+                ? RenderingHints.VALUE_ANTIALIAS_ON
+                : RenderingHints.VALUE_ANTIALIAS_OFF);
+        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, antiAlias
+                ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+                : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+    }
+
+    private static boolean hasInk(BufferedImage image) {
+        int w = image.getWidth();
+        int h = image.getHeight();
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                if ((image.getRGB(x, y) >>> 24) != 0) return true;
+            }
+        }
+        return false;
+    }
+
+    private static void hardenAlpha(BufferedImage image) {
+        int w = image.getWidth();
+        int h = image.getHeight();
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                int argb = image.getRGB(x, y);
+                int alpha = argb >>> 24;
+                image.setRGB(x, y, alpha < 128 ? 0 : 0xffffffff);
+            }
+        }
     }
 
     //WARNING! Doesn't count console modifications! (like \33[3m)

@@ -3,7 +3,7 @@ package yk.senjin.collections;
 import org.lwjgl.BufferUtils;
 import yk.senjin.vbo.AVboIntIndices;
 import yk.senjin.vbo.AVboTyped;
-import yk.senjin.viewers.GlWindow1;
+import yk.senjin.viewers.SuiWindow;
 import yk.ycollections.YList;
 
 import java.nio.ByteBuffer;
@@ -18,7 +18,7 @@ import static yk.ycollections.YArrayList.al;
 
 public class GeometryListTest {
 
-    private final GlWindow1 window = new GlWindow1()
+    private final SuiWindow window = new SuiWindow()
         .startHidden()
         .onTick(this::tick);
 

@@ -44,14 +44,14 @@ public class MenuStackViaSui {
     public MenuStackViaSui reg(SuiEngineFp engine, SuiPanel in) {
         parent = in;
         parent.add(panel);
-        engine.input.keyboard.onKeyDown.add(keyListener);
+        engine.suiWindow.keyboard.onAnyKeyPressed.add(keyListener);
         return this;
     }
 
     public void unreg(SuiEngineFp engine) {
         parent.children.remove(panel);
         parent = null;
-        engine.input.keyboard.onKeyDown.remove(keyListener);
+        engine.input.keyboard.onAnyKeyPressed.remove(keyListener);
     }
 
     public void tick() {

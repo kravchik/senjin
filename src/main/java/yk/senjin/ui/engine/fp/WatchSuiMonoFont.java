@@ -1,7 +1,7 @@
 package yk.senjin.ui.engine.fp;
 
 import yk.senjin.ui.core.SuiPanelString;
-import yk.senjin.viewers.GlWindow1;
+import yk.senjin.viewers.SuiWindow;
 
 import static yk.senjin.ui.core.SuiPanel.panel;
 import static yk.senjin.ui.core.SuiPosVBox.vbox;
@@ -26,7 +26,7 @@ public class WatchSuiMonoFont {
         createString("!       .......  .                     !"),
         createString("!                .                     !")
     ));
-    private GlWindow1 window = new GlWindow1()
+    private SuiWindow window = new SuiWindow()
             .stopOnEsc()
             .onWindowReady(wh -> sui.init(wh))
             .onTick(sui);

@@ -3,7 +3,7 @@ package yk.senjin.ui.engine.fp;
 import yk.senjin.ui.core.SuiPanel;
 import yk.senjin.ui.core.SuiPanelImage;
 import yk.senjin.ui.core.SuiPanelString;
-import yk.senjin.viewers.GlWindow1;
+import yk.senjin.viewers.SuiWindow;
 import yk.ycollections.YList;
 
 import java.awt.*;
@@ -26,7 +26,7 @@ import static yk.ycollections.YArrayList.al;
 public class WatchSuiFontsRendering {
     //TODO font selection
     private SuiEngineFp sui = new SuiEngineFp();
-    public GlWindow1 window = new GlWindow1()
+    public SuiWindow window = new SuiWindow()
             .setUxSize(800, 800)
             .stopOnEsc()
             .onWindowReady(wh -> sui.init(wh))

@@ -1,7 +1,7 @@
 package yk.senjin.examples.game_start;
 
 import yk.senjin.ui.engine.fp.SuiEngineFp;
-import yk.senjin.viewers.GlWindow1;
+import yk.senjin.viewers.SuiWindow;
 
 import java.util.function.Supplier;
 
@@ -13,28 +13,22 @@ import static yk.ycollections.YArrayList.al;
  */
 public class WatchMenusExample {
 
-    private final SuiEngineFp engine = new SuiEngineFp();
-
-    private final GlWindow1 window = new GlWindow1()
+    private final SuiEngineFp engine = new SuiEngineFp().winSetup(win -> win
         .setUxSize(800, 800)
-        //.stopOnEsc()
-        .onWindowReady(wh -> engine.init(wh))
-        //.onFirstFrame(() -> onFirstPass())
-        .onTick(engine)
-        .onTick(dt -> tick());
+        .onTick(dt -> tick())
+    );
 
     public static void main(String[] args) {
-        new WatchMenusExample().window.start(1);
+        new WatchMenusExample().engine.suiWindow.start(1);
     }
 
     MenuStackViaSui mss = new MenuStackViaSui(
-        new MenuStack(createMainMenu(() -> System.out.println("STARTING NEW GAME"), proposeExit(window))))
+        new MenuStack(createMainMenu(() -> System.out.println("STARTING NEW GAME"), proposeExit(engine.suiWindow))))
         .reg(engine, engine.getTopPanel());
 
     public void tick() {
         mss.tick();
     }
-
 
     public static MenuMenu createMainMenu(Runnable onStartGame, Supplier<MenuMenu> onBack) {
         MenuMenu result = new MenuMenu("Main Menu", false, al(
@@ -46,7 +40,7 @@ public class WatchMenusExample {
         return result;
     }
 
-    public static Supplier<MenuMenu> proposeExit(GlWindow1 window) {
+    public static Supplier<MenuMenu> proposeExit(SuiWindow window) {
         return () -> createConfirmation("Exit?", () -> window.requestStop());
     }
 

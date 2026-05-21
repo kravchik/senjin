@@ -119,7 +119,7 @@ public class Simple3DWatch {
         oglMouse.tick(dt);
         
         if (SIMPLE_AA) simpleAA.switchToFBO();
-        Vec2f mouseCur = oglMouse.current.toVec2f();
+        Vec2f mouseCur = oglMouse.posFromTop.toVec2f();
         if (oglMouse.lDown) {
             if (mousePressedAt == null) {
                 mousePressedAt = mouseCur;

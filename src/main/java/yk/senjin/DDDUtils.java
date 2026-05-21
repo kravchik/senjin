@@ -354,7 +354,7 @@ public class DDDUtils {//TODO extract to another lib
         }
     }
 
-    public static void glVec3f(Vec3f v) {
+    public static void glVertex(Vec3f v) {
         GL11.glVertex3f(v.x, v.y, v.z);
     }
 
@@ -424,9 +424,9 @@ public class DDDUtils {//TODO extract to another lib
 
     public static void drawTriangle(Vec3f a, Vec3f b, Vec3f c, float shrink) {
         Vec3f center = a.add(b).add(c).div(3);
-        glVec3f(a.sub(center).mul(shrink).add(center));
-        glVec3f(b.sub(center).mul(shrink).add(center));
-        glVec3f(c.sub(center).mul(shrink).add(center));
+        glVertex(a.sub(center).mul(shrink).add(center));
+        glVertex(b.sub(center).mul(shrink).add(center));
+        glVertex(c.sub(center).mul(shrink).add(center));
     }
 
     public static YList<YList<PoconuvVi>> CUBE = cube();

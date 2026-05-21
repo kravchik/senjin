@@ -1,10 +1,8 @@
 package yk.senjin.ui.engine.fp;
 
-import org.lwjgl.BufferUtils;
 import yk.jcommon.fastgeom.Vec2i;
 import yk.ycollections.YList;
 
-import java.nio.DoubleBuffer;
 import java.util.function.Consumer;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -15,11 +13,10 @@ import static yk.ycollections.YArrayList.al;
  * User: yuri
  * Date: 27/02/16
  * Time: 12:29
- * //TODO rename OglMouse
  */
 public class OglMouse {
-    public Vec2i current;
-    public boolean topBottom;
+    public Vec2i posFromTop;//pos, 0,0 is left-top
+    public Vec2i posFromBot;//pos, 0,0 is left-bot
     public int height;
 
     public boolean lDown;
@@ -30,10 +27,9 @@ public class OglMouse {
     public YList<Consumer<Integer>> onMouseReleasedListeners = al();
     public YList<Consumer<Integer>> onWheelListeners = al();
 
-    private final DoubleBuffer db_x = BufferUtils.createDoubleBuffer(1);
-    private final DoubleBuffer db_y = BufferUtils.createDoubleBuffer(1);
+    private final double[] db_x = new double[]{0};
+    private final double[] db_y = new double[]{0};
     private long windowHandle;
-
 
     public OglMouse init(long windowHandle) {
         this.windowHandle = windowHandle;
@@ -49,11 +45,12 @@ public class OglMouse {
     }
 
     public void tick(float dt) {
-        db_x.rewind();
-        db_y.rewind();
         glfwGetCursorPos(windowHandle, db_x, db_y);
 
-        current = new Vec2i((int) db_x.get(), (int) (!topBottom ? height - db_y.get() - 1 : db_y.get()));
+        int y = (int)db_y[0];
+        int x = (int) db_x[0];
+        posFromTop = new Vec2i(x, y);
+        posFromBot = new Vec2i(x, height - y - 1);
 
         lDown = glfwGetMouseButton(windowHandle, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
         rDown = glfwGetMouseButton(windowHandle, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS;

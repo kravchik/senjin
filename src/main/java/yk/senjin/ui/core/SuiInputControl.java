@@ -14,25 +14,13 @@ import static yk.ycollections.YArrayList.al;
  * Created by Yuri Kravchik on 23.02.18.
  */
 public class SuiInputControl {
-    public OglMouse mouse = new OglMouse();
-    public OglKeyboard keyboard = new OglKeyboard();
+    public OglMouse mouse;
+    public OglKeyboard keyboard;
 
     public SuiPanel top;
 
     YList<SuiPanel> mouseHovers = al();
     public SuiMouseState mouseState = new SuiMouseState();
-
-    public SuiInputControl() {
-        mouse.onWheelListeners.add(w -> mouseState.wheel = w / 120);
-        //should set them by event, or can miss rapid press-release
-        mouse.onMousePressedListeners.add(b -> {
-            if (b < mouseState.keys.size()) mouseState.keys.get(b).justPressed = true; });
-        mouse.onMouseReleasedListeners.add(b -> {
-            if (b < mouseState.keys.size()) mouseState.keys.get(b).justReleased = true;});
-
-        mouseState.keys.add(new SuiMouseKey("left"));
-        mouseState.keys.add(new SuiMouseKey("right"));
-    }
 
     public void tick(float dt) {
 
@@ -44,7 +32,7 @@ public class SuiInputControl {
         mouseState.keys.get(1).isPressed = mouse.rDown;
 
         mouseState.lastGlobal = mouseState.globalPos;
-        mouseState.globalPos = new Vec2f(mouse.current.x, mouse.current.y);
+        mouseState.globalPos = new Vec2f(mouse.posFromTop.x, mouse.posFromTop.y);
         mouseState.positionChanged = mouseState.lastGlobal.distanceSquared(mouseState.globalPos) > 0.00001f;
 
         mouseState.somethingDown = mouseState.keys.isAny(k -> k.justPressed);
@@ -61,7 +49,7 @@ public class SuiInputControl {
 
     public void workHierarchy() {
         for (SuiPanel inProgress : mouseHovers) inProgress.seen = false;
-        workHierarchy(top, new Vec2f(mouse.current.x, mouse.current.y));
+        workHierarchy(top, new Vec2f(mouse.posFromTop.x, mouse.posFromTop.y));
 
         mouseState.justLeft = true;
         for (Iterator<SuiPanel> iterator = mouseHovers.iterator(); iterator.hasNext(); ) {
@@ -106,8 +94,17 @@ public class SuiInputControl {
         if (mouseState.wheel != 0) for (Consumer<SuiMouseState> consumer : panel.onWheel) consumer.accept(mouseState);
     }
 
-    public void init(long windowHandle) {
-        keyboard.init(windowHandle);
-        mouse.init(windowHandle);
+    public void init(OglKeyboard keyboard, OglMouse mouse) {
+        this.keyboard = keyboard;
+        this.mouse = mouse;
+        mouse.onWheelListeners.add(w -> mouseState.wheel = w / 120);
+        //should set them by event, or can miss rapid press-release
+        mouse.onMousePressedListeners.add(b -> {
+            if (b < mouseState.keys.size()) mouseState.keys.get(b).justPressed = true; });
+        mouse.onMouseReleasedListeners.add(b -> {
+            if (b < mouseState.keys.size()) mouseState.keys.get(b).justReleased = true;});
+
+        mouseState.keys.add(new SuiMouseKey("left"));
+        mouseState.keys.add(new SuiMouseKey("right"));
     }
 }

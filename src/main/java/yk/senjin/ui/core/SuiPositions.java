@@ -99,6 +99,7 @@ public class SuiPositions {
             maxH = MyMath.max(child.pos.resultH, maxH);
         }
 
+        //TODO fix, child position is not counted
         //size by children
         if (resultW == null) resultW = maxW;
         if (resultH == null) resultH = maxH;

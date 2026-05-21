@@ -7,7 +7,7 @@ import yk.jcommon.utils.Rnd;
 import yk.senjin.shaders.gshader.GProgram;
 import yk.senjin.vbo.AVboIntIndices;
 import yk.senjin.vbo.AVboTyped;
-import yk.senjin.viewers.GlWindow1;
+import yk.senjin.viewers.SuiWindow;
 
 import static org.lwjgl.opengl.GL11.*;
 import static yk.jcommon.fastgeom.Matrix4.ortho;
@@ -18,7 +18,7 @@ import static yk.ycollections.YArrayList.al;
  * Created by Yuri Kravchik on 28.06.24
  */
 public class WatchGeometryList {
-    private final GlWindow1 window = new GlWindow1()
+    private final SuiWindow window = new SuiWindow()
         .stopOnEsc()
         .setUxSize(800, 800)
         .onFirstFrame(() -> onFirstFrame())

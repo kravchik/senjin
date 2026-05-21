@@ -14,12 +14,11 @@ public class IKnowOpenGL_9_FrameBuffer extends SimpleLwjglRoutine {
         new IKnowOpenGL_9_FrameBuffer().start();
     }
 
-    SomeTexture texture;
     FrameBuffer fb;
 
     @Override public void onFirstPass() {
         super.onFirstPass();
-        texture = new SomeTexture();
+        SomeTexture texture = new SomeTexture();
         texture.init(46, 46);
         texture.magFilter = GL_NEAREST;
         fb = new FrameBuffer();
@@ -29,7 +28,7 @@ public class IKnowOpenGL_9_FrameBuffer extends SimpleLwjglRoutine {
     @Override public void onTick(float dt) {
         super.onTick(dt);
         fb.beginRenderToFbo();
-        IKnowOpenGL_5_PixelPerfect.drawPixelScheme(texture.width, texture.height);
+        IKnowOpenGL_5_PixelPerfect.drawPixelScheme(fb.w, fb.h);
         fb.endRenderToFbo();
         fb.render(win.sizePixels);
     }

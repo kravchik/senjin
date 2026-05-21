@@ -1,12 +1,11 @@
 package yk.senjin.ui.engine.fp;
 
 import yk.jcommon.fastgeom.Vec2i;
-import yk.jcommon.utils.BadException;
 import yk.senjin.ui.core.Sui;
 import yk.senjin.ui.core.SuiInputControl;
 import yk.senjin.ui.core.SuiPanel;
-import yk.senjin.util.GlfwWindow;
 import yk.senjin.util.Tickable;
+import yk.senjin.viewers.SuiWindow;
 
 import java.util.function.Consumer;
 
@@ -17,7 +16,7 @@ public class SuiEngineFp implements Tickable {
     public Sui sui;
     public SuiRendererFp renderer;
     public SuiInputControl input = new SuiInputControl();
-    private GlfwWindow window;
+    public final SuiWindow suiWindow = new SuiWindow();
 
     public SuiEngineFp() {
         this(new SuiPanel());
@@ -30,6 +29,14 @@ public class SuiEngineFp implements Tickable {
         sui.fonts = renderer.fonts;
         getTopPanel().sui = sui;
         getTopPanel().setSuiInChildren();
+
+        suiWindow.onWindowReady(wh -> this.init(wh));
+        suiWindow.onTick(this);
+    }
+
+    public SuiEngineFp winSetup(Consumer<SuiWindow> win) {
+        win.accept(suiWindow);
+        return this;
     }
 
     @Override
@@ -39,13 +46,9 @@ public class SuiEngineFp implements Tickable {
         renderer.render(getTopPanel());
     }
 
-    public SuiEngineFp init(GlfwWindow win) {
-        if (window != null) BadException.shouldNeverReachHere();
-        this.window = win;
-        Vec2i wh = win.sizeUx;
-        input.init(win.handle);
-        input.mouse.topBottom = true;
-        input.mouse.height = wh.y;
+    public SuiEngineFp init(SuiWindow win) {
+        Vec2i wh = win.getGlfwWindow().sizeUx;
+        input.init(win.keyboard, win.mouse);
         input.top = getTopPanel();
         getTopPanel().pos.W = (float)wh.x;
         getTopPanel().pos.H = (float)wh.y;

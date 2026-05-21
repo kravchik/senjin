@@ -38,12 +38,12 @@ public class ExampleGameScreenViaFp {
     public void reg(SuiEngineFp engine, SuiPanel parent) {
         this.parent = parent;
         parent.add(panel);
-        engine.input.keyboard.onKeyDown.add(keyListener);
+        engine.input.keyboard.onAnyKeyDown.add(keyListener);
         isFocused = true;
     }
 
     public void unreg(SuiEngineFp engine) {
-        engine.input.keyboard.onKeyDown.remove(keyListener);
+        engine.input.keyboard.onAnyKeyDown.remove(keyListener);
         parent.children.remove(panel);
     }
 

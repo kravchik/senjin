@@ -6,7 +6,6 @@ import yk.senjin.examples.game_start.game.ExampleGameScreen;
 import yk.senjin.examples.game_start.game.ExampleGameScreenViaFp;
 import yk.senjin.ui.core.SuiPanelDbgRect;
 import yk.senjin.ui.engine.fp.SuiEngineFp;
-import yk.senjin.viewers.GlWindow1;
 import yk.ycollections.YList;
 
 import static yk.jcommon.fastgeom.Vec4f.v4;
@@ -20,20 +19,17 @@ import static yk.ycollections.YArrayList.al;
  * 19.06.2024
  */
 public class WatchFullGameExample {
-    private final SuiEngineFp engine = new SuiEngineFp();
-
-    private final GlWindow1 window = new GlWindow1()
-        .setUxSize(800, 800)
-        .stopOnEsc()
-        .onWindowReady(wh -> engine.init(wh))
-        .onTick(engine)
-        .onTick(this::tick);
+    private final SuiEngineFp engine = new SuiEngineFp().winSetup(win -> win
+            .setUxSize(800, 800)
+            .stopOnEsc()
+            .onTick(this::tick)
+    );
 
     private MenuStackViaSui mss = showMainMenu();
     public ExampleGameScreenViaFp gameRenderer;
 
     public static void main(String[] args) {
-        new WatchFullGameExample().window.start(1);
+        new WatchFullGameExample().engine.suiWindow.start(1);
     }
 
     private final YList<Runnable> laters = al();
@@ -50,7 +46,7 @@ public class WatchFullGameExample {
     }
 
     private MenuStackViaSui showMainMenu() {
-        return new MenuStackViaSui(new MenuStack(createMainMenu(later(() -> startGame()), proposeExit(window))))
+        return new MenuStackViaSui(new MenuStack(createMainMenu(later(() -> startGame()), proposeExit(engine.suiWindow))))
             .reg(engine, engine.getTopPanel());
     }
 
